@@ -1,0 +1,87 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+@font-face {
+  font-family: "thin";
+  src: url("/src/assets/fonts/jamsil-thin.ttf");
+}
+@font-face {
+  font-family: "light";
+  src: url("/src/assets/fonts/jamsil-light.ttf");
+}
+@font-face {
+  font-family: "regular";
+  src: url("/src/assets/fonts/jamsil-regular.ttf");
+}
+@font-face {
+  font-family: "bold";
+  src: url("/src/assets/fonts/jamsil-bold.ttf");
+}
+@font-face {
+  font-family: "extrabold";
+  src: url("/src/assets/fonts/jamsil-extrabold.ttf");
+}
+
+.swal2-icon {
+  border: none;
+}
+.swal2-modal {
+  border-radius: 30px;
+}
+.swal2-confirm {
+  width: 150px;
+}
+.swal2-cancel {
+  width: 150px;
+}
+.swal2-title {
+  text-align: left;
+  font-size: 25px;
+}
+.swal2-html-container {
+  margin: 5px !important;
+}
+.swal2-input, .swal2-textarea {
+  width: 80%;
+  margin-top: 5px;
+}
+.swal2-textarea {
+  max-height: 300px;
+}
+.swal2-file {
+  display: none;
+}
+.swal2-label {
+  padding-left: 50px;
+  text-align: left;
+}
+input[type=file] {
+  border: none;
+}
+input[type=file]::file-selector-button {
+  width: 150px;
+  height: 30px;
+  background: #E9E9E9;
+  border: 1px solid white;
+  border-radius: 10px;
+  cursor: pointer;
+  &:hover {
+    background: rgb(77, 77, 77);
+    color: #fff;
+  }
+}
+.thumbs-wrapper {
+  display: none;
+}
