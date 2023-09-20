@@ -23,11 +23,11 @@ export default function Introduce() {
                 <img className="w-full h-full" src={isDark ? Main01Dark : Main01} alt="메인이미지01"/>
             </div>
         </div>
-        <div className="flex flex-row  flex-wrap" data-aos="fade-right" data-aos-duration="1000" data-aos-offset="700">
+        <div className="flex flex-row  flex-wrap" data-aos="fade-right" data-aos-duration="1000" data-aos-offset="500">
             <div className="w-[660px] m-auto">
                 <img className="w-full" src={Main02} alt="메인이미지02"/>
             </div>
-            <div className="w-[660px] m-auto" data-aos="fade-left" data-aos-duration="1000" data-aos-offset="700">
+            <div className="w-[660px] m-auto" data-aos="fade-left" data-aos-duration="1000" data-aos-offset="500">
                 <p className="text-3xl text-center dark:text-grayscale1">1:1 채팅을 통해 궁금했던 사항들을 질문해보세요!!</p>
             </div>
         </div>

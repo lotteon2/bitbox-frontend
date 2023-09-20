@@ -21,7 +21,7 @@ export default function Activity() {
         <p className="text-3xl mb-5">활동 소개</p>
 
         <div className="flex flex-row flex-wrap gap-32">
-            <div className="flex flex-col w-[650px] m-auto" data-aos="fade-right" data-aos-duration="1000" data-aos-offset="1000">
+            <div className="flex flex-col w-[650px] m-auto" data-aos="fade-right" data-aos-duration="1000" data-aos-offset="700">
                 <br /><br />
                 <p className="text-xl">롯데e커머스 교육은 한 기수당 6개월동안 진행됩니다.</p>
                 <br /><br />
@@ -40,7 +40,7 @@ export default function Activity() {
                     <p>후반 3개월은 조별 장기 실습 프로젝트가 진행되는데 교육생들의 관심 주제와 지원 분야, 기술 스택 등을 고려하여 다양한 프로젝트를 진행하게 됩니다.</p>
                 </div>
             </div>
-            <div className="w-[520px] h-[698px] relative m-auto" data-aos="fade-left" data-aos-duration="1000" data-aos-offset="1000">
+            <div className="w-[520px] h-[698px] relative m-auto" data-aos="fade-left" data-aos-duration="1000" data-aos-offset="700">
                 <img className="absolute z-10" src={isDark ? ActivityFrameDark : ActivityFrame} alt="ActivityFrame"/>
                 <img className="absolute z-0" src={imgNum === 1 ? Activity01 : imgNum === 2 ? Activity02 : imgNum === 3 ? Activity03 : Activity04} alt="Activity01"/>
             </div>
