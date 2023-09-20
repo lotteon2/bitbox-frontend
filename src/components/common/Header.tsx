@@ -8,6 +8,8 @@ import {useRecoilState, useRecoilValue} from "recoil";
 
 import Logo from "../../assets/images/logo.png";
 import LogoDark from "../../assets/images/logo_dark.png";
+import Badge from "@mui/material/Badge";
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 interface parameter {
     istoggled: string,
@@ -138,9 +140,19 @@ export default function Header() {
             </ul>
 
             {/* User 메뉴 리스트 */}
+            {isLogin ?
             <ul className="header__right">
-                {isLogin ? authUserMenuList.map((menuItem: string, index: number) => <li key={index} className="font-light dark:text-grayscale1">{menuItem}</li>) : defaultUserMenuList.map((menuItem: string, index: number) => <li key={index} className="font-light dark:text-grayscale1">{menuItem}</li>)}
+                {/* TODO: 여기 개수 추가 */}
+                <Badge badgeContent={1} color="warning">
+                    {isDark ? <NotificationsIcon fontSize="medium" sx={{color: "#FFFFFF"}}/> : <NotificationsIcon fontSize="medium" sx={{color: "#000000"}}/>}
+                </Badge>
+                <li className="font-light dark:text-grayscale1">마이페이지</li>
+                <li className="font-light dark:text-grayscale1">로그아웃</li>
+            </ul> :
+            <ul className="header__right">
+                <li className="font-light dark:text-grayscale1">로그인</li>
             </ul>
+            }
         </HeaderStyle>
     );
 }

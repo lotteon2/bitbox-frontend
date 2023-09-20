@@ -5,6 +5,7 @@ import {darkmodeState, chatroomState} from "../../../recoil/atoms/common";
 import {useRecoilValue} from "recoil";
 import ChattingDetailModal from "./ChattingDetailModal";
 import ChattingListModal from "./ChattingListModal";
+import Badge from "@mui/material/Badge";
 
 export default function ChattingButton() {
     const isDark = useRecoilValue(darkmodeState);
@@ -18,9 +19,12 @@ export default function ChattingButton() {
         setOpenModal((cur) => !cur);
     }
 
-    return <div className="relative cursor-pointer">
+
+    return <div className="relative">
         <div className="bg-primary7 rounded-full w-20 h-20 p-4 fixed bottom-5 right-32 dark:bg-primary4" onClick={handleChatModalOpen}>
-            {isDark ? <img src={ChatDarkIcon} alt="" /> : <img src={ChatIcon} alt="" />}
+            <Badge color="success" overlap="circular" badgeContent={100} sx={{ "& .MuiBadge-badge": { fontSize: 15, height: 30, width: 30, borderRadius: '50%', marginRight: '-10px', marginTop: '-15px' }}}>
+                {isDark ? <img src={ChatDarkIcon} alt="" /> : <img src={ChatIcon} alt="" />}
+            </Badge>
         </div>
         {isOpenModal && (ischat ? <ChattingListModal onClickToggleModal={onClickToggleModal}>
             {/*TODO: 아래 div에 채팅방 목록 구성*/}
