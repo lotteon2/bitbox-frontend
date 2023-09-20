@@ -1,22 +1,27 @@
 import { atom } from "recoil";
+import {recoilPersist} from "recoil-persist";
 
+const {persistAtom} = recoilPersist();
 /**
  * 로그인 여부
  */
 export const loginState = atom({
     key: "loginState",
-    default: false
+    default: true,
+    effects_UNSTABLE: [persistAtom],
 });
 
 /**
- * 사용자 정보 - 사용자 PK
+ * 사용자 정보 - 사용자 PK, 크레딧, 반 PK
  */
 export const memberState = atom({
     key: "memberState",
     default: {
         memberId: -1,
-        remainCredit: 0
-    }
+        remainCredit: 0,
+        classId: -1
+    },
+    effects_UNSTABLE: [persistAtom],
 });
 
 /**
@@ -24,7 +29,8 @@ export const memberState = atom({
  */
 export const authorityState = atom({
     key: "authorityState",
-    default: -1
+    default: -1,
+    effects_UNSTABLE: [persistAtom],
 });
 
 /**
@@ -32,7 +38,8 @@ export const authorityState = atom({
  */
 export const darkmodeState = atom({
     key: "darkmodeState",
-    default: false
+    default: false,
+    effects_UNSTABLE: [persistAtom],
 });
 
 /**
@@ -40,7 +47,8 @@ export const darkmodeState = atom({
  */
 export const chatroomState = atom({
     key: "chatroomState",
-    default: false
+    default: false,
+    effects_UNSTABLE: [persistAtom],
 });
 
 /**
@@ -48,7 +56,8 @@ export const chatroomState = atom({
  */
 export const classState = atom({
     key: "classState",
-    default: -1 // 반 이름일 경우 default: ""
+    default: -1, // 반 이름일 경우 default: ""
+    effects_UNSTABLE: [persistAtom],
 });
 
 
@@ -57,5 +66,6 @@ export const classState = atom({
  */
 export const subscriptionState = atom({
     key: "subscriptionState",
-    default: -1
+    default: -1,
+    effects_UNSTABLE: [persistAtom],
 });

@@ -119,7 +119,7 @@ export default function Header() {
             </div>
 
             {/* 로고 */}
-            {isDark ? <img className="w-[60px]" src={LogoDark} /> : <img className="w-[60px]" src={Logo} />}
+            {isDark ? <NavLink to="/"><img className="w-[60px]" src={LogoDark} /></NavLink> : <NavLink to="/"><img className="w-[60px]" src={Logo} /></NavLink>}
 
             {/* User 버튼 */}
             <div
@@ -133,10 +133,10 @@ export default function Header() {
 
             {/* 메뉴 리스트 */}
             <ul className="header__menulist">
-                <li className="font-bold dark:text-grayscale1"><NavLink style={({isActive}) => (isActive ? activeStyle : {})} to="/devlog">데브로그</NavLink></li>
-                <li className="font-bold dark:text-grayscale1"><NavLink style={({isActive}) => (isActive ? activeStyle : {})} to="/community">커뮤니티</NavLink></li>
-                <li className="font-bold dark:text-grayscale1"><NavLink style={({isActive}) => (isActive ? activeStyle : {})} to="/review">선배들의 이야기</NavLink></li>
-                <li className="font-bold dark:text-grayscale1"><NavLink style={({isActive}) => (isActive ? activeStyle : {})} to="/alumni">알럼나이</NavLink></li>
+                <li className="font-bold dark:text-grayscale1"><NavLink style={({isActive}) => (isActive ? activeStyle : {})} to="/board/devlog">데브로그</NavLink></li>
+                <li className="font-bold dark:text-grayscale1"><NavLink style={({isActive}) => (isActive ? activeStyle : {})} to="/board/community">커뮤니티</NavLink></li>
+                <li className="font-bold dark:text-grayscale1"><NavLink style={({isActive}) => (isActive ? activeStyle : {})} to="/board/review">선배들의 이야기</NavLink></li>
+                <li className="font-bold dark:text-grayscale1"><NavLink style={({isActive}) => (isActive ? activeStyle : {})} to="/board/alumni">알럼나이</NavLink></li>
             </ul>
 
             {/* User 메뉴 리스트 */}
@@ -146,11 +146,11 @@ export default function Header() {
                 <Badge badgeContent={1} color="warning">
                     {isDark ? <NotificationsIcon fontSize="medium" sx={{color: "#FFFFFF"}}/> : <NotificationsIcon fontSize="medium" sx={{color: "#000000"}}/>}
                 </Badge>
-                <li className="font-light dark:text-grayscale1">마이페이지</li>
+                <li className="font-light dark:text-grayscale1"><NavLink to="/mypage">마이페이지</NavLink></li>
                 <li className="font-light dark:text-grayscale1">로그아웃</li>
             </ul> :
             <ul className="header__right">
-                <li className="font-light dark:text-grayscale1">로그인</li>
+                <li className="font-light dark:text-grayscale1"><NavLink to="/login">로그인</NavLink></li>
             </ul>
             }
         </HeaderStyle>

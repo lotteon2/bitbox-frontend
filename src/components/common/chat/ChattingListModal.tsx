@@ -21,10 +21,10 @@ export default function ChattingListModal({onClickToggleModal, children}: PropsW
 
     return <div className="fixed w-[400px] h-[600px] bottom-28 right-4 rounded-xl shadow-lg bg-grayscale1 dark:bg-grayscale6">
         <header className="w-full h-10 bg-primary7 rounded-xl rounded-b-none p-2 text-grayscale1 dark:bg-primary4">
-            <div className="relative w-[350px] h-[25px] ml-8">
-                <input className="bg-grayscale1 w-[200px] h-[25px] ml-28 rounded-sm text-grayscale7 outline-0" type="text" value={searchWord} onChange={handleSearchWord}/>
-                <span className="bg-grayscale1 w-[24px] h-[25px] rounded-sm absolute right-14"><CancelIcon sx={{color: "#C6C6C6", fontSize: 18}} onClick={handleResetSearchWord}/></span>
-                <span className="bg-grayscale1 w-[30px] h-[25px] rounded-sm absolute right-7"><SearchIcon sx={{color: "#F92525", fontSize: 28}} /></span>
+            <div className="relative w-[350px] h-[25px] ml-8 rounded-lg">
+                <input className="pl-2 pr-11 bg-grayscale1 w-[200px] h-[25px] ml-28 rounded-sm text-grayscale7 outline-0 rounded-lg" type="text" value={searchWord} onChange={handleSearchWord}/>
+                <span className="bg-grayscale1 w-[24px] h-[25px] rounded-lg absolute right-14"><CancelIcon sx={{color: "#C6C6C6", fontSize: 18}} onClick={handleResetSearchWord}/></span>
+                <span className="bg-grayscale1 w-[30px] h-[25px] rounded-lg absolute right-7"><SearchIcon sx={{color: "#F92525", fontSize: 28}} /></span>
                 <ClearIcon sx={{color: "#FFFFFF", float: 'right'}} onClick={onClickToggleModal} />
             </div>
         </header>

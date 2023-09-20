@@ -7,7 +7,7 @@ import ChattingButton from "../components/common/chat/ChattingButton";
 import {darkmodeState, loginState} from "../recoil/atoms/common";
 import {useRecoilValue} from "recoil";
 
-function MainLayout() {
+export default function MainLayout() {
     const isDark = useRecoilValue(darkmodeState);
     const isLogin = useRecoilValue(loginState);
     return <div className={isDark ? "bg-grayscale7 w-full h-[100%] m-auto dark relative" : "bg-grayscale1 w-full h-[100%] m-auto relative"}>
@@ -20,4 +20,3 @@ function MainLayout() {
             <ModeButton />
     </div>;
 }
-export default MainLayout;
