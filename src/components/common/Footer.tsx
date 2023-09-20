@@ -5,12 +5,12 @@ import townDay from "../../assets/images/footer/town_day.png";
 import man from "../../assets/images/footer/man.png";
 import family from "../../assets/images/footer/family.png";
 
-import {darkMode} from "../../recoil/atoms/common";
+import {darkmodeState} from "../../recoil/atoms/common";
 import "../../css/footer.css";
 import {useRecoilValue} from "recoil";
 
 export default function Footer() {
-	const isDark = useRecoilValue(darkMode);
+	const isDark = useRecoilValue(darkmodeState);
     return <footer>
 		<section className="mt-10">
 			<article className="town">

@@ -5,13 +5,13 @@ import Activity03 from "../../assets/images/main/Activity03.jpg";
 import Activity04 from "../../assets/images/main/Activity04.jpg";
 import ActivityFrame from "../../assets/images/main/ActivityFrame.png";
 import ActivityFrameDark from "../../assets/images/main/ActivityFrameDark.png";
-import {darkMode} from "../../recoil/atoms/common";
+import {darkmodeState} from "../../recoil/atoms/common";
 import {useRecoilValue} from "recoil";
 import AOS from "aos";
 
 export default function Activity() {
     const [imgNum, setImgNum] = useState<number>(1);
-    const isDark = useRecoilValue(darkMode);
+    const isDark = useRecoilValue(darkmodeState);
 
     useEffect(() => {
         AOS.init();

@@ -19,7 +19,7 @@ export default function ChattingListModal({onClickToggleModal, children}: PropsW
         setSearchWord('');
     }
 
-    return <div className="fixed w-[400px] h-[600px] bottom-28 right-4 rounded-xl shadow-lg dark:bg-grayscale6">
+    return <div className="fixed w-[400px] h-[600px] bottom-28 right-4 rounded-xl shadow-lg bg-grayscale1 dark:bg-grayscale6">
         <header className="w-full h-10 bg-primary7 rounded-xl rounded-b-none p-2 text-grayscale1 dark:bg-primary4">
             <div className="relative w-[350px] h-[25px] ml-8">
                 <input className="bg-grayscale1 w-[200px] h-[25px] ml-28 rounded-sm text-grayscale7 outline-0" type="text" value={searchWord} onChange={handleSearchWord}/>

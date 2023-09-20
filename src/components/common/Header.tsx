@@ -3,7 +3,7 @@ import styled from "styled-components";
 import {NavLink} from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faUser, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { darkMode, loginState } from "../../recoil/atoms/common";
+import { darkmodeState, loginState } from "../../recoil/atoms/common";
 import {useRecoilState, useRecoilValue} from "recoil";
 
 import Logo from "../../assets/images/logo.png";
@@ -96,7 +96,7 @@ export default function Header() {
     const [isToggled, setIsToggled] = useState<boolean>(false);
     const [userToggled, setUserToggled] = useState<boolean>(false);
     const [isLogin, setIsLogin] = useRecoilState(loginState);
-    const isDark = useRecoilValue<boolean>(darkMode);
+    const isDark = useRecoilValue<boolean>(darkmodeState);
 
     const defaultUserMenuList = ["로그인", "회원가입"];
     const authUserMenuList = ["마이페이지", "로그아웃"];

@@ -2,13 +2,13 @@ import React, {useEffect} from "react";
 import Main01 from "../../assets/images/main/main01.png";
 import Main01Dark from "../../assets/images/main/main01_dark.png";
 import Main02 from "../../assets/images/main/main02.png";
-import {darkMode} from "../../recoil/atoms/common";
+import {darkmodeState} from "../../recoil/atoms/common";
 import {useRecoilValue} from "recoil";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
 export default function Introduce() {
-    const isDark = useRecoilValue(darkMode);
+    const isDark = useRecoilValue(darkmodeState);
 
     useEffect(() => {
         AOS.init();
@@ -19,8 +19,8 @@ export default function Introduce() {
             <div className="w-[620px] mx-auto mt-12" data-aos="fade-right" data-aos-duration="1000">
                 <p className="text-3xl text-center dark:text-grayscale1">BITBOX는 '<b className="text-primary7 dark:text-primary4">롯데e커머스 교육</b>' 희망자 & 교육생 & 수료생들을 위한 커뮤니티입니다.</p>
             </div>
-            <div className="w-[660px] m-auto" data-aos="fade-left" data-aos-duration="1000">
-                <img className="w-full" src={isDark ? Main01Dark : Main01} alt="메인이미지01"/>
+            <div className="w-[660px] h-[383.73px] m-auto" data-aos="fade-left" data-aos-duration="1000">
+                <img className="w-full h-full" src={isDark ? Main01Dark : Main01} alt="메인이미지01"/>
             </div>
         </div>
         <div className="flex flex-row  flex-wrap" data-aos="fade-right" data-aos-duration="1000" data-aos-offset="700">
