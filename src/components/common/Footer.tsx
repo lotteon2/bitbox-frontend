@@ -11,7 +11,8 @@ import {useRecoilValue} from "recoil";
 
 export default function Footer() {
 	const isDark = useRecoilValue(darkmodeState);
-    return <footer>
+    return <footer className="relative">
+		<div className="absolute bottom-0 w-full h-80 bg-gradient-to-t from-grayscale3 to-grayscale1 opacity-50 dark:from-grayscale6 dark:to-grayscale7"></div>
 		<section className="mt-10">
 			<article className="town">
 				<img src={circle} className="circle" alt="" />
@@ -25,7 +26,7 @@ export default function Footer() {
 		</section>
 		<div className="text-center m-auto">
 			<div>
-				<p className="text-grayscale5 dark:text-grayscale4">
+				<p className="text-grayscale7 dark:text-grayscale4">
 					Copyright &copy;
 					All rights reserved | BITBOX</p>
 			</div>
