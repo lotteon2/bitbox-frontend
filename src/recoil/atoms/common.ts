@@ -45,6 +45,15 @@ export const darkmodeState = atom({
 /**
  * true: 리스트, false: 상세
  */
+export const chatState = atom({
+    key: "chatState",
+    default: false,
+    effects_UNSTABLE: [persistAtom],
+});
+
+/**
+ * true: 리스트, false: 상세
+ */
 export const chatroomState = atom({
     key: "chatroomState",
     default: false,

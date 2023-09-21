@@ -1,7 +1,7 @@
 import React, {useCallback, useState} from "react";
 import ChatIcon from "../../assets/images/chat.png";
 import ChatDarkIcon from "../../assets/images/chat_dark.png";
-import {darkmodeState, chatroomState} from "../../recoil/atoms/common";
+import {darkmodeState, chatState, chatroomState} from "../../recoil/atoms/common";
 import {useRecoilValue} from "recoil";
 import ChattingDetailModal from "./ChattingDetailModal";
 import ChattingListModal from "./ChattingListModal";
@@ -9,14 +9,14 @@ import Badge from "@mui/material/Badge";
 
 export default function ChattingButton() {
     const isDark = useRecoilValue(darkmodeState);
-    const ischat = useRecoilValue(chatroomState);
-    const [isOpenModal, setOpenModal] = useState<boolean>(false);
+    const isChatRoom = useRecoilValue(chatroomState);
+    const [isChat, setIsChat] = useState<boolean>(false);
     const onClickToggleModal = useCallback(() => {
-        setOpenModal(!isOpenModal);
-    }, [isOpenModal]);
+        setIsChat(!isChat);
+    }, [isChat]);
 
     const handleChatModalOpen = () => {
-        setOpenModal((cur) => !cur);
+        setIsChat((cur) => !cur);
     }
 
 
@@ -26,7 +26,7 @@ export default function ChattingButton() {
                 {isDark ? <img src={ChatDarkIcon} alt="" /> : <img src={ChatIcon} alt="" />}
             </Badge>
         </div>
-        {isOpenModal && (ischat ? <ChattingListModal onClickToggleModal={onClickToggleModal}>
+        {isChat && (isChatRoom ? <ChattingListModal onClickToggleModal={onClickToggleModal}>
             {/*TODO: 아래 div에 채팅방 목록 구성*/}
             <div>목록</div>
         </ChattingListModal> : <ChattingDetailModal onClickToggleModal={onClickToggleModal}>
