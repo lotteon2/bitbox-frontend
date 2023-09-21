@@ -1,7 +1,7 @@
 import React, {useCallback, useState} from "react";
-import ChatIcon from "../../../assets/images/chat.png";
-import ChatDarkIcon from "../../../assets/images/chat_dark.png";
-import {darkmodeState, chatroomState} from "../../../recoil/atoms/common";
+import ChatIcon from "../../assets/images/chat.png";
+import ChatDarkIcon from "../../assets/images/chat_dark.png";
+import {darkmodeState, chatroomState} from "../../recoil/atoms/common";
 import {useRecoilValue} from "recoil";
 import ChattingDetailModal from "./ChattingDetailModal";
 import ChattingListModal from "./ChattingListModal";

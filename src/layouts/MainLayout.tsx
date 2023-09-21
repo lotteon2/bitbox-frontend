@@ -3,7 +3,7 @@ import {Outlet} from "react-router-dom";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import ModeButton from "../components/common/ModeButton";
-import ChattingButton from "../components/common/chat/ChattingButton";
+import ChattingButton from "../components/chat/ChattingButton";
 import {darkmodeState, loginState} from "../recoil/atoms/common";
 import {useRecoilValue} from "recoil";
 

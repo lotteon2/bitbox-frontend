@@ -4,9 +4,9 @@ import { darkmodeState, loginState } from "../recoil/atoms/common";
 import Header from "../components/common/Header";
 import { Outlet } from "react-router-dom";
 import Footer from "../components/common/Footer";
-import ChattingButton from "../components/common/chat/ChattingButton";
+import ChattingButton from "../components/chat/ChattingButton";
 import ModeButton from "../components/common/ModeButton";
-import BoardSideHeader from "../components/common/board/BoardSideHeader";
+import BoardSideHeader from "../components/board/BoardSideHeader";
 
 export default function BoardLayout() {
     const isDark = useRecoilValue(darkmodeState);

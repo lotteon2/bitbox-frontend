@@ -2,7 +2,7 @@ import React, {PropsWithChildren} from "react";
 import ClearIcon from '@mui/icons-material/Clear';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import {useSetRecoilState} from "recoil";
-import {chatroomState} from "../../../recoil/atoms/common";
+import {chatroomState} from "../../recoil/atoms/common";
 
 interface ModalDefaultType {
     onClickToggleModal: () => void;

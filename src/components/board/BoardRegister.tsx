@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactQuill, { Quill } from "react-quill";
-import "../../../css/quill.snow.css";
+import "../../css/quill.snow.css";
 import {ImageResize} from "quill-image-resize-module-ts";
-import {darkmodeState} from "../../../recoil/atoms/common";
+import {darkmodeState} from "../../recoil/atoms/common";
 import {useRecoilValue} from "recoil";
 Quill.register("modules/imageResize", ImageResize);
 

@@ -11,7 +11,7 @@ import DevLogPage from "../pages/DevLogPage";
 import CommunityPage from "../pages/CommunityPage";
 import ReviewPage from "../pages/ReviewPage";
 import AlumniPage from "../pages/AlumniPage";
-import BoardRegister from "../components/common/board/BoardRegister";
+import BoardRegister from "../components/board/BoardRegister";
 import BoardLayout from "../layouts/BoardLayout";
 
 const router = createBrowserRouter([
