@@ -11,6 +11,8 @@ import DevLogPage from "../pages/DevLogPage";
 import CommunityPage from "../pages/CommunityPage";
 import ReviewPage from "../pages/ReviewPage";
 import AlumniPage from "../pages/AlumniPage";
+import BoardRegister from "../components/common/board/BoardRegister";
+import BoardLayout from "../layouts/BoardLayout";
 
 const router = createBrowserRouter([
     {
@@ -43,9 +45,17 @@ const router = createBrowserRouter([
         errorElement: <NotFound />,
         children: [
             {path: "devlog", element: <DevLogPage />},
+            {path: "register", element: <BoardRegister />}
+        ],
+    },
+    {
+        path: "/board",
+        element: <BoardLayout />,
+        errorElement: <NotFound />,
+        children: [
             {path: "community", element: <CommunityPage />},
             {path: "review", element: <ReviewPage />},
-            {path: "alumni", element: <AlumniPage />}
+            {path: "alumni", element: <AlumniPage />},
         ],
     },
 ]);
