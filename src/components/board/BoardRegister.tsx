@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "../../css/quill.snow.css";
 import {ImageResize} from "quill-image-resize-module-ts";
@@ -26,7 +26,7 @@ export default function BoardRegister() {
         'image',
         'video'
     ];
-
+    
     const modules = {
         toolbar: {
             container: [
@@ -55,9 +55,9 @@ export default function BoardRegister() {
             parchment: Quill.import('parchment'),
             modules: ['Resize', 'DisplaySize']
         },
-
+    
     };
-
+    
     // TODO: 여기에 이미지 업로드 처리 후 src 갈아끼우기
     // const handleImageUpload = () => {
     // }

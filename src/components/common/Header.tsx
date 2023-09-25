@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faUser, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { darkmodeState, loginState } from "../../recoil/atoms/common";
@@ -102,10 +102,19 @@ export default function Header() {
 
     const defaultUserMenuList = ["로그인", "회원가입"];
     const authUserMenuList = ["마이페이지", "로그아웃"];
+    const navigate = useNavigate();
 
     const activeStyle = {
         borderBottom: '3px solid #F92525'
     }
+
+    const handleCheckLogin = (e: any) => {
+        if (!isLogin) {
+            alert("로그인이 필요한 페이지입니다");
+            navigate('/login');
+        }
+    }
+
     return (
         <HeaderStyle istoggled={isToggled.toString()} usertoggled={userToggled.toString()}>
              {/*햄버거 버튼 */}
@@ -135,8 +144,8 @@ export default function Header() {
             <ul className="header__menulist">
                 <li className="font-bold dark:text-grayscale1"><NavLink style={({isActive}) => (isActive ? activeStyle : {})} to="/board/devlog">데브로그</NavLink></li>
                 <li className="font-bold dark:text-grayscale1"><NavLink style={({isActive}) => (isActive ? activeStyle : {})} to="/board/community">커뮤니티</NavLink></li>
-                <li className="font-bold dark:text-grayscale1"><NavLink style={({isActive}) => (isActive ? activeStyle : {})} to="/board/review">선배들의 이야기</NavLink></li>
-                <li className="font-bold dark:text-grayscale1"><NavLink style={({isActive}) => (isActive ? activeStyle : {})} to="/board/alumni">알럼나이</NavLink></li>
+                <li className="font-bold dark:text-grayscale1" onClick={handleCheckLogin}><NavLink style={({isActive}) => (isActive ? activeStyle : {})} to="/board/review">선배들의 이야기</NavLink></li>
+                <li className="font-bold dark:text-grayscale1" onClick={handleCheckLogin}><NavLink style={({isActive}) => (isActive ? activeStyle : {})} to="/board/alumni">알럼나이</NavLink></li>
             </ul>
 
             {/* User 메뉴 리스트 */}
