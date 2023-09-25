@@ -14,42 +14,42 @@ import AlumniPage from "../pages/AlumniPage";
 import BoardRegister from "../components/board/BoardRegister";
 
 const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <MainLayout />,
-        errorElement: <NotFound />,
-        children: [{index: true, path: "", element: <MainPage />}],
-    },
-    {
-        path: "/login",
-        element: <LoginLayout />,
-        errorElement: <NotFound />,
-        children: [{index: true, path: "", element: <LoginPage />}],
-    },
-    {
-        path: "/mypage",
-        element: <MainLayout />,
-        errorElement: <NotFound />,
-        children: [{index: true, path: "", element: <MyPage />}],
-    },
-    {
-        path: "/payment",
-        element: <MainLayout />,
-        errorElement: <NotFound />,
-        children: [{index: true, path: "", element: <PaymentPage />}],
-    },
-    {
-        path: "/board",
-        element: <MainLayout />,
-        errorElement: <NotFound />,
-        children: [
-            {path: "devlog", element: <DevLogPage />},
-            {path: "community", element: <CommunityPage />},
-            {path: "review", element: <ReviewPage />},
-            {path: "alumni", element: <AlumniPage />},
-            {path: "register", element: <BoardRegister />}
-        ],
-    },
+  {
+    path: "/",
+    element: <MainLayout />,
+    errorElement: <NotFound />,
+    children: [{ index: true, path: "", element: <MainPage /> }],
+  },
+  {
+    path: "/login",
+    element: <LoginLayout />,
+    errorElement: <NotFound />,
+    children: [{ index: true, path: "", element: <LoginPage /> }],
+  },
+  {
+    path: "/mypage",
+    element: <MainLayout />,
+    errorElement: <NotFound />,
+    children: [{ index: true, path: "", element: <MyPage /> }],
+  },
+  {
+    path: "/payment",
+    element: <MainLayout />,
+    errorElement: <NotFound />,
+    children: [{ index: true, path: "", element: <PaymentPage /> }],
+  },
+  {
+    path: "/board",
+    element: <MainLayout />,
+    errorElement: <NotFound />,
+    children: [
+      { path: "devlog", element: <DevLogPage /> },
+      { path: "community", element: <CommunityPage /> },
+      { path: "review", element: <ReviewPage /> },
+      { path: "alumni", element: <AlumniPage /> },
+      { path: "register", element: <BoardRegister /> },
+    ],
+  },
 ]);
 
 export default router;

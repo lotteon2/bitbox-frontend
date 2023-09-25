@@ -1,14 +1,13 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
 import { RouterProvider } from "react-router-dom";
 
 // React-Query
 import { QueryClient, QueryClientProvider } from "react-query";
-import {ReactQueryDevtools} from "react-query/devtools";
+import { ReactQueryDevtools } from "react-query/devtools";
 // Recoil
 import { RecoilRoot } from "recoil";
-
 
 import router from "./routes";
 import Loading from "./components/common/Loading";
@@ -16,7 +15,7 @@ import Loading from "./components/common/Loading";
 const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement
 );
 
 root.render(
@@ -27,4 +26,3 @@ root.render(
     </QueryClientProvider>
   </RecoilRoot>
 );
-
