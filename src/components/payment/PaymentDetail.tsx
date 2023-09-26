@@ -13,13 +13,13 @@ export default function PaymentDetail() {
       <div className="border-2 pl-5 py-4 rounded-lg relative">
         {question1 ? (
           <ArrowDropUpIcon
-            className="absolute right-2 top-2"
+            className="absolute right-2 top-2 cursor-pointer"
             sx={{ fontSize: "50px", color: "#808080" }}
             onClick={() => setQuestion1((cur) => !cur)}
           />
         ) : (
           <ArrowDropDownIcon
-            className="absolute right-2 top-2"
+            className="absolute right-2 top-2 cursor-pointer"
             sx={{ fontSize: "50px", color: "#808080" }}
             onClick={() => setQuestion1((cur) => !cur)}
           />
@@ -37,13 +37,13 @@ export default function PaymentDetail() {
       <div className="border-2 pl-5 py-4 rounded-lg relative">
         {question2 ? (
           <ArrowDropUpIcon
-            className="absolute right-2 top-2"
+            className="absolute right-2 top-2 cursor-pointer"
             sx={{ fontSize: "50px", color: "#808080" }}
             onClick={() => setQuestion2((cur) => !cur)}
           />
         ) : (
           <ArrowDropDownIcon
-            className="absolute right-2 top-2"
+            className="absolute right-2 top-2 cursor-pointer"
             sx={{ fontSize: "50px", color: "#808080" }}
             onClick={() => setQuestion2((cur) => !cur)}
           />
@@ -63,13 +63,13 @@ export default function PaymentDetail() {
       <div className="border-2 pl-5 py-4 rounded-lg relative">
         {question3 ? (
           <ArrowDropUpIcon
-            className="absolute right-2 top-2"
+            className="absolute right-2 top-2 cursor-pointer"
             sx={{ fontSize: "50px", color: "#808080" }}
             onClick={() => setQuestion3((cur) => !cur)}
           />
         ) : (
           <ArrowDropDownIcon
-            className="absolute right-2 top-2"
+            className="absolute right-2 top-2 cursor-pointer"
             sx={{ fontSize: "50px", color: "#808080" }}
             onClick={() => setQuestion3((cur) => !cur)}
           />
@@ -87,13 +87,13 @@ export default function PaymentDetail() {
       <div className="border-2 pl-5 py-4 rounded-lg relative">
         {question4 ? (
           <ArrowDropUpIcon
-            className="absolute right-2 top-2"
+            className="absolute right-2 top-2 cursor-pointer"
             sx={{ fontSize: "50px", color: "#808080" }}
             onClick={() => setQuestion4((cur) => !cur)}
           />
         ) : (
           <ArrowDropDownIcon
-            className="absolute right-2 top-2"
+            className="absolute right-2 top-2 cursor-pointer"
             sx={{ fontSize: "50px", color: "#808080" }}
             onClick={() => setQuestion4((cur) => !cur)}
           />
