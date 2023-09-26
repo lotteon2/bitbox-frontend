@@ -10,8 +10,8 @@ interface member {
 export default function MyProfile() {
   const memberInfo = useRecoilValue<member>(memberState);
   return (
-    <div className="relative">
-      <div className="flex flex-row gap-20">
+    <div className="flex flex-row w-full">
+      <div className="w-1/2 flex flex-row flex-wrap gap-20">
         <div className="flex flex-row gap-5">
           <div className="w-20 h-20 bg-black rounded-full"></div>
           <div className="flex flex-col">
@@ -28,14 +28,14 @@ export default function MyProfile() {
           </span>{" "}
           크레딧
         </div>
-        <div className="flex flex-row gap-10 absolute right-0 top-4">
-          <button className="bg-grayscale2 hover:bg-grayscale3 px-4 py-2 rounded-lg dark:bg-grayscale6 dark:hover:bg-grayscale5">
-            정보수정
-          </button>
-          <button className="bg-grayscale2 hover:bg-grayscale3 px-4 py-2 rounded-lg dark:bg-grayscale6 dark:hover:bg-grayscale5">
-            로그아웃
-          </button>
-        </div>
+      </div>
+      <div className="w-1/2 flex flex-row gap-10 justify-end">
+        <button className="w-30 h-10 mt-5 bg-grayscale2 hover:bg-grayscale3 px-4 py-2 rounded-lg dark:bg-grayscale6 dark:hover:bg-grayscale5">
+          정보수정
+        </button>
+        <button className=" w-30 h-10 mt-5 bg-grayscale2 hover:bg-grayscale3 px-4 py-2 rounded-lg dark:bg-grayscale6 dark:hover:bg-grayscale5">
+          로그아웃
+        </button>
       </div>
     </div>
   );
