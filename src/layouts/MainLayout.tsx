@@ -19,7 +19,7 @@ export default function MainLayout() {
       }
     >
       <Header />
-      <div className="max-w-[1320px] m-auto font-regular">
+      <div className="max-w-[1320px] m-auto font-regular dark:text-grayscale1">
         <Outlet />
         <Footer />
       </div>
