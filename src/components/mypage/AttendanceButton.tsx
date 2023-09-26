@@ -47,14 +47,16 @@ export default function AttendanceButton() {
   };
 
   return (
-    <div className="border-2 border-grayscale2 py-4 flex flex-row relative dark:text-grayscale1">
-      <span className="font-regular text-6xl ml-10">{current}</span>
-      <div className="flex flex-row absolute right-10 gap-10">
+    <div className="w-full border-2 border-grayscale2 py-4 flex flex-row dark:text-grayscale1">
+      <span className="w-[300px] font-regular text-6xl ml-10 flex item-center">
+        {current}
+      </span>
+      <div className="w-full flex flex-row flex-wrap gap-10 justify-end mr-10">
         <button
           className={
             Number(hours) >= 7 && Number(hours) <= 13
-              ? "text-3xl w-32 h-16 bg-[#9463D3] rounded-lg text-grayscale1 hover:opacity-80"
-              : "text-3xl w-32 h-16 bg-[#9463D3] opacity-20 rounded-lg text-grayscale1 cursor-default"
+              ? "text-3xl w-[120px] h-16 bg-[#9463D3] rounded-lg text-grayscale1 hover:opacity-80"
+              : "text-3xl w-[120px] h-16 bg-[#9463D3] opacity-20 rounded-lg text-grayscale1 cursor-default"
           }
           onClick={(e) => {
             Number(hours) >= 7 && Number(hours) <= 13
