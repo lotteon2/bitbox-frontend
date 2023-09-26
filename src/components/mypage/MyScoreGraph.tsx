@@ -70,7 +70,7 @@ export default function MyScoreGraph() {
   ];
   return (
     <div>
-      <p className="text-2xl pb-5">크레딧 관리</p>
+      <p className="text-2xl pb-5">성적 관리</p>
       <Chart options={options} series={series} type="bar" height={500} />
     </div>
   );
