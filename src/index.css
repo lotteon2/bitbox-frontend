@@ -50,18 +50,24 @@ code {
 input[type="file"] {
   border: none;
 }
-/* input[type="file"]::file-selector-button {
+input[type="file"]::file-selector-button {
   width: 150px;
   height: 30px;
   background: #e9e9e9;
   border: 1px solid white;
   border-radius: 10px;
   cursor: pointer;
-  &:hover {
-    background-color: rgb(77, 77, 77);
-    color: #fff;
-  }
-} */
+}
+
+input[type="file"]::file-selector-button:hover {
+  width: 150px;
+  height: 30px;
+  background: #e9e9e9;
+  border: 1px solid white;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
 .thumbs-wrapper {
   display: none;
 }
