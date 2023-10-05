@@ -13,27 +13,6 @@ code {
     monospace;
 }
 
-@font-face {
-  font-family: "thin";
-  src: url("/src/assets/fonts/jamsil-thin.ttf");
-}
-@font-face {
-  font-family: "light";
-  src: url("/src/assets/fonts/jamsil-light.ttf");
-}
-@font-face {
-  font-family: "regular";
-  src: url("/src/assets/fonts/jamsil-regular.ttf");
-}
-@font-face {
-  font-family: "bold";
-  src: url("/src/assets/fonts/jamsil-bold.ttf");
-}
-@font-face {
-  font-family: "extrabold";
-  src: url("/src/assets/fonts/jamsil-extrabold.ttf");
-}
-
 .swal2-icon {
   border: none;
 }
@@ -71,7 +50,7 @@ code {
 input[type="file"] {
   border: none;
 }
-input[type="file"]::file-selector-button {
+/* input[type="file"]::file-selector-button {
   width: 150px;
   height: 30px;
   background: #e9e9e9;
@@ -79,10 +58,32 @@ input[type="file"]::file-selector-button {
   border-radius: 10px;
   cursor: pointer;
   &:hover {
-    background: rgb(77, 77, 77);
+    background-color: rgb(77, 77, 77);
     color: #fff;
   }
-}
+} */
 .thumbs-wrapper {
   display: none;
+}
+
+
+@font-face {
+  font-family: "thin";
+  src: url("/src/assets/fonts/jamsil-thin.ttf");
+}
+@font-face {
+  font-family: "light";
+  src: url("/src/assets/fonts/jamsil-light.ttf");
+}
+@font-face {
+  font-family: "regular";
+  src: url("/src/assets/fonts/jamsil-regular.ttf");
+}
+@font-face {
+  font-family: "bold";
+  src: url("/src/assets/fonts/jamsil-bold.ttf");
+}
+@font-face {
+  font-family: "extrabold";
+  src: url("/src/assets/fonts/jamsil-extrabold.ttf");
 }
