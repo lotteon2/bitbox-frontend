@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import Badge from "../common/Badge";
 import { darkmodeState, memberState } from "../../recoil/atoms/common";
 import { useRecoilValue } from "recoil";
 import { Button, Modal } from "antd";
 import { Toast } from "../common/Toast";
-import styled from "styled-components";
 
 interface member {
   memberId: number;
@@ -12,32 +11,15 @@ interface member {
   classId: number;
 }
 
-interface parameter {
-  isdark: string;
-}
-
-const ModalComponent = styled.div<parameter>`
-  .ant-modal-content {
-    background-color: red;
-  }
-  .test {
-    background-color: red;
-  }
-  .test1 {
-    background-color: ${(props: parameter) =>
-      props.isdark === "true" ? "white" : "red"};
-  }
-`;
 export default function MyProfile() {
   const memberInfo = useRecoilValue<member>(memberState);
   const isDark = useRecoilValue<boolean>(darkmodeState);
-
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [profileImage, setProfileImage] = useState<string>("");
 
   const showModal = () => {
     setIsModalOpen(true);
-    const modalContent = document.querySelector("ant-modal-content");
-    console.log(modalContent);
   };
   const handleOk = () => {
     setIsModalOpen(false);
@@ -54,9 +36,24 @@ export default function MyProfile() {
     setIsModalOpen(false);
   };
 
-  const handleProfileImage = () => {
-    console.log("프로필 이미지 수정");
+  const uploadImgBtn = useCallback(() => {
+    inputRef.current?.click();
+  }, []);
+
+  const handleChangeFile = (event: any) => {
+    const sizeLimit = 300 * 10000;
+    if (event.target.files[0].size > sizeLimit) {
+      alert("사진 크기가 3MB를 넘을 수 없습니다.");
+    } else {
+      const formData = new FormData();
+      formData.append("file", event.target.files[0]);
+      const imgsrc = URL.createObjectURL(event.target.files[0]);
+      setProfileImage(imgsrc);
+
+      // TODO: 여기에 이미지 업로드 처리 api 붙이기
+    }
   };
+
   return (
     <>
       <div className="flex flex-row w-full">
@@ -90,47 +87,56 @@ export default function MyProfile() {
           </button>
         </div>
       </div>
-      <ModalComponent isdark={isDark.toString()}>
-        <div className="test1">bb</div>
-        <Modal
-          title={<p>회원정보 수정</p>}
-          open={isModalOpen}
-          onCancel={handleCancel}
-          maskClosable={false}
-          footer={[
-            <Button
-              key="cancel"
-              className="w-[150px] h-[40px] text-lg font-regular bg-grayscale4 text-grayscale1 border-none hover:text-grayscale1 hover:opacity-80"
-              onClick={handleCancel}
-            >
-              취소
-            </Button>,
-            <Button
-              key="save"
-              className="w-[150px] h-[40px] text-lg font-regular bg-secondary1 text-grayscale1 border-none hover:text-grayscale1 hover:opacity-80"
-              onClick={handleOk}
-            >
-              저장
-            </Button>,
-          ]}
-        >
-          <div
-            className="m-auto w-32 h-32 bg-black rounded-full"
-            onClick={handleProfileImage}
+      <Modal
+        className={isDark ? "dark" : "light"}
+        title={
+          <p className="dark:bg-grayscale7 dark:text-grayscale1">
+            회원정보 수정
+          </p>
+        }
+        open={isModalOpen}
+        onCancel={handleCancel}
+        maskClosable={false}
+        footer={[
+          <Button
+            key="cancel"
+            className="w-[150px] h-[40px] text-lg font-regular bg-grayscale4 text-grayscale1 border-none dark:bg-grayscale6 hover:text-grayscale1 hover:opacity-80"
+            onClick={handleCancel}
           >
-            <img
-              className="w-full h-full rounded-full"
-              src=""
-              alt="프로필 이미지"
-            />
-          </div>
+            취소
+          </Button>,
+          <Button
+            key="save"
+            className="w-[150px] h-[40px] text-lg font-regular bg-secondary1 text-grayscale1 border-none dark:bg-secondary2 hover:text-grayscale1 hover:opacity-80"
+            onClick={handleOk}
+          >
+            저장
+          </Button>,
+        ]}
+      >
+        <div className="m-auto w-32 h-32 rounded-full" onClick={uploadImgBtn}>
           <input
-            className="ml-[28%] mb-10 mt-5 text-center outline-none text-lg"
-            type="text"
-            placeholder="기존 닉네임"
+            className="w-full h-full"
+            type="file"
+            name="imgFile"
+            accept="image/*"
+            ref={inputRef}
+            id="imgFile"
+            onChange={handleChangeFile}
+            style={{ display: "none" }}
           />
-        </Modal>
-      </ModalComponent>
+          <img
+            className="w-full h-full rounded-full"
+            src={profileImage}
+            alt="프로필 이미지"
+          />
+        </div>
+        <input
+          className="ml-[28%] mb-10 mt-5 text-center outline-none text-lg dark:bg-grayscale7 dark:text-white"
+          type="text"
+          placeholder="기존 닉네임"
+        />
+      </Modal>
     </>
   );
 }
