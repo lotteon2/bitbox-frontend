@@ -102,8 +102,8 @@ export default function Header() {
   const [isLogin, setIsLogin] = useRecoilState(loginState);
   const isDark = useRecoilValue<boolean>(darkmodeState);
 
-  const defaultUserMenuList = ["로그인", "회원가입"];
-  const authUserMenuList = ["마이페이지", "로그아웃"];
+  // const defaultUserMenuList = ["로그인", "회원가입"];
+  // const authUserMenuList = ["마이페이지", "로그아웃"];
   const navigate = useNavigate();
 
   const activeStyle = {

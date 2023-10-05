@@ -1,4 +1,3 @@
-import React from "react";
 import Banner from "../components/main/Banner";
 import Introduce from "../components/main/Introduce";
 import Activity from "../components/main/Activity";

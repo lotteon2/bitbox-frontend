@@ -1,9 +1,9 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import ChatIcon from "../../assets/images/chat.png";
 import ChatDarkIcon from "../../assets/images/chat_dark.png";
 import {
   darkmodeState,
-  chatState,
+  // chatState,
   chatroomState,
 } from "../../recoil/atoms/common";
 import { useRecoilValue } from "recoil";
