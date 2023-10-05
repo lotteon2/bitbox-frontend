@@ -1,12 +1,11 @@
 import { Outlet } from "react-router-dom";
 import Header from "../components/common/Header";
-import { darkmodeState, loginState } from "../recoil/atoms/common";
+import { darkmodeState } from "../recoil/atoms/common";
 import { useRecoilValue } from "recoil";
 
 export default function LoginLayout() {
   const isDark = useRecoilValue(darkmodeState);
-  // const isLogin = useRecoilValue(loginState);
-  
+
   return (
     <div
       className={

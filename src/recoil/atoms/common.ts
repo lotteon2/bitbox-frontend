@@ -43,7 +43,7 @@ export const darkmodeState = atom({
 });
 
 /**
- * true: 리스트, false: 상세
+ * 채팅방 열림 여부
  */
 export const chatState = atom({
   key: "chatState",

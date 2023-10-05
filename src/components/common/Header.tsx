@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faUser, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { darkmodeState, loginState } from "../../recoil/atoms/common";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 
 import Logo from "../../assets/images/logo.png";
 import LogoDark from "../../assets/images/logo_dark.png";
@@ -99,7 +99,7 @@ const HeaderStyle = styled.div<parameter>`
 export default function Header() {
   const [isToggled, setIsToggled] = useState<boolean>(false);
   const [userToggled, setUserToggled] = useState<boolean>(false);
-  const [isLogin, setIsLogin] = useRecoilState(loginState);
+  const isLogin = useRecoilValue(loginState);
   const isDark = useRecoilValue<boolean>(darkmodeState);
 
   // const defaultUserMenuList = ["로그인", "회원가입"];
@@ -138,11 +138,11 @@ export default function Header() {
       {/* 로고 */}
       {isDark ? (
         <NavLink to="/">
-          <img className="w-[60px]" src={LogoDark} />
+          <img className="w-[60px]" src={LogoDark} alt="로고" />
         </NavLink>
       ) : (
         <NavLink to="/">
-          <img className="w-[60px]" src={Logo} />
+          <img className="w-[60px]" src={Logo} alt="로고" />
         </NavLink>
       )}
 

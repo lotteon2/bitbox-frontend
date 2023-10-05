@@ -54,7 +54,7 @@ export default function AttendanceCalendar() {
     const month = select.start.getMonth();
     const day = select.start.getDate();
 
-    console.log(year, month, day);
+    console.log(year, month, day, date, click);
     if (select.title !== "출석") {
       Swal.fire({
         title: "사유서 제출",
