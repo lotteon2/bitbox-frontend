@@ -72,7 +72,6 @@ input[type="file"]::file-selector-button:hover {
   display: none;
 }
 
-
 @font-face {
   font-family: "thin";
   src: url("/src/assets/fonts/jamsil-thin.ttf");
@@ -92,4 +91,19 @@ input[type="file"]::file-selector-button:hover {
 @font-face {
   font-family: "extrabold";
   src: url("/src/assets/fonts/jamsil-extrabold.ttf");
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.ant-modal-footer {
+  width: 310px;
+  margin: auto;
+  text-align: center;
+}
+.ant-btn:where(.css-dev-only-do-not-override-pr0fja).ant-btn-default:not(
+    :disabled
+  ):not(.ant-btn-disabled):hover {
+  color: white;
 }
