@@ -107,3 +107,15 @@ input[type="file"]::file-selector-button:hover {
   ):not(.ant-btn-disabled):hover {
   color: white;
 }
+
+.dark .ant-modal-content {
+  background-color: #202027;
+}
+
+.light .ant-modal-content {
+  background-color: white;
+}
+
+.dark .ant-modal-close-x svg {
+  fill: white;
+}
