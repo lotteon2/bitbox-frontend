@@ -15,7 +15,7 @@ export default function MyProfile() {
   const memberInfo = useRecoilValue<member>(memberState);
   const isDark = useRecoilValue<boolean>(darkmodeState);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [profileImage, setProfileImage] = useState<string>("");
 
   const showModal = () => {
