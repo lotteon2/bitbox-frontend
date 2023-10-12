@@ -3,17 +3,21 @@ import moment from "moment";
 import CalendarToolbar from "./CalendarToolbar";
 import "../../css/react-big-calendar.css";
 import { useState } from "react";
-import Swal from "sweetalert2";
+import { Button, Modal } from "antd";
 import { darkmodeState } from "../../recoil/atoms/common";
 import { useRecoilValue } from "recoil";
+import { Toast } from "../common/Toast";
 
 export default function AttendanceCalendar() {
   const isDark = useRecoilValue<boolean>(darkmodeState);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [date, setDate] = useState({
     year: 2023,
     month: new Date().getMonth(),
   });
   const [click, setClick] = useState(false);
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
 
   moment.locale("ko-KR");
   const localizer = momentLocalizer(moment);
@@ -56,25 +60,7 @@ export default function AttendanceCalendar() {
 
     console.log(year, month, day, date, click);
     if (select.title !== "출석") {
-      Swal.fire({
-        title: "사유서 제출",
-        html: '<br><div class="swal2-label">사유서 제목</div><input id="swal2-input" class="swal2-input"/><br><br><div class="swal2-label">사유서 내용</div><textarea id="swal2-textarea" class="swal2-textarea"></textarea><input type="file" class="swal2-file" style="display: block"/>',
-        showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
-        confirmButtonColor: isDark ? "#FF8888" : "#DC2626", // confrim 버튼 색깔 지정
-        cancelButtonColor: isDark ? "#C6C6C6" : "#808080", // cancel 버튼 색깔 지정
-        confirmButtonText: "제출하기", // confirm 버튼 텍스트 지정
-        cancelButtonText: "취소", // cancel 버튼 텍스트 지정
-        reverseButtons: true, // 버튼 순서 거꾸로
-        background: isDark ? "#202027" : "#FFFFFF",
-        color: isDark ? "#FFFFFF" : "#212B36",
-      }).then((result) => {
-        // 만약 Promise리턴을 받으면,
-        if (result.isConfirmed) {
-          // 모달창에서 confirm 버튼을 눌렀다면
-        } else {
-          // 모달창에서 cancel 버튼을 눌렀다면
-        }
-      });
+      showModal();
     }
   };
   const eventHandlePropGetter = (event: any) => {
@@ -91,19 +77,89 @@ export default function AttendanceCalendar() {
     return { style: { backgroundColor } };
   };
 
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    if (title === "" || content === "") {
+      Toast.fire({
+        iconHtml:
+          '<a><img style="width: 80px" src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
+        title: "제목/내용은 필수 입력값입니다",
+        background: isDark ? "#4D4D4D" : "#FFFFFF",
+        color: isDark ? "#FFFFFF" : "#212B36",
+      });
+    } else {
+      setIsModalOpen(false);
+      Toast.fire({
+        iconHtml:
+          '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
+        title: "제출되었습니다",
+        background: isDark ? "#4D4D4D" : "#FFFFFF",
+        color: isDark ? "#FFFFFF" : "#212B36",
+      });
+    }
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
   return (
-    <div>
-      <p className="text-2xl pb-5">출결 관리</p>
-      <Calendar
-        localizer={localizer}
-        defaultView="month"
-        components={{ toolbar: CalendarToolbar }}
-        style={{ height: 800 }}
-        events={events}
-        onNavigate={handleClickNavigate}
-        onSelectEvent={handleClickSelect}
-        eventPropGetter={eventHandlePropGetter}
-      />
-    </div>
+    <>
+      <div>
+        <p className="text-2xl pb-5">출결 관리</p>
+        <Calendar
+          localizer={localizer}
+          defaultView="month"
+          components={{ toolbar: CalendarToolbar }}
+          style={{ height: 800 }}
+          events={events}
+          onNavigate={handleClickNavigate}
+          onSelectEvent={handleClickSelect}
+          eventPropGetter={eventHandlePropGetter}
+        />
+      </div>
+      <Modal
+        className={isDark ? "dark" : "light"}
+        title={
+          <p className="font-bold text-2xl dark:bg-grayscale7 dark:text-grayscale1">
+            사유서 작성
+          </p>
+        }
+        open={isModalOpen}
+        onCancel={handleCancel}
+        maskClosable={false}
+        footer={[
+          <Button
+            key="cancel"
+            className="w-[150px] h-[40px] text-lg font-regular bg-grayscale4 text-grayscale1 border-none dark:bg-grayscale6 hover:text-grayscale1 hover:opacity-80"
+            onClick={handleCancel}
+          >
+            취소
+          </Button>,
+          <Button
+            key="save"
+            className="w-[150px] h-[40px] text-lg font-regular bg-secondary1 text-grayscale1 border-none dark:bg-secondary2 hover:text-grayscale1 hover:opacity-80"
+            onClick={handleOk}
+          >
+            제출
+          </Button>,
+        ]}
+      >
+        <div className="my-5">
+          <div className="text-lg dark:text-grayscale1">사유서 제목</div>
+          <input
+            className="w-full py-2 pl-2 border-2 border-grayscale2 rounded-lg dark:border-grayscale5 dark:bg-grayscale7 dark:text-grayscale1"
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <div className="text-lg mt-3 dark:text-grayscale1">사유서 내용</div>
+          <textarea
+            className="w-full h-[200px] pl-2 border-2 border-grayscale2 rounded-lg dark:border-grayscale5 dark:bg-grayscale7 dark:text-grayscale1"
+            onChange={(e) => setContent(e.target.value)}
+          ></textarea>
+          <input type="file" className="my-3 dark:text-grayscale1" />
+        </div>
+      </Modal>
+    </>
   );
 }
