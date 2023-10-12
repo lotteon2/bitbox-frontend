@@ -4,6 +4,8 @@ import { darkmodeState, memberState } from "../../recoil/atoms/common";
 import { useRecoilValue } from "recoil";
 import { Button, Modal } from "antd";
 import { Toast } from "../common/Toast";
+import { useQuery } from "react-query";
+import { getMyInfo } from "../../apis/member/member";
 
 interface member {
   memberId: number;
@@ -15,7 +17,7 @@ export default function MyProfile() {
   const memberInfo = useRecoilValue<member>(memberState);
   const isDark = useRecoilValue<boolean>(darkmodeState);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [profileImage, setProfileImage] = useState<string>("");
 
   const showModal = () => {
@@ -54,23 +56,34 @@ export default function MyProfile() {
     }
   };
 
+  const { data, isLoading } = useQuery({
+    queryKey: ["getMyInfo"],
+    queryFn: () => getMyInfo(),
+  });
+
+  if (isLoading || data === undefined) return null;
+
   return (
     <>
       <div className="flex flex-row w-full">
         <div className="w-1/2 flex flex-row flex-wrap gap-20">
           <div className="flex flex-row gap-5">
-            <div className="w-20 h-20 bg-black rounded-full"></div>
+            <img
+              src={data.memberProfileImg}
+              alt="프로필 이미지"
+              className="w-20 h-20 rounded-full"
+            />
             <div className="flex flex-col">
               <div className="flex flex-row gap-4 mt-3">
                 <Badge />
-                <div className="mt-1">사용자 이름</div>
+                <div className="mt-1">{data.memberNickname}</div>
               </div>
-              <div className="text-grayscale5 mt-1">사용자 이메일</div>
+              <div className="text-grayscale5 mt-1">{data.memberEmail}</div>
             </div>
           </div>
           <div className="mt-5 text-2xl">
             <span className="text-primary7 dark:primary4">
-              {memberInfo.remainCredit}
+              {data.memberCredit}
             </span>{" "}
             크레딧
           </div>
