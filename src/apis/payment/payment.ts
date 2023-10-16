@@ -26,3 +26,7 @@ export const getKakaoPopup = async (callUrl: string) => {
     "width=800, height=600"
   );
 };
+
+export const getPayment = async () => {
+  //http://localhost:8000/payment-service/member/payments/count?size=5
+};

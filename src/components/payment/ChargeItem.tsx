@@ -67,7 +67,7 @@ export default function ChargeItem({
   };
 
   return (
-    <div className="w-[300px] h-[500px] flex flex-col gap-1 border-2 border-grayscale7 m-2 p-10 text-center dark:border-grayscale1">
+    <div className="w-[300px] h-[500px] flex flex-col gap-1 border-2 border-grayscale3 m-2 p-10 text-center rounded-lg dark:border-grayscale1">
       <h2>{title}</h2>
       <br />
       <p>{description}</p>
@@ -75,7 +75,11 @@ export default function ChargeItem({
       <div>
         {item === "단건 크레딧" ? (
           <div>
-            <select value={selectedCredit} onChange={handleSelectChange}>
+            <select
+              value={selectedCredit}
+              onChange={handleSelectChange}
+              className="dark:bg-grayscale7"
+            >
               <option value="5">5크레딧</option>
               <option value="10">10크레딧</option>
               <option value="15">15크레딧</option>
