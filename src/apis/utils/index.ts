@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:9999";
+const BASE_URL = process.env.REACT_APP_API_URL;
 
 // 기본 API 요청 처리
 const axiosApi = (baseURL: any) => {
@@ -20,8 +20,8 @@ const axiosAuthApi = (baseURL: any) => {
 
   // TODO: 로그인 정보 저장 및 API에 인증 토큰 붙이는 코드
   instance.interceptors.request.use((config) => {
-    config.headers.memberId = "4e5ccba9-5512-46e4-8095-eaffc42a633b";
-    config.headers.authority = "TRAINEE";
+    config.headers.Authorization =
+      "Bearer eyJ0eXAiOiJBQ0NFU1MiLCJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJfaWQiOiJjMzA1MGRlNS1mNjM4LTRlM2EtOWJlMC1jMWY3YTgzMzZhNTMiLCJtZW1iZXJfbmlja25hbWUiOiLsoITsooXrr7wiLCJjbGFzc19pZCI6bnVsbCwibWVtYmVyX2F1dGhvcml0eSI6IkdFTkVSQUwiLCJleHAiOjE2OTc0NDQyODV9.QWkssbDnz4VkJvLteM3VspSHAEDpgj6YNjsCVR-8qXg";
     return config;
   });
   return instance;
