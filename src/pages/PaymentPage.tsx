@@ -37,8 +37,8 @@ export default function PaymentPage() {
 
   return (
     <div>
-      충전하기
-      <div className="flex flex-row flex-wrap m-auto">
+      <p className="font-extrabold text-4xl">충전하기</p>
+      <div className="flex flex-row flex-wrap m-auto justify-center">
         <ChargeItem
           title="크레딧 결제"
           description="BITBOX의 채팅 기능을 이용할 수 있는"

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { getKakaoUrl } from "../../apis/payment/payment";
 import { getKakaoPopup } from "../../apis/payment/payment";
+import { useMutation } from "react-query";
 
 interface CreditItemProps {
   title: string;
@@ -53,18 +54,28 @@ export default function ChargeItem({
     return calculateItemPrice(selectedValue);
   };
 
-  const openKakaopayPopup = async (payType: PayType) => {
-    try {
-      const kakaoResponse = await getKakaoUrl(payType);
-      if (kakaoResponse && kakaoResponse.next_redirect_pc_url) {
-        getKakaoPopup(kakaoResponse.next_redirect_pc_url);
-      } else {
-        alert("결제 서버에 문제가 발생했습니다.");
-      }
-    } catch (error) {
-      alert("결제 서버에 문제가 발생했습니다.");
+  const { mutate } = useMutation(
+    ["getKakaoUrl"],
+    (payType: PayType) => getKakaoUrl(payType),
+    {
+      onSuccess: (data) => {
+        getKakaoPopup(data.next_redirect_pc_url);
+      },
+      onError: (error) => alert("결제 서버에 문제가 발생했습니다"),
     }
-  };
+  );
+  // const openKakaopayPopup = async (payType: PayType) => {
+  //   try {
+  //     const kakaoResponse = await getKakaoUrl(payType);
+  //     if (kakaoResponse && kakaoResponse.next_redirect_pc_url) {
+  //       getKakaoPopup(kakaoResponse.next_redirect_pc_url);
+  //     } else {
+  //       alert("결제 서버에 문제가 발생했습니다.");
+  //     }
+  //   } catch (error) {
+  //     alert("결제 서버에 문제가 발생했습니다.");
+  //   }
+  // };
 
   return (
     <div className="w-[300px] h-[500px] flex flex-col gap-1 border-2 border-grayscale7 m-2 p-10 text-center dark:border-grayscale1">
@@ -91,7 +102,7 @@ export default function ChargeItem({
       <br />
       <button
         className="my-10 px-10 py-5 text-grayscale1 bg-secondary1 rounded-lg dark:bg-secondary2"
-        onClick={() => openKakaopayPopup(payType)}
+        onClick={() => mutate(payType)}
       >
         구매하기
       </button>
