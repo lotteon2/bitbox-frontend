@@ -6,6 +6,6 @@ export const registMemberImfo = async () => {
 };
 
 export const getMyInfo = async () => {
-  const { data } = await authInstance.get("/member");
+  const { data } = await authInstance.get("/member/mypage");
   return data;
 };

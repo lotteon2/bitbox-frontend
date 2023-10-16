@@ -1,7 +1,7 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import Badge from "../common/Badge";
 import { darkmodeState, memberState } from "../../recoil/atoms/common";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { Button, Modal } from "antd";
 import { Toast } from "../common/Toast";
 import { useQuery } from "react-query";
@@ -10,11 +10,11 @@ import { getMyInfo } from "../../apis/member/member";
 interface member {
   memberId: number;
   remainCredit: number;
-  classId: number;
+  classId: number | null;
 }
 
 export default function MyProfile() {
-  const memberInfo = useRecoilValue<member>(memberState);
+  const [memberInfo, setMemberInfo] = useRecoilState<member>(memberState);
   const isDark = useRecoilValue<boolean>(darkmodeState);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -60,6 +60,16 @@ export default function MyProfile() {
     queryKey: ["getMyInfo"],
     queryFn: () => getMyInfo(),
   });
+
+  useEffect(() => {
+    if (data != null) {
+      setMemberInfo({
+        memberId: data.memberId,
+        remainCredit: data.memberCredit,
+        classId: data.classId,
+      });
+    }
+  }, [data]);
 
   if (isLoading || data === undefined) return null;
 
