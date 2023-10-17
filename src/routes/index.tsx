@@ -6,6 +6,7 @@ import LoginLayout from "../layouts/LoginLayout";
 import LoginPage from "../pages/LoginPage";
 import MyPage from "../pages/MyPage";
 import PaymentPage from "../pages/PaymentPage";
+import PaymentListPage from "../pages/PaymentListPage";
 import DevLogPage from "../pages/DevLogPage";
 import CommunityPage from "../pages/CommunityPage";
 import ReviewPage from "../pages/ReviewPage";
@@ -36,6 +37,12 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     errorElement: <NotFound />,
     children: [{ index: true, path: "", element: <PaymentPage /> }],
+  },
+  {
+    path: "/paymentList",
+    element: <MainLayout />,
+    errorElement: <NotFound />,
+    children: [{ index: true, path: "", element: <PaymentListPage /> }],
   },
   {
     path: "/board",

@@ -14,8 +14,8 @@ export default function MainLayout() {
     <div
       className={
         isDark
-          ? "bg-grayscale7 w-full h-[100%] m-auto dark relative"
-          : "bg-grayscale1 w-full h-[100%] m-auto relative"
+          ? "bg-grayscale7 w-screen h-[100%] m-auto dark relative"
+          : "bg-grayscale1 w-screen h-[100%] m-auto relative"
       }
     >
       <Header />
