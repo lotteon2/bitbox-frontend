@@ -18,6 +18,7 @@ const axiosAuthApi = (baseURL: any) => {
     // withCredentials: true,
   });
 
+  instance.defaults.headers.common["memberId"] = "csh";
   // TODO: 로그인 정보 저장 및 API에 인증 토큰 붙이는 코드
   instance.interceptors.request.use((config) => {
     config.headers.Authorization =
