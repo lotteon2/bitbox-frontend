@@ -10,9 +10,11 @@ interface PayType {
   chargeCredit: number | null;
 }
 
+const fixUrl = "/payment-service/";
+
 export const getKakaoUrl = async (payType: PayType) => {
   const response = await authInstance.post(
-    "/payment-service/kakao-pay/payment-request",
+    fixUrl + "kakao-pay/payment-request",
     payType
   );
   return response.data;
@@ -27,6 +29,12 @@ export const getKakaoPopup = async (callUrl: string) => {
   );
 };
 
-export const getPayment = async () => {
-  //http://localhost:8000/payment-service/member/payments/count?size=5
+export const getPaymentListCount = async () => {
+  return await authInstance.get(fixUrl + "member/payments/count?size=5");
+};
+
+export const getPaymentList = async (page: number) => {
+  return await authInstance.get(
+    fixUrl + "member/payments?page=" + page + "&size=5"
+  );
 };

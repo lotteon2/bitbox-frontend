@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { getKakaoUrl } from "../../apis/payment/payment";
 import { getKakaoPopup } from "../../apis/payment/payment";
 import { useMutation } from "react-query";
+import axios from "axios";
 
 interface CreditItemProps {
   title: string;
@@ -64,18 +65,6 @@ export default function ChargeItem({
       onError: (error) => alert("결제 서버에 문제가 발생했습니다"),
     }
   );
-  // const openKakaopayPopup = async (payType: PayType) => {
-  //   try {
-  //     const kakaoResponse = await getKakaoUrl(payType);
-  //     if (kakaoResponse && kakaoResponse.next_redirect_pc_url) {
-  //       getKakaoPopup(kakaoResponse.next_redirect_pc_url);
-  //     } else {
-  //       alert("결제 서버에 문제가 발생했습니다.");
-  //     }
-  //   } catch (error) {
-  //     alert("결제 서버에 문제가 발생했습니다.");
-  //   }
-  // };
 
   return (
     <div className="w-[300px] h-[500px] flex flex-col gap-1 border-2 border-grayscale3 m-2 p-10 text-center rounded-lg dark:border-grayscale1">
