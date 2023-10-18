@@ -39,7 +39,10 @@ interface memberInfoUpdateDto {
   memberProfileImg: string | null;
 }
 export const updateMemberInfo = async (update: memberInfoUpdateDto) => {
-  const { data } = await authInstance.patch("/user-service/member/mypage");
+  const { data } = await authInstance.patch(
+    "/user-service/member/mypage",
+    update
+  );
   return data;
 };
 
