@@ -6,7 +6,10 @@ const BASE_URL = process.env.REACT_APP_API_URL;
 const axiosApi = (baseURL: any) => {
   const instance = axios.create({
     baseURL,
-    withCredentials: true,
+    // withCredentials: true,
+    // headers: {
+    //   "Access-Control-Allow-Origin": "http://localhost:3001",
+    // },
   });
   return instance;
 };

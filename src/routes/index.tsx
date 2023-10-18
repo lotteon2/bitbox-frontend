@@ -11,6 +11,7 @@ import CommunityPage from "../pages/CommunityPage";
 import ReviewPage from "../pages/ReviewPage";
 import AlumniPage from "../pages/AlumniPage";
 import BoardRegister from "../components/board/BoardRegister";
+import OAuthKakaoRedirect from "../components/auth/OAuthKakaoRedirect";
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,14 @@ const router = createBrowserRouter([
       { path: "review", element: <ReviewPage /> },
       { path: "alumni", element: <AlumniPage /> },
       { path: "register", element: <BoardRegister /> },
+    ],
+  },
+  {
+    path: "/oauth",
+    element: <LoginLayout />,
+    errorElement: <NotFound />,
+    children: [
+      { index: true, path: "callback/kakao", element: <OAuthKakaoRedirect /> },
     ],
   },
 ]);
