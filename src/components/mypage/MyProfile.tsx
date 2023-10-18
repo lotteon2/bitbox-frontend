@@ -1,40 +1,51 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import Badge from "../common/Badge";
 import { darkmodeState, memberState } from "../../recoil/atoms/common";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Button, Modal } from "antd";
 import { Toast } from "../common/Toast";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { getMyInfo } from "../../apis/member/member";
+import { updateMemberInfo } from "../../apis/member/member";
 
-interface member {
-  memberId: number;
-  remainCredit: number;
-  classId: number;
+interface memberInfoUpdateDto {
+  memberNickname: string | null;
+  memberProfileImg: string | null;
 }
-
 export default function MyProfile() {
-  const memberInfo = useRecoilValue<member>(memberState);
-  const isDark = useRecoilValue<boolean>(darkmodeState);
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [profileImage, setProfileImage] = useState<string>("");
+  const [nickName, setNickname] = useState<string>("");
+  const [update, setUpdate] = useState<memberInfoUpdateDto>({
+    memberNickname: null,
+    memberProfileImg: null,
+  });
+  const setMemberInfo = useSetRecoilState(memberState);
+  const isDark = useRecoilValue<boolean>(darkmodeState);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
+  // Profile Modify Modal Show
   const showModal = () => {
     setIsModalOpen(true);
   };
+
+  // Click 저장
   const handleOk = () => {
     setIsModalOpen(false);
-    Toast.fire({
-      iconHtml:
-        '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
-      title: "수정되었습니다",
-      background: isDark ? "#4D4D4D" : "#FFFFFF",
-      color: isDark ? "#FFFFFF" : "#212B36",
+
+    setUpdate({
+      memberNickname: nickName === "" ? null : nickName,
+      memberProfileImg: profileImage,
     });
+
+    // 내 정보 수정 API
+    updateMutation.mutate();
   };
 
+  // Click 취소 - Setting Default
   const handleCancel = () => {
+    setProfileImage(data.memberProfileImg);
+    setNickname("");
     setIsModalOpen(false);
   };
 
@@ -42,6 +53,7 @@ export default function MyProfile() {
     inputRef.current?.click();
   }, []);
 
+  // 이미지 처리
   const handleChangeFile = (event: any) => {
     const sizeLimit = 300 * 10000;
     if (event.target.files[0].size > sizeLimit) {
@@ -50,16 +62,53 @@ export default function MyProfile() {
       const formData = new FormData();
       formData.append("file", event.target.files[0]);
       const imgsrc = URL.createObjectURL(event.target.files[0]);
-      setProfileImage(imgsrc);
 
       // TODO: 여기에 이미지 업로드 처리 api 붙이기
+      setProfileImage(imgsrc);
     }
   };
 
+  // 닉네임 변경정보 저장
+  const handleUpdateNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNickname(e.target.value);
+  };
+
+  // 내 정보 수정 API 처리
+  const updateMutation = useMutation(
+    ["updateMemberInfo"],
+    () => updateMemberInfo(update),
+    {
+      onSuccess: () => {
+        Toast.fire({
+          iconHtml:
+            '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
+          title: "수정되었습니다",
+          background: isDark ? "#4D4D4D" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#212B36",
+        });
+      },
+      onError: () => {},
+    }
+  );
+
+  // 내 정보 조회
   const { data, isLoading } = useQuery({
     queryKey: ["getMyInfo"],
     queryFn: () => getMyInfo(),
   });
+
+  // 회원 전역 변수 저장
+  useEffect(() => {
+    if (data != null) {
+      setMemberInfo({
+        memberId: data.memberId,
+        remainCredit: data.memberCredit,
+        classId: data.classId,
+      });
+
+      setProfileImage(data.memberProfileImg);
+    }
+  }, [data]);
 
   if (isLoading || data === undefined) return null;
 
@@ -147,7 +196,9 @@ export default function MyProfile() {
         <input
           className="ml-[28%] mb-10 mt-5 text-center outline-none text-lg dark:bg-grayscale7 dark:text-white"
           type="text"
-          placeholder="기존 닉네임"
+          placeholder={data.memberNickname}
+          value={nickName}
+          onChange={handleUpdateNickname}
         />
       </Modal>
     </>
