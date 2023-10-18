@@ -6,7 +6,6 @@ import "../../css/react-big-calendar.css";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { getAllMyAttendance } from "../../apis/member/member";
-import { List } from "immutable";
 // import { Button, Modal } from "antd";
 // import { darkmodeState } from "../../recoil/atoms/common";
 // import { useRecoilValue } from "recoil";
@@ -48,13 +47,13 @@ export default function AttendanceCalendar() {
   // 캘린더 내 이벤트 색상
   const eventHandlePropGetter = (event: any) => {
     const backgroundColor =
-      event.title === "ATTENDANCE"
+      event.title === "출석"
         ? "green"
-        : event.title === "ABSENT"
+        : event.title === "결석"
         ? "red"
-        : event.title === "TARDY"
+        : event.title === "지각"
         ? "purple"
-        : event.title === "GO_OUT"
+        : event.title === "조퇴"
         ? "orange"
         : "blue";
     return { style: { backgroundColor } };
@@ -65,12 +64,12 @@ export default function AttendanceCalendar() {
     queryKey: ["getAllMyAttendance"],
     queryFn: () => getAllMyAttendance(),
   });
-  // Modal Open
+  // // Modal Open
   // const showModal = () => {
   //   setIsModalOpen(true);
   // };
 
-  // 사유서 제출
+  // // 사유서 제출
   // const handleOk = () => {
   //   if (title === "" || content === "") {
   //     Toast.fire({
@@ -81,7 +80,8 @@ export default function AttendanceCalendar() {
   //       color: isDark ? "#FFFFFF" : "#212B36",
   //     });
   //   } else {
-  //     setIsModalOpen(false);1
+  //     setIsModalOpen(false);
+
   //     Toast.fire({
   //       iconHtml:
   //         '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
@@ -92,23 +92,23 @@ export default function AttendanceCalendar() {
   //   }
   // };
 
-  // 사유서 제출 취소
+  // // 사유서 제출 취소
   // const handleCancel = () => {
   //   setIsModalOpen(false);
   // };
 
-  // 사유서 모달 Open
-  const handleClickSelect = (select: any) => {
-    console.log(select);
-    // const year = select.start.getFullYear();
-    // const month = select.start.getMonth();
-    // const day = select.start.getDate();
+  // // 사유서 모달 Open
+  // const handleClickSelect = (select: any) => {
+  //   console.log(select);
+  //   const year = select.start.getFullYear();
+  //   const month = select.start.getMonth();
+  //   const day = select.start.getDate();
 
-    // console.log(year, month, day, date, click);
-    // if (select.title !== "출석") {
-    //   showModal();
-    // }
-  };
+  //   console.log(year, month, day, date, click);
+  //   if (select.title !== "출석") {
+  //     showModal();
+  //   }
+  // };
 
   useEffect(() => {
     if (data != null) {
@@ -116,21 +116,27 @@ export default function AttendanceCalendar() {
 
       data.forEach(function (item: attendanceResult) {
         const year = Number(item.attendanceDate.split("-")[0]);
-        const month = Number(item.attendanceDate.split("-")[1]);
+        const month = Number(item.attendanceDate.split("-")[1]) - 1;
         const day = Number(item.attendanceDate.split("-")[2]);
         attendanceTmp.push({
           id: item.attendanceId,
-          title: item.attendanceState,
+          title:
+            item.attendanceState === "ATTENDNACE"
+              ? "출석"
+              : item.attendanceState === "ABSENT"
+              ? "결석"
+              : item.attendanceState === "TARDY"
+              ? "지각"
+              : "조퇴",
           start: new Date(year, month, day),
           end: new Date(year, month, day),
         });
       });
-
       setEvents(attendanceTmp);
     }
   }, [data]);
 
-  if (isLoading || data === undefined) return null;
+  if (isLoading || data === undefined || events === undefined) return null;
 
   return (
     <>
@@ -143,7 +149,7 @@ export default function AttendanceCalendar() {
           style={{ height: 800 }}
           events={events}
           onNavigate={handleClickNavigate}
-          onSelectEvent={handleClickSelect}
+          // onSelectEvent={handleClickSelect}
           eventPropGetter={eventHandlePropGetter}
         />
       </div>
