@@ -25,7 +25,7 @@ const axiosAuthApi = (baseURL: any) => {
   // TODO: 로그인 정보 저장 및 API에 인증 토큰 붙이는 코드
   instance.interceptors.request.use((config) => {
     config.headers.Authorization =
-      "Bearer eyJ0eXAiOiJBQ0NFU1MiLCJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJfaWQiOiI3N2I4YjJkYi0xODc5LTQ2MGMtOWU3OS1jNWQ4OTQ0MGI0Y2QiLCJtZW1iZXJfbmlja25hbWUiOiLquYDsoJXsnKQiLCJjbGFzc19pZCI6bnVsbCwibWVtYmVyX2F1dGhvcml0eSI6IlRSQUlORUUiLCJleHAiOjE2OTg4Mjk4ODh9.GDEFhgc_bVxmLUC66DzfKfMAAte5koHn4Fj0hN0HreU";
+      "Bearer eyJ0eXAiOiJBQ0NFU1MiLCJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJfaWQiOiI0ZDE4ZDFmZi02YmVjLTRiNjYtODNlYy05ZjI2OTI3YjE2YWUiLCJtZW1iZXJfbmlja25hbWUiOiLquYDsoJXsnKQiLCJjbGFzc19pZCI6bnVsbCwibWVtYmVyX2F1dGhvcml0eSI6IlRSQUlORUUiLCJleHAiOjE2OTg4Mzc2OTF9.vAi9ihStF9de4b9Yr4x1Uh68T8H5bqruMJvdij0qz4g";
     return config;
   });
   return instance;
