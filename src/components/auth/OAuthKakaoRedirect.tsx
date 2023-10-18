@@ -28,6 +28,7 @@ export default function OAuthKakaoRedirect() {
 
   const mutate = useMutation(["oauthKakao"], () => oauthKakao(code), {
     onSuccess: (data) => {
+      console.log(data.accessToken);
       setAuthority(data["authority"]);
       setToken(data["accessToken"]);
       setIsLogin(true);
