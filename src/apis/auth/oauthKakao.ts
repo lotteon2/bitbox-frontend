@@ -6,8 +6,5 @@ export const oauthKakao = async (code: string | null) => {
   const { data } = await defaultInstance.get(
     `/authentication-service/oauth/kakao/token?code=${code}`
   );
-
-  console.log("data from server" + data);
-
   return data;
 };
