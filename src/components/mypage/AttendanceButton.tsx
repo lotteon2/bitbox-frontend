@@ -1,8 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useInterval } from "usehooks-ts";
 import { Toast } from "../../components/common/Toast";
 import { darkmodeState } from "../../recoil/atoms/common";
 import { useRecoilValue } from "recoil";
+import { useMutation } from "react-query";
+import { memberEntrace, memberQuit } from "../../apis/member/member";
+
+interface currentLocationDto {
+  lat: number;
+  lng: number;
+  current: string | null;
+}
 
 export default function AttendanceButton() {
   const now = new Date();
@@ -24,26 +32,73 @@ export default function AttendanceButton() {
   }, 1000);
 
   const handleEntrance = () => {
-    Toast.fire({
-      iconHtml:
-        '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
-      title: "입실되었습니다.",
-      background: isDark ? "#4D4D4D" : "#FFFFFF",
-      color: isDark ? "#FFFFFF" : "#212B36",
-    });
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const location: currentLocationDto = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          current: null,
+        };
+
+        entraceMutation.mutate(location);
+      });
+    } else {
+      alert("현재 위치 정보를 받아올 수 없습니다. 다시 시도해주세요");
+    }
   };
   const handleQuit = () => {
-    Toast.fire({
-      iconHtml:
-        '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
-      title: "퇴실되었습니다.",
-      background: isDark ? "#4D4D4D" : "#FFFFFF",
-      color: isDark ? "#FFFFFF" : "#212B36",
-    });
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const location: currentLocationDto = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          current: null,
+        };
+
+        quitMutation.mutate(location);
+      });
+    } else {
+      alert("현재 위치 정보를 받아올 수 없습니다. 다시 시도해주세요");
+    }
   };
+
   const handlePreventEvent = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
   };
+
+  const entraceMutation = useMutation(
+    ["memberEntrace"],
+    (location: currentLocationDto) => memberEntrace(location),
+    {
+      onSuccess: () => {
+        Toast.fire({
+          iconHtml:
+            '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
+          title: "입실되었습니다.",
+          background: isDark ? "#4D4D4D" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#212B36",
+        });
+      },
+      onError: () => {},
+    }
+  );
+
+  const quitMutation = useMutation(
+    ["memberQuit"],
+    (location: currentLocationDto) => memberQuit(location),
+    {
+      onSuccess: () => {
+        Toast.fire({
+          iconHtml:
+            '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
+          title: "퇴실되었습니다.",
+          background: isDark ? "#4D4D4D" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#212B36",
+        });
+      },
+      onError: () => {},
+    }
+  );
 
   return (
     <div className="w-full border-2 border-grayscale2 py-4 flex flex-row dark:text-grayscale1">

@@ -12,7 +12,7 @@ export default function MyPage() {
   const authority = useRecoilValue<string>(authorityState);
   return (
     <div className="mt-10 flex flex-col gap-10">
-      <p className="font-extrabold text-4xl">마이페이지</p>
+      <p className="font-extrabold lg:text-4xl sm:text-sm">마이페이지</p>
       <MyProfile />
       {authority === "TRAINEE" ? (
         <>
