@@ -10,12 +10,12 @@ export default function LoginLayout() {
     <div
       className={
         isDark
-          ? "bg-grayscale7 w-screen h-screen m-auto dark relative"
-          : "bg-grayscale1 w-full h-[100%] m-auto relative"
+          ? "bg-grayscale7 w-screen h-screen mx-auto dark relative"
+          : "bg-grayscale1 w-full h-[100%] mx-auto relative"
       }
     >
       <Header />
-      <div className="w-full m-auto font-regular">
+      <div className="w-full h-full m-auto font-regular dark:bg-[#363740]">
         <Outlet />
       </div>
     </div>
