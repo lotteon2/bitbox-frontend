@@ -1,5 +1,4 @@
-import { useNavigate } from "react-router-dom";
-import { defaultInstance, authInstance } from "../utils";
+import { authInstance } from "../utils";
 
 interface PayType {
   partnerOrderId: string;
