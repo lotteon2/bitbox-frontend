@@ -6,7 +6,7 @@ import { authInstance } from "../../apis/utils";
 export default function OAuthLogin() {
   const refreshTest = async () => {
     const { data } = await authInstance.post(
-      "/authenticaion-service/auth/refresh"
+      "/authentication-service/auth/refresh"
     );
   };
 
