@@ -13,6 +13,8 @@ import ReviewPage from "../pages/ReviewPage";
 import AlumniPage from "../pages/AlumniPage";
 import BoardRegister from "../components/board/BoardRegister";
 import OAuthKakaoRedirect from "../components/auth/OAuthKakaoRedirect";
+import PaySuccess from "../components/payment/PaySuccess";
+import PayFail from "../components/payment/PayFail";
 
 const router = createBrowserRouter([
   {
@@ -37,13 +39,15 @@ const router = createBrowserRouter([
     path: "/payment",
     element: <MainLayout />,
     errorElement: <NotFound />,
-    children: [{ index: true, path: "", element: <PaymentPage /> }],
-  },
-  {
-    path: "/paymentList",
-    element: <MainLayout />,
-    errorElement: <NotFound />,
-    children: [{ index: true, path: "", element: <PaymentListPage /> }],
+    children: [
+      { index: true, path: "", element: <PaymentPage /> },
+      { path: "success", element: <PaySuccess /> },
+      { path: "fail", element: <PayFail /> },
+      {
+        path: "paymentList",
+        element: <PaymentListPage />,
+      },
+    ],
   },
   {
     path: "/board",
