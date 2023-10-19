@@ -2,9 +2,19 @@ import { ApexOptions } from "apexcharts";
 import Chart from "react-apexcharts";
 import { darkmodeState } from "../../recoil/atoms/common";
 import { useRecoilValue } from "recoil";
+import { getMyGrades } from "../../apis/member/member";
+import { useQuery } from "react-query";
 
 export default function MyScoreGraph() {
   const isDark = useRecoilValue<boolean>(darkmodeState);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["getMyGrades"],
+    queryFn: () => getMyGrades(),
+  });
+
+  if (isLoading || data === undefined) return null;
+
   const options: ApexOptions = {
     chart: {
       type: "bar",

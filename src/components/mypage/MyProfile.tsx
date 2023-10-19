@@ -1,12 +1,20 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import Badge from "../common/Badge";
-import { darkmodeState, memberState } from "../../recoil/atoms/common";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  darkmodeState,
+  memberState,
+  accessToken,
+  authorityState,
+  loginState,
+} from "../../recoil/atoms/common";
+import { useRecoilValue, useResetRecoilState, useSetRecoilState } from "recoil";
 import { Button, Modal } from "antd";
 import { Toast } from "../common/Toast";
 import { useMutation, useQuery } from "react-query";
 import { getMyInfo } from "../../apis/member/member";
-import { updateMemberInfo } from "../../apis/member/member";
+import { updateMemberInfo, withdrawMember } from "../../apis/member/member";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 interface memberInfoUpdateDto {
   memberNickname: string | null;
@@ -21,6 +29,11 @@ export default function MyProfile() {
   const setMemberInfo = useSetRecoilState(memberState);
   const isDark = useRecoilValue<boolean>(darkmodeState);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const resetAccessToken = useResetRecoilState(accessToken);
+  const resetAuthorityState = useResetRecoilState(authorityState);
+  const resetLoginState = useResetRecoilState(loginState);
+  const resetMemberState = useResetRecoilState(memberState);
+  const navigate = useNavigate();
 
   // 내 정보 조회
   const { data, isLoading } = useQuery({
@@ -74,6 +87,30 @@ export default function MyProfile() {
     }
   };
 
+  // 회원 탈퇴
+  const handleWithdraw = () => {
+    Swal.fire({
+      title: '<p style="text-align: center">정말로 탈퇴하시겠습니까?</p>',
+      html: '<p style="color: #637381; margin-bottom: 10px; font-size: 16px">탈퇴한 아이디는 본인과 타인 모두 재사용 및 복구가 불가하오니 신중하게 선택하시기 바랍니다. 탈퇴 후 회원정보 및 개인형 서비스 이용기록은 모두 삭제됩니다.</p>',
+      iconHtml:
+        '<a><img src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
+      showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+      confirmButtonColor: isDark ? "#FF8888" : "#DC2626", // confrim 버튼 색깔 지정
+      cancelButtonColor: isDark ? "#C6C6C6" : "#808080", // cancel 버튼 색깔 지정
+      confirmButtonText: "탈퇴하기", // confirm 버튼 텍스트 지정
+      cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+      reverseButtons: true, // 버튼 순서 거꾸로
+      background: isDark ? "#202027" : "#FFFFFF",
+      color: isDark ? "#FFFFFF" : "#212B36",
+    }).then((result) => {
+      // 만약 Promise리턴을 받으면,
+      if (result.isConfirmed) {
+        withdrawMutation.mutate();
+      } else {
+        // 모달창에서 cancel 버튼을 눌렀다면
+      }
+    });
+  };
   // 닉네임 변경정보 저장
   const handleUpdateNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
@@ -84,7 +121,7 @@ export default function MyProfile() {
     ["updateMemberInfo"],
     (updateInfo: memberInfoUpdateDto) => updateMemberInfo(updateInfo),
     {
-      onSuccess: (res) => {
+      onSuccess: () => {
         setChangeToggle((cur) => !cur);
         Toast.fire({
           iconHtml:
@@ -98,6 +135,29 @@ export default function MyProfile() {
     }
   );
 
+  const withdrawMutation = useMutation(
+    ["withdrawMember"],
+    () => withdrawMember(),
+    {
+      onSuccess: () => {
+        Toast.fire({
+          iconHtml:
+            '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
+          title: "이용해주셔서 감사합니다",
+          background: isDark ? "#4D4D4D" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#212B36",
+        });
+        localStorage.removeItem("accessToken");
+        resetAccessToken();
+        resetLoginState();
+        resetAuthorityState();
+        resetMemberState();
+
+        navigate("/");
+      },
+      onError: () => {},
+    }
+  );
   // 회원 전역 변수 저장
   useEffect(() => {
     if (data != null) {
@@ -144,8 +204,11 @@ export default function MyProfile() {
           >
             정보수정
           </button>
-          <button className=" w-30 h-10 mt-5 bg-grayscale2 hover:bg-grayscale3 px-4 py-2 rounded-lg dark:bg-grayscale6 dark:hover:bg-grayscale5">
-            로그아웃
+          <button
+            className=" w-30 h-10 mt-5 bg-grayscale2 hover:bg-grayscale3 px-4 py-2 rounded-lg dark:bg-grayscale6 dark:hover:bg-grayscale5"
+            onClick={handleWithdraw}
+          >
+            회원 탈퇴
           </button>
         </div>
       </div>
