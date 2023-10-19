@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { useMutation } from "react-query";
 
 import { authorityState } from "../../recoil/atoms/common";
@@ -8,8 +8,8 @@ import { oauthKakao } from "../../apis/auth/oauthKakao";
 import { useNavigate } from "react-router-dom";
 
 export default function OAuthKakaoRedirect() {
-  const [authority, setAuthority] = useRecoilState<string>(authorityState);
-  const [isLogin, setIsLogin] = useRecoilState<boolean>(loginState);
+  const setAuthority = useSetRecoilState<string>(authorityState);
+  const setIsLogin = useSetRecoilState<boolean>(loginState);
 
   const url = new URL(window.location.href);
   const error: string | null = url.searchParams.get("error");
@@ -31,7 +31,7 @@ export default function OAuthKakaoRedirect() {
       localStorage.setItem("accessToken", data["accessToken"]);
       navigate("/");
     },
-    onError: (error) => {
+    onError: () => {
       alert("인증에 실패했습니다"); // TODO : swal
       navigate("/login");
     },
@@ -40,6 +40,7 @@ export default function OAuthKakaoRedirect() {
   // TODO : mutate 왜 안되지
   useEffect(() => {
     mutate.mutate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <div></div>;
