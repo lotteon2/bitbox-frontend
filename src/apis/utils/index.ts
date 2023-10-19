@@ -21,11 +21,11 @@ const axiosAuthApi = (baseURL: any) => {
     // withCredentials: true,
   });
 
-  instance.defaults.headers.common["memberId"] = "csh";
   // TODO: 로그인 정보 저장 및 API에 인증 토큰 붙이는 코드
   instance.interceptors.request.use((config) => {
-    config.headers.Authorization =
-      "Bearer eyJ0eXAiOiJBQ0NFU1MiLCJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJfaWQiOiJjMzA1MGRlNS1mNjM4LTRlM2EtOWJlMC1jMWY3YTgzMzZhNTMiLCJtZW1iZXJfbmlja25hbWUiOiLsoITsooXrr7wiLCJjbGFzc19pZCI6bnVsbCwibWVtYmVyX2F1dGhvcml0eSI6IkdFTkVSQUwiLCJleHAiOjE2OTc0NDQyODV9.QWkssbDnz4VkJvLteM3VspSHAEDpgj6YNjsCVR-8qXg";
+    config.headers.Authorization = `Bearer ${localStorage.getItem(
+      "accessToken"
+    )}`;
     return config;
   });
   return instance;
