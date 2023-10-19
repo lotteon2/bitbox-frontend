@@ -6,10 +6,11 @@ import "../../css/react-big-calendar.css";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { getAllMyAttendance } from "../../apis/member/member";
-// import { Button, Modal } from "antd";
-// import { darkmodeState } from "../../recoil/atoms/common";
-// import { useRecoilValue } from "recoil";
-// import { Toast } from "../common/Toast";
+import { changeState, dateState } from "../../recoil/atoms/member";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { Button, Modal } from "antd";
+import { darkmodeState } from "../../recoil/atoms/common";
+import { Toast } from "../common/Toast";
 
 interface calendarEvents {
   id: number;
@@ -25,23 +26,25 @@ interface attendanceResult {
   attendanceState: string;
   attendanceModifyReason: string | null;
 }
+interface dateInfo {
+  year: number;
+  month: number;
+}
 export default function AttendanceCalendar() {
-  // const isDark = useRecoilValue<boolean>(darkmodeState);
-  // const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  // const [title, setTitle] = useState<string>("");
-  // const [content, setContent] = useState<string>("");
-  const [date, setDate] = useState({
-    year: 2023,
-    month: new Date().getMonth(),
-  });
-  const [click, setClick] = useState(false);
+  const isDark = useRecoilValue<boolean>(darkmodeState);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+  const setDate = useSetRecoilState<dateInfo>(dateState);
   const [events, setEvents] = useState<calendarEvents[]>();
+  const [isChange, setIschange] = useRecoilState<boolean>(changeState);
 
   moment.locale("ko-KR");
   const localizer = momentLocalizer(moment);
+
   const handleClickNavigate = (date: Date) => {
     setDate({ year: date.getFullYear(), month: date.getMonth() + 1 });
-    setClick((prev) => !prev);
+    setIschange((prev) => !prev);
   };
 
   // 캘린더 내 이벤트 색상
@@ -61,54 +64,48 @@ export default function AttendanceCalendar() {
 
   // 출결 정보 가져오기
   const { data, isLoading } = useQuery({
-    queryKey: ["getAllMyAttendance"],
+    queryKey: ["getAllMyAttendance", isChange],
     queryFn: () => getAllMyAttendance(),
   });
-  // // Modal Open
-  // const showModal = () => {
-  //   setIsModalOpen(true);
-  // };
+  // Modal Open
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
 
-  // // 사유서 제출
-  // const handleOk = () => {
-  //   if (title === "" || content === "") {
-  //     Toast.fire({
-  //       iconHtml:
-  //         '<a><img style="width: 80px" src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
-  //       title: "제목/내용은 필수 입력값입니다",
-  //       background: isDark ? "#4D4D4D" : "#FFFFFF",
-  //       color: isDark ? "#FFFFFF" : "#212B36",
-  //     });
-  //   } else {
-  //     setIsModalOpen(false);
+  // 사유서 제출
+  const handleOk = () => {
+    if (title === "" || content === "") {
+      Toast.fire({
+        iconHtml:
+          '<a><img style="width: 80px" src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
+        title: "제목/내용은 필수 입력값입니다",
+        background: isDark ? "#4D4D4D" : "#FFFFFF",
+        color: isDark ? "#FFFFFF" : "#212B36",
+      });
+    } else {
+      setIsModalOpen(false);
 
-  //     Toast.fire({
-  //       iconHtml:
-  //         '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
-  //       title: "제출되었습니다",
-  //       background: isDark ? "#4D4D4D" : "#FFFFFF",
-  //       color: isDark ? "#FFFFFF" : "#212B36",
-  //     });
-  //   }
-  // };
+      Toast.fire({
+        iconHtml:
+          '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
+        title: "제출되었습니다",
+        background: isDark ? "#4D4D4D" : "#FFFFFF",
+        color: isDark ? "#FFFFFF" : "#212B36",
+      });
+    }
+  };
 
-  // // 사유서 제출 취소
-  // const handleCancel = () => {
-  //   setIsModalOpen(false);
-  // };
+  // 사유서 제출 취소
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
-  // // 사유서 모달 Open
-  // const handleClickSelect = (select: any) => {
-  //   console.log(select);
-  //   const year = select.start.getFullYear();
-  //   const month = select.start.getMonth();
-  //   const day = select.start.getDate();
-
-  //   console.log(year, month, day, date, click);
-  //   if (select.title !== "출석") {
-  //     showModal();
-  //   }
-  // };
+  // 사유서 모달 Open
+  const handleClickSelect = (select: any) => {
+    if (select.title !== "출석") {
+      showModal();
+    }
+  };
 
   useEffect(() => {
     if (data != null) {
@@ -149,11 +146,11 @@ export default function AttendanceCalendar() {
           style={{ height: 800 }}
           events={events}
           onNavigate={handleClickNavigate}
-          // onSelectEvent={handleClickSelect}
+          onSelectEvent={handleClickSelect}
           eventPropGetter={eventHandlePropGetter}
         />
       </div>
-      {/* <Modal
+      <Modal
         className={isDark ? "dark" : "light"}
         title={
           <p className="font-bold text-2xl dark:bg-grayscale7 dark:text-grayscale1">
@@ -193,7 +190,7 @@ export default function AttendanceCalendar() {
           ></textarea>
           <input type="file" className="my-3 dark:text-grayscale1" />
         </div>
-      </Modal> */}
+      </Modal>
     </>
   );
 }

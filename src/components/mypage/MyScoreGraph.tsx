@@ -4,16 +4,27 @@ import { darkmodeState } from "../../recoil/atoms/common";
 import { useRecoilValue } from "recoil";
 import { getMyGrades } from "../../apis/member/member";
 import { useQuery } from "react-query";
+import { useEffect, useState } from "react";
+
+interface scoreData {
+  examId: number;
+  examName: string;
+  perfectScore: number;
+  score: number;
+  gradeId: number;
+  avgScore: number;
+}
 
 export default function MyScoreGraph() {
   const isDark = useRecoilValue<boolean>(darkmodeState);
+  const [categories, setCategories] = useState<string[]>();
+  const [myScore, setMyScore] = useState<number[]>();
+  const [avgScore, setAvgScore] = useState<number[]>();
 
   const { data, isLoading } = useQuery({
     queryKey: ["getMyGrades"],
     queryFn: () => getMyGrades(),
   });
-
-  if (isLoading || data === undefined) return null;
 
   const options: ApexOptions = {
     chart: {
@@ -40,17 +51,7 @@ export default function MyScoreGraph() {
       colors: ["transparent"],
     },
     xaxis: {
-      categories: [
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-      ],
+      categories: categories === undefined ? [] : categories,
       labels: {
         style: {
           colors: `${isDark ? "#FFFFFF" : "#000000"}`,
@@ -66,18 +67,41 @@ export default function MyScoreGraph() {
     },
     fill: {
       opacity: 1,
+      colors: ["#FF6B6B", "#FFBCBC"],
     },
+    colors: ["#FF6B6B", "#FFBCBC"],
   };
   const series = [
     {
       name: "내 성적",
-      data: [44, 55, 57, 56, 61, 58, 63, 60, 66],
+      data: myScore === undefined ? [] : myScore,
     },
     {
       name: "반 평균 성적",
-      data: [76, 85, 101, 98, 87, 105, 91, 114, 94],
+      data: avgScore === undefined ? [] : avgScore,
     },
   ];
+
+  useEffect(() => {
+    if (data !== undefined) {
+      const categoryData: string[] = [];
+      const myScoreData: number[] = [];
+      const avgScoreData: number[] = [];
+
+      data.forEach(function (item: scoreData) {
+        categoryData.push(item.examName);
+        myScoreData.push(item.score);
+        avgScoreData.push(item.avgScore);
+      });
+
+      setCategories(categoryData);
+      setMyScore(myScoreData);
+      setAvgScore(avgScoreData);
+    }
+  }, [data]);
+
+  if (isLoading || data === undefined) return null;
+
   return (
     <div>
       <p className="text-2xl pb-5">성적 관리</p>

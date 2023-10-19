@@ -168,7 +168,8 @@ export default function MyProfile() {
       });
       setProfileImage(data.memberProfileImg);
     }
-  }, [data]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, profileImage]);
 
   if (isLoading || data === undefined) return null;
 
