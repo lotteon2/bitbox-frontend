@@ -2,14 +2,12 @@ import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { useMutation } from "react-query";
 
-import { accessToken } from "../../recoil/atoms/common";
 import { authorityState } from "../../recoil/atoms/common";
 import { loginState } from "../../recoil/atoms/common";
 import { oauthKakao } from "../../apis/auth/oauthKakao";
 import { useNavigate } from "react-router-dom";
 
 export default function OAuthKakaoRedirect() {
-  const [token, setToken] = useRecoilState<string>(accessToken);
   const [authority, setAuthority] = useRecoilState<string>(authorityState);
   const [isLogin, setIsLogin] = useRecoilState<boolean>(loginState);
 
@@ -22,20 +20,21 @@ export default function OAuthKakaoRedirect() {
   const navigate = useNavigate();
 
   if (!!error && !!errorDescription) {
-    alert(errorDescription);
-    // move to main page
+    alert(errorDescription); // TODO : swal
+    navigate("/login");
   }
 
   const mutate = useMutation(["oauthKakao"], () => oauthKakao(code), {
     onSuccess: (data) => {
-      console.log(data.accessToken);
-      setAuthority(data["authority"]);
-      setToken(data["accessToken"]);
+      console.log(data);
+
       setIsLogin(true);
+      setAuthority(data["authority"]);
+      localStorage.setItem("accessToken", data["accessToken"]);
       navigate("/");
     },
     onError: (error) => {
-      alert("인증에 실패했습니다");
+      alert("인증에 실패했습니다"); // TODO : swal
       navigate("/login");
     },
   });
