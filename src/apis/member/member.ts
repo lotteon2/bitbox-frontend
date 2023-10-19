@@ -90,3 +90,11 @@ export const memberQuit = async (location: currentLocationDto) => {
   );
   return data;
 };
+
+/**
+ * 내 성적 조회
+ */
+export const getMyGrades = async () => {
+  const { data } = await authInstance.get("/admin-service/admin/grade/mygrade");
+  return data;
+};

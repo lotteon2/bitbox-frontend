@@ -12,17 +12,21 @@ interface memberInfoUpdateDto {
   memberNickname: string | null;
   memberProfileImg: string | null;
 }
+
 export default function MyProfile() {
+  const [changeToggle, setChangeToggle] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [profileImage, setProfileImage] = useState<string>("");
   const [nickName, setNickname] = useState<string>("");
-  const [update, setUpdate] = useState<memberInfoUpdateDto>({
-    memberNickname: null,
-    memberProfileImg: null,
-  });
   const setMemberInfo = useSetRecoilState(memberState);
   const isDark = useRecoilValue<boolean>(darkmodeState);
   const inputRef = useRef<HTMLInputElement | null>(null);
+
+  // 내 정보 조회
+  const { data, isLoading } = useQuery({
+    queryKey: ["getMyInfo", changeToggle],
+    queryFn: () => getMyInfo(),
+  });
 
   // Profile Modify Modal Show
   const showModal = () => {
@@ -33,13 +37,15 @@ export default function MyProfile() {
   const handleOk = () => {
     setIsModalOpen(false);
 
-    setUpdate({
-      memberNickname: nickName === "" ? null : nickName,
+    const updateInfo = {
+      memberNickname: nickName,
       memberProfileImg: profileImage,
-    });
+    };
 
     // 내 정보 수정 API
-    updateMutation.mutate();
+    updateMutation.mutate(updateInfo);
+
+    setChangeToggle((cur) => !cur);
   };
 
   // Click 취소 - Setting Default
@@ -76,9 +82,10 @@ export default function MyProfile() {
   // 내 정보 수정 API 처리
   const updateMutation = useMutation(
     ["updateMemberInfo"],
-    () => updateMemberInfo(update),
+    (updateInfo: memberInfoUpdateDto) => updateMemberInfo(updateInfo),
     {
-      onSuccess: () => {
+      onSuccess: (res) => {
+        setChangeToggle((cur) => !cur);
         Toast.fire({
           iconHtml:
             '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
@@ -91,12 +98,6 @@ export default function MyProfile() {
     }
   );
 
-  // 내 정보 조회
-  const { data, isLoading } = useQuery({
-    queryKey: ["getMyInfo"],
-    queryFn: () => getMyInfo(),
-  });
-
   // 회원 전역 변수 저장
   useEffect(() => {
     if (data != null) {
@@ -105,7 +106,6 @@ export default function MyProfile() {
         remainCredit: data.memberCredit,
         classId: data.classId,
       });
-
       setProfileImage(data.memberProfileImg);
     }
   }, [data]);
