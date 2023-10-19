@@ -112,6 +112,7 @@ export default function MyProfile() {
 
   if (isLoading || data === undefined) return null;
 
+  // console.log(data);
   return (
     <>
       <div className="flex flex-row w-full">
