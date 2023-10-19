@@ -74,7 +74,7 @@ interface currentLocationDto {
 }
 export const memberEntrace = async (location: currentLocationDto) => {
   const { data } = await authInstance.patch(
-    "/user-service/mypage/attendance/entrace",
+    "/user-service/member/mypage/attendance/entrance",
     location
   );
   return data;
@@ -85,7 +85,7 @@ export const memberEntrace = async (location: currentLocationDto) => {
  */
 export const memberQuit = async (location: currentLocationDto) => {
   const { data } = await authInstance.patch(
-    "/user-service/mypage/attendance/quit",
+    "/user-service/member/mypage/attendance/quit",
     location
   );
   return data;
