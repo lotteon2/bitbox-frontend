@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useInterval } from "usehooks-ts";
 import { Toast } from "../../components/common/Toast";
 import { darkmodeState } from "../../recoil/atoms/common";
-import { useRecoilValue } from "recoil";
+import { useSetRecoilState, useRecoilValue } from "recoil";
 import { useMutation } from "react-query";
 import { memberEntrace, memberQuit } from "../../apis/member/member";
+import { changeState } from "../../recoil/atoms/member";
 
 interface currentLocationDto {
   lat: number;
@@ -21,6 +22,7 @@ export default function AttendanceButton() {
     hours + ":" + minutes + ":" + seconds
   );
   const isDark = useRecoilValue<boolean>(darkmodeState);
+  const setIschange = useSetRecoilState<boolean>(changeState);
 
   useInterval(() => {
     // Your custom logic here
@@ -71,6 +73,7 @@ export default function AttendanceButton() {
     (location: currentLocationDto) => memberEntrace(location),
     {
       onSuccess: () => {
+        setIschange((cur) => !cur);
         Toast.fire({
           iconHtml:
             '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',

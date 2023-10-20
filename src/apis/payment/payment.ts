@@ -1,4 +1,4 @@
-import { defaultInstance, authInstance } from "../utils";
+import { authInstance } from "../utils";
 
 interface PayType {
   partnerOrderId: string;
@@ -22,11 +22,7 @@ export const getKakaoUrl = async (payType: PayType) => {
 
 export const getKakaoPopup = async (callUrl: string) => {
   // 팝업 창 열기
-  const popup = window.open(
-    callUrl,
-    "카카오 결제 팝업",
-    "width=800, height=600"
-  );
+  window.location.href = callUrl;
 };
 
 export const getPaymentListCount = async () => {
