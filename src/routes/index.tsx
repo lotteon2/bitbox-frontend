@@ -15,6 +15,7 @@ import BoardRegister from "../components/board/BoardRegister";
 import OAuthKakaoRedirect from "../components/auth/OAuthKakaoRedirect";
 import PaySuccess from "../components/payment/PaySuccess";
 import PayFail from "../components/payment/PayFail";
+import DevLogRegister from "../components/board/devlog/DevLogRegister";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,7 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       { path: "devlog", element: <DevLogPage /> },
+      { path: "devlog/register", element: <DevLogRegister /> },
       { path: "community", element: <CommunityPage /> },
       { path: "review", element: <ReviewPage /> },
       { path: "alumni", element: <AlumniPage /> },

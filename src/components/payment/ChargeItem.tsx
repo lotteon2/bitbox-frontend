@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { getKakaoUrl } from "../../apis/payment/payment";
 import { getKakaoPopup } from "../../apis/payment/payment";
 import { useMutation } from "react-query";
-import axios from "axios";
 
 interface CreditItemProps {
   title: string;

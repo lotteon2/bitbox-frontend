@@ -8,6 +8,7 @@ export default function OAuthLogin() {
     const { data } = await authInstance.post(
       "/authentication-service/auth/refresh"
     );
+    console.log(data);
   };
 
   return (
