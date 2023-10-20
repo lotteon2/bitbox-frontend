@@ -25,14 +25,18 @@ module.exports = {
       },
       // 폰트 설정
       fontFamily: {
-        'thin': ['thin'],
-        'light': ['light'],
-        'regular': ['regular'],
-        'bold': ['bold'],
-        'extrabold': ['extrabold']
-      }
+        thin: ["thin"],
+        light: ["light"],
+        regular: ["regular"],
+        bold: ["bold"],
+        extrabold: ["extrabold"],
+      },
+    },
+  },
+  variants: {
+    extend: {
+      display: ["group-hover"],
     },
   },
   plugins: [],
-}
-
+};
