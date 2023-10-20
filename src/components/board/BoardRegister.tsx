@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "../../css/quill.snow.css";
 import { ImageResize } from "quill-image-resize-module-ts";
