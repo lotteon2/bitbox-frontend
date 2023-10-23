@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useQuery } from "react-query";
-import { getBoardList } from "../../../apis/community/community";
+// import { useQuery } from "react-query";
+// import { getBoardList } from "../../../apis/community/community";
 import { getBoardDetail } from "../../../apis/community/community";
 import { useMutation } from "react-query";
 import { Modal } from "antd";
@@ -11,10 +11,10 @@ export default function DevLogList() {
   const isDark = useRecoilValue(darkmodeState);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["getBoardList"],
-    queryFn: () => getBoardList("데브로그", 1),
-  });
+  // const { data, isLoading } = useQuery({
+  //   queryKey: ["getBoardList"],
+  //   queryFn: () => getBoardList("데브로그", 1),
+  // });
 
   const handleDevlogDetail = (boardId: number) => {
     setIsModalOpen(true);
@@ -37,7 +37,7 @@ export default function DevLogList() {
     setIsModalOpen(false);
   };
 
-  if (isLoading || data === undefined) return null;
+  // if (isLoading || data === undefined) return null;
 
   return (
     <div className="flex flex-row flex-wrap gap-5 mt-10">
