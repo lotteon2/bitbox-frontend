@@ -98,3 +98,11 @@ export const getMyGrades = async () => {
   const { data } = await authInstance.get("/admin-service/admin/grade/mygrade");
   return data;
 };
+
+/**
+ * 교육생 이름 등록
+ */
+export const updateMemberName = async (name: string) => {
+  const { data } = await authInstance.patch("/user-service/member/name", name);
+  return data;
+};

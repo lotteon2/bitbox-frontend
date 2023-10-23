@@ -82,7 +82,16 @@ export default function AttendanceButton() {
           color: isDark ? "#FFFFFF" : "#212B36",
         });
       },
-      onError: () => {},
+      onError: (error: any) => {
+        console.log(error.response.data.message);
+        Toast.fire({
+          iconHtml:
+            '<a><img style="width: 80px" src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
+          title: error.response.data.message,
+          background: isDark ? "#4D4D4D" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#212B36",
+        });
+      },
     }
   );
 
@@ -118,7 +127,7 @@ export default function AttendanceButton() {
           onClick={(e) => {
             Number(hours) >= 7 && Number(hours) <= 13
               ? handleEntrance()
-              : handlePreventEvent(e);
+              : handleEntrance();
           }}
         >
           입실하기

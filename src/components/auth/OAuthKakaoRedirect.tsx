@@ -29,7 +29,15 @@ export default function OAuthKakaoRedirect() {
       setIsLogin(true);
       setAuthority(data["authority"]);
       localStorage.setItem("accessToken", data["accessToken"]);
-      navigate("/");
+
+      if (data.authority === "TRAINEE") {
+        alert(
+          "교육생으로 등록된 경우 이름 추가 기입이 필요합니다. 마이페이지로 이동합니다."
+        );
+        navigate("/mypage");
+      } else {
+        navigate("/");
+      }
     },
     onError: () => {
       alert("인증에 실패했습니다"); // TODO : swal

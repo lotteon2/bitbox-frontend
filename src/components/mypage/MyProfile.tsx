@@ -11,7 +11,7 @@ import { useRecoilValue, useResetRecoilState, useSetRecoilState } from "recoil";
 import { Button, Modal } from "antd";
 import { Toast } from "../common/Toast";
 import { useMutation, useQuery } from "react-query";
-import { getMyInfo } from "../../apis/member/member";
+import { getMyInfo, updateMemberName } from "../../apis/member/member";
 import { updateMemberInfo, withdrawMember } from "../../apis/member/member";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -26,6 +26,8 @@ export default function MyProfile() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [profileImage, setProfileImage] = useState<string>("");
   const [nickName, setNickname] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [isSetName, setIsSetName] = useState<boolean>(false);
   const setMemberInfo = useSetRecoilState(memberState);
   const isDark = useRecoilValue<boolean>(darkmodeState);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -48,17 +50,31 @@ export default function MyProfile() {
 
   // Click 저장
   const handleOk = () => {
-    setIsModalOpen(false);
+    if (isSetName) {
+      if (name === "") {
+        Toast.fire({
+          iconHtml:
+            '<a><img style="width: 80px" src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
+          title: "본명을 입력해주세요",
+          background: isDark ? "#4D4D4D" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#212B36",
+        });
+      } else {
+        updateNameMutation.mutate(name);
+      }
+    } else {
+      setIsModalOpen(false);
 
-    const updateInfo = {
-      memberNickname: nickName,
-      memberProfileImg: profileImage,
-    };
+      const updateInfo = {
+        memberNickname: nickName,
+        memberProfileImg: profileImage,
+      };
 
-    // 내 정보 수정 API
-    updateMutation.mutate(updateInfo);
+      // 내 정보 수정 API
+      updateMutation.mutate(updateInfo);
 
-    setChangeToggle((cur) => !cur);
+      setChangeToggle((cur) => !cur);
+    }
   };
 
   // Click 취소 - Setting Default
@@ -116,6 +132,11 @@ export default function MyProfile() {
     setNickname(e.target.value);
   };
 
+  // 닉네임 변경정보 저장
+  const handleUpdateName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+  };
+
   // 내 정보 수정 API 처리
   const updateMutation = useMutation(
     ["updateMemberInfo"],
@@ -130,6 +151,27 @@ export default function MyProfile() {
           background: isDark ? "#4D4D4D" : "#FFFFFF",
           color: isDark ? "#FFFFFF" : "#212B36",
         });
+      },
+      onError: () => {},
+    }
+  );
+
+  // 교육생 초기 이름 등록
+  const updateNameMutation = useMutation(
+    ["updateMemberName"],
+    (memberName: string) => updateMemberName(memberName),
+    {
+      onSuccess: () => {
+        setChangeToggle((cur) => !cur);
+        Toast.fire({
+          iconHtml:
+            '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
+          title: "등록되었습니다",
+          background: isDark ? "#4D4D4D" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#212B36",
+        });
+        setIsSetName(false);
+        setIsModalOpen(false);
       },
       onError: () => {},
     }
@@ -167,6 +209,14 @@ export default function MyProfile() {
         classId: data.classId,
       });
       setProfileImage(data.memberProfileImg);
+
+      if (
+        data.memberAuthority === "TRAINEE" &&
+        (data.memberName === null || data.memberName === "")
+      ) {
+        setIsSetName(true);
+        setIsModalOpen(true);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, profileImage]);
@@ -218,7 +268,7 @@ export default function MyProfile() {
         className={isDark ? "dark" : "light"}
         title={
           <p className="dark:bg-grayscale7 dark:text-grayscale1">
-            회원정보 수정
+            {isSetName ? "교육생 정보 추가 입력" : "회원정보 수정"}
           </p>
         }
         open={isModalOpen}
@@ -241,30 +291,45 @@ export default function MyProfile() {
           </Button>,
         ]}
       >
-        <div className="m-auto w-32 h-32 rounded-full" onClick={uploadImgBtn}>
+        {isSetName ? (
           <input
-            className="w-full h-full"
-            type="file"
-            name="imgFile"
-            accept="image/*"
-            ref={inputRef}
-            id="imgFile"
-            onChange={handleChangeFile}
-            style={{ display: "none" }}
+            className="ml-[28%] mb-10 mt-5 text-center outline-none text-lg dark:bg-grayscale7 dark:text-white"
+            type="text"
+            placeholder="본명을 입력해주세요"
+            value={name}
+            onChange={handleUpdateName}
           />
-          <img
-            className="w-full h-full rounded-full"
-            src={profileImage}
-            alt="프로필 이미지"
-          />
-        </div>
-        <input
-          className="ml-[28%] mb-10 mt-5 text-center outline-none text-lg dark:bg-grayscale7 dark:text-white"
-          type="text"
-          placeholder={data.memberNickname}
-          value={nickName}
-          onChange={handleUpdateNickname}
-        />
+        ) : (
+          <>
+            <div
+              className="m-auto w-32 h-32 rounded-full"
+              onClick={uploadImgBtn}
+            >
+              <input
+                className="w-full h-full"
+                type="file"
+                name="imgFile"
+                accept="image/*"
+                ref={inputRef}
+                id="imgFile"
+                onChange={handleChangeFile}
+                style={{ display: "none" }}
+              />
+              <img
+                className="w-full h-full rounded-full"
+                src={profileImage}
+                alt="프로필 이미지"
+              />
+            </div>
+            <input
+              className="ml-[28%] mb-10 mt-5 text-center outline-none text-lg dark:bg-grayscale7 dark:text-white"
+              type="text"
+              placeholder={data.memberNickname}
+              value={nickName}
+              onChange={handleUpdateNickname}
+            />
+          </>
+        )}
       </Modal>
     </>
   );
