@@ -33,15 +33,17 @@ export default function LoginPage() {
             로그인
           </p>
           {oauth ? <OAuthLogin /> : <LocalLogin />}
-          <button onClick={reverse}>
-            {oauth ? `관리자 로그인` : `회원 로그인`}
-          </button>
+          <div className="font-thin text-sm inline-block float-right dark:text-grayscale1">
+            <button onClick={reverse}>
+              {oauth ? `관리자 로그인` : `회원 로그인`}
+            </button>
+          </div>
         </div>
       </div>
       <img
         src={LoginBackground}
         alt="배경 그림"
-        className="w-[80%] mt-[-50px] mx-auto max-w-[800px]"
+        className="w-[80%] mx-auto mt-[-50px] max-w-[800px]"
       />
     </div>
   );
