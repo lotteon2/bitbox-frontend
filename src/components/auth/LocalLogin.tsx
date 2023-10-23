@@ -8,12 +8,17 @@ import {
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { localLogin } from "../../apis/auth/locallogin";
 import { useMutation } from "react-query";
-import { Input, Form } from "antd";
+import { ConfigProvider, Input, Form, theme } from "antd";
 
 interface loginDto {
   email: string;
   password: string;
 }
+
+type FieldType = {
+  username: string;
+  password: string;
+};
 
 export default function LocalLogin() {
   const isDark = useRecoilValue(darkmodeState);
@@ -25,7 +30,7 @@ export default function LocalLogin() {
 
   const navigate = useNavigate();
 
-  const tryLogin = async (event: any) => {
+  const tryLogin = async () => {
     const loginDto = {
       email: email,
       password: password,
@@ -58,61 +63,45 @@ export default function LocalLogin() {
       <p className="pb-4 font-thin text-base dark:text-grayscale1">
         관리자 로그인
       </p>
-      {/* <div className="py-2">
-        <label className="text-left dark:text-grayscale1">이메일</label>
-        <input
-          className="shadow appearance-none border rounded w-full"
-          type="email"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-          }}
-        ></input>
-      </div>
-      <div className="py-2">
-        <label className="text-left dark:text-grayscale1">비밀번호</label>
-        <input
-          className="shadow appearance-none border rounded w-full"
-          type="password"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-        ></input>
-      </div> */}
-      <Form
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600, width: "100%" }}
-        className={isDark ? "dark" : ""}
-        initialValues={{ remember: true }}
-        autoComplete="off"
+      <ConfigProvider
+        theme={{
+          algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+        }}
       >
-        <Form.Item
-          label="이메일"
-          name="username"
-          style={{ color: isDark ? "#fff !important" : "" }}
-          rules={[{ required: true, message: "이메일을 입력해주세요" }]}
+        <Form
+          name="basic"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          style={{ maxWidth: 600, width: "100%" }}
+          className={isDark ? "dark" : "light"}
+          initialValues={{ remember: true }}
+          autoComplete="off"
         >
-          <Input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full dark:text-grayscale1"
-          />
-        </Form.Item>
+          <Form.Item
+            label="이메일"
+            name="username"
+            rules={[{ required: true, message: "이메일을 입력해주세요" }]}
+          >
+            <Input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full dark:text-grayscale1"
+            />
+          </Form.Item>
 
-        <Form.Item
-          label="비밀번호"
-          name="password"
-          rules={[{ required: true, message: "비밀번호를 입력해주세요" }]}
-        >
-          <Input.Password
-            value={password as string}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Item>
-      </Form>
+          <Form.Item
+            label="비밀번호"
+            name="password"
+            rules={[{ required: true, message: "비밀번호를 입력해주세요" }]}
+          >
+            <Input.Password
+              value={password as string}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </Form.Item>
+        </Form>
+      </ConfigProvider>
+
       <div className="py-2">
         <button
           className="w-full px-2 my-1 py-2 rounded text-grayscale1 bg-secondary1 dark:bg-secondary2"
