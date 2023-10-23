@@ -54,6 +54,10 @@ input[type="file"]::file-selector-button:hover {
   display: none;
 }
 
+.ant-form-item-label {
+  text-align: left !important;
+}
+
 @font-face {
   font-family: "thin";
   src: url("/src/assets/fonts/jamsil-thin.ttf");
