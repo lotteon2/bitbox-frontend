@@ -106,3 +106,22 @@ export const updateMemberName = async (name: string) => {
   const { data } = await authInstance.patch("/user-service/member/name", name);
   return data;
 };
+
+interface reasonStatementRegisterDto {
+  attendanceId: number;
+  reasonTitle: string;
+  reasonContent: string;
+  reasonAttachedFile: string | null;
+}
+/**
+ * 사유서 등록
+ */
+export const registReasonStatement = async (
+  dto: reasonStatementRegisterDto
+) => {
+  const { data } = await authInstance.post(
+    "/user-service/member/mypage/reason",
+    dto
+  );
+  return data;
+};
