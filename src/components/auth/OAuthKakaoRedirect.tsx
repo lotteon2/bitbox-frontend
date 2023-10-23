@@ -29,6 +29,7 @@ export default function OAuthKakaoRedirect() {
       setIsLogin(true);
       setAuthority(data["authority"]);
       localStorage.setItem("accessToken", data["accessToken"]);
+      localStorage.setItem("sessionToken", data["sessionToken"]);
 
       if (data.authority === "TRAINEE") {
         alert(
