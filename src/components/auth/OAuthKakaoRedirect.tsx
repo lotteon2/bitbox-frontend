@@ -39,17 +39,18 @@ export default function OAuthKakaoRedirect() {
         navigate("/");
       }
     },
-    onError: () => {
-      alert("인증에 실패했습니다"); // TODO : swal
+    onError: (error: any) => {
+      alert(error.response.data.message); // TODO : swal
+      console.log(error);
       navigate("/login");
     },
   });
 
-  // TODO : mutate 왜 안되지
   useEffect(() => {
     mutate.mutate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // TODO : 스피너
   return <div></div>;
 }
