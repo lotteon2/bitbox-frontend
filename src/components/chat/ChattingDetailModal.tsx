@@ -33,13 +33,10 @@ export default function ChattingDetailModal({
       withCredentials: "include",
     };
 
-    try {
-      stompClient.connect(headers, (frame: any) => {
-        console.log(frame);
-      });
-    } catch (e) {
-      console.log(e);
-    }
+    stompClient.connect(headers, (frame: any) => {
+      frame.connected = true;
+      console.log("연결 성공", frame);
+    });
     // stompClient.subscribe("/room/" + 1, function (chattingMessage: any) {
     //   console.log(chattingMessage);
     //   showChat(JSON.parse(chattingMessage.body));
