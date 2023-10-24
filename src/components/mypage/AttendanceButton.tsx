@@ -134,12 +134,12 @@ export default function AttendanceButton() {
         </button>
         <button
           className={
-            Number(hours) >= 14 && Number(hours) <= 18
+            Number(hours) >= 14 && Number(hours) <= 22
               ? "text-3xl w-32 h-16 bg-secondary1 rounded-lg text-grayscale1 hover:opacity-80"
               : "text-3xl w-32 h-16 bg-secondary1 opacity-20 rounded-lg text-grayscale1 cursor-default"
           }
           onClick={(e) => {
-            Number(hours) >= 14 && Number(hours) <= 18
+            Number(hours) >= 14 && Number(hours) <= 22
               ? handleQuit()
               : handlePreventEvent(e);
           }}
