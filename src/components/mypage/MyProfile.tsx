@@ -44,8 +44,11 @@ export default function MyProfile() {
   });
 
   // Profile Modify Modal Show
-  const showModal = () => {
+  const showModal = (e: React.MouseEvent<HTMLElement>) => {
     setIsModalOpen(true);
+    e.stopPropagation();
+    setNickname("");
+    setProfileImage(data.memberProfileImg);
   };
 
   // Click 저장
@@ -65,13 +68,23 @@ export default function MyProfile() {
     } else {
       setIsModalOpen(false);
 
-      const updateInfo = {
-        memberNickname: nickName,
-        memberProfileImg: profileImage,
-      };
+      if (nickName === "") {
+        const updateInfo = {
+          memberNickname: data.memberNickname,
+          memberProfileImg: profileImage,
+        };
 
-      // 내 정보 수정 API
-      updateMutation.mutate(updateInfo);
+        // 내 정보 수정 API
+        updateMutation.mutate(updateInfo);
+      } else {
+        const updateInfo = {
+          memberNickname: nickName,
+          memberProfileImg: profileImage,
+        };
+
+        // 내 정보 수정 API
+        updateMutation.mutate(updateInfo);
+      }
 
       setChangeToggle((cur) => !cur);
     }
@@ -274,22 +287,35 @@ export default function MyProfile() {
         open={isModalOpen}
         onCancel={handleCancel}
         maskClosable={false}
-        footer={[
-          <Button
-            key="cancel"
-            className="w-[150px] h-[40px] text-lg font-regular bg-grayscale4 text-grayscale1 border-none dark:bg-grayscale6 hover:text-grayscale1 hover:opacity-80"
-            onClick={handleCancel}
-          >
-            취소
-          </Button>,
-          <Button
-            key="save"
-            className="w-[150px] h-[40px] text-lg font-regular bg-secondary1 text-grayscale1 border-none dark:bg-secondary2 hover:text-grayscale1 hover:opacity-80"
-            onClick={handleOk}
-          >
-            저장
-          </Button>,
-        ]}
+        closeIcon={isSetName ? false : true}
+        footer={
+          isSetName
+            ? [
+                <Button
+                  key="save"
+                  className="w-[300px] h-[40px] text-lg font-regular bg-secondary1 text-grayscale1 border-none mr-[90px] dark:bg-secondary2 hover:text-grayscale1 hover:opacity-80"
+                  onClick={handleOk}
+                >
+                  저장
+                </Button>,
+              ]
+            : [
+                <Button
+                  key="cancel"
+                  className="w-[150px] h-[40px] text-lg font-regular bg-grayscale4 text-grayscale1 border-none dark:bg-grayscale6 hover:text-grayscale1 hover:opacity-80"
+                  onClick={handleCancel}
+                >
+                  취소
+                </Button>,
+                <Button
+                  key="save"
+                  className="w-[150px] h-[40px] text-lg font-regular bg-secondary1 text-grayscale1 border-none dark:bg-secondary2 hover:text-grayscale1 hover:opacity-80"
+                  onClick={handleOk}
+                >
+                  저장
+                </Button>,
+              ]
+        }
       >
         {isSetName ? (
           <input
