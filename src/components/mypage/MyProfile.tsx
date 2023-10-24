@@ -236,7 +236,6 @@ export default function MyProfile() {
 
   if (isLoading || data === undefined) return null;
 
-  // console.log(data);
   return (
     <>
       <div className="flex flex-row w-full">
@@ -249,7 +248,7 @@ export default function MyProfile() {
             />
             <div className="flex flex-col">
               <div className="flex flex-row gap-4 mt-3">
-                <Badge />
+                <Badge authority={data.memberAuthority} />
                 <div className="mt-1">{data.memberNickname}</div>
               </div>
               <div className="text-grayscale5 mt-1">{data.memberEmail}</div>

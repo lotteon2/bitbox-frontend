@@ -2,8 +2,7 @@ import React from "react";
 import { authorityState } from "../../recoil/atoms/common";
 import { useRecoilValue } from "recoil";
 
-export default function Badge() {
-  const authority = useRecoilValue<string>(authorityState);
+export default function Badge(authority: any) {
   return (
     <button
       className={
