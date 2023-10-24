@@ -98,3 +98,35 @@ export const getMyGrades = async () => {
   const { data } = await authInstance.get("/admin-service/admin/grade/mygrade");
   return data;
 };
+
+interface memberInfo {
+  name: string;
+  classId: number;
+}
+
+/**
+ * 교육생 정보 등록
+ */
+export const updateMemberName = async (memberInfo: memberInfo) => {
+  const { data } = await authInstance.patch("/user-service/member/name", memberInfo);
+  return data;
+};
+
+interface reasonStatementRegisterDto {
+  attendanceId: number;
+  reasonTitle: string;
+  reasonContent: string;
+  reasonAttachedFile: string | null;
+}
+/**
+ * 사유서 등록
+ */
+export const registReasonStatement = async (
+  dto: reasonStatementRegisterDto
+) => {
+  const { data } = await authInstance.post(
+    "/user-service/member/mypage/reason",
+    dto
+  );
+  return data;
+};

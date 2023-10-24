@@ -1,15 +1,21 @@
-import React from "react";
 import MyProfile from "../components/mypage/MyProfile";
 import AttendanceButton from "../components/mypage/AttendanceButton";
 import AttendanceCalendar from "../components/mypage/AttendanceCalendar";
 import MyCredit from "../components/mypage/MyCredit";
 import MyBoard from "../components/mypage/MyBoard";
 import MyScoreGraph from "../components/mypage/MyScoreGraph";
-import { authorityState } from "../recoil/atoms/common";
-import { useRecoilValue } from "recoil";
+import { useQuery } from "react-query";
+import { getMyInfo } from "../apis/member/member";
 
 export default function MyPage() {
-  const authority = useRecoilValue<string>(authorityState);
+  // 내 정보 조회
+  const { data, isLoading } = useQuery({
+    queryKey: ["getMyInfo"],
+    queryFn: () => getMyInfo(),
+  });
+  const authority = data?.memberAuthority;
+
+  if (data === undefined || isLoading) return null;
   return (
     <div className="mt-10 flex flex-col gap-10">
       <p className="font-extrabold lg:text-4xl sm:text-sm">마이페이지</p>

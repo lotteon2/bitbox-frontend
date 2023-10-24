@@ -25,7 +25,7 @@ export const accessToken = atom({
 export const memberState = atom({
   key: "memberState",
   default: {
-    memberId: -1,
+    memberId: "",
     remainCredit: 0,
     classId: -1,
   },
