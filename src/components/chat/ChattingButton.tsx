@@ -9,17 +9,18 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import ChattingDetailModal from "./ChattingDetailModal";
 import ChattingListModal from "./ChattingListModal";
 import Badge from "@mui/material/Badge";
+import { chattingCountState } from "../../recoil/atoms/chatting";
 
 export default function ChattingButton() {
   const isDark = useRecoilValue(darkmodeState);
   const isChatRoom = useRecoilValue(chatroomState);
   const [isChat, setIsChat] = useRecoilState<boolean>(chatState);
+  const chattingCount = useRecoilValue<number>(chattingCountState);
 
   const handleChatModalOpen = () => {
     setIsChat((cur) => !cur);
   };
 
-  console.log(isChatRoom);
   return (
     <div className="relative">
       <div
@@ -29,7 +30,7 @@ export default function ChattingButton() {
         <Badge
           color="success"
           overlap="circular"
-          badgeContent={100}
+          badgeContent={chattingCount}
           sx={{
             "& .MuiBadge-badge": {
               fontSize: 15,
