@@ -75,8 +75,8 @@ export default function MyProfile() {
       } else {
         const traineeInfo = {
           name: name,
-          classId: memberInfo.classId
-        }
+          classId: memberInfo.classId,
+        };
         updateNameMutation.mutate(traineeInfo);
       }
     } else {
@@ -243,7 +243,7 @@ export default function MyProfile() {
           classId: memberInfo.classId,
         });
       }
-      
+
       setProfileImage(data.memberProfileImg);
 
       if (
