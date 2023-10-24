@@ -120,14 +120,14 @@ export default function AttendanceButton() {
       <div className="w-full flex flex-row flex-wrap gap-10 justify-end mr-10">
         <button
           className={
-            Number(hours) >= 7 && Number(hours) <= 13
+            Number(hours) >= 7 && Number(hours) <= 14
               ? "text-3xl w-[120px] h-16 bg-[#9463D3] rounded-lg text-grayscale1 hover:opacity-80"
               : "text-3xl w-[120px] h-16 bg-[#9463D3] opacity-20 rounded-lg text-grayscale1 cursor-default"
           }
           onClick={(e) => {
-            Number(hours) >= 7 && Number(hours) <= 13
+            Number(hours) >= 7 && Number(hours) <= 14
               ? handleEntrance()
-              : handleEntrance();
+              : handlePreventEvent(e);
           }}
         >
           입실하기
