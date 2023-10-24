@@ -7,6 +7,10 @@ import { loginState } from "../../recoil/atoms/common";
 import { oauthKakao } from "../../apis/auth/oauthKakao";
 import { useNavigate } from "react-router-dom";
 
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+import { getConnectionList } from "../../apis/chatting/chatting";
+
 export default function OAuthKakaoRedirect() {
   const setAuthority = useSetRecoilState<string>(authorityState);
   const setIsLogin = useSetRecoilState<boolean>(loginState);
@@ -19,6 +23,8 @@ export default function OAuthKakaoRedirect() {
 
   const navigate = useNavigate();
 
+  var stompClient: any = null;
+
   if (!!error && !!errorDescription) {
     alert(errorDescription); // TODO : swal
     navigate("/login");
@@ -26,9 +32,24 @@ export default function OAuthKakaoRedirect() {
 
   const mutate = useMutation(["oauthKakao"], () => oauthKakao(code), {
     onSuccess: (data) => {
+      console.log("test");
       setIsLogin(true);
       setAuthority(data["authority"]);
       localStorage.setItem("accessToken", data["accessToken"]);
+      localStorage.setItem("sessionToken", data["sessionToken"]);
+
+      let socket = new SockJS(
+        "http://localhost:8000/chatting-service/chattings?sessionToken=" +
+          localStorage.getItem("sessionToken")
+      );
+
+      stompClient = Stomp.over(socket);
+
+      stompClient.connect({}, (frame: any) => {
+        getConnectionList().then((data) => {
+          console.log(data);
+        });
+      });
 
       if (data.authority === "TRAINEE") {
         alert(
@@ -39,17 +60,18 @@ export default function OAuthKakaoRedirect() {
         navigate("/");
       }
     },
-    onError: () => {
-      alert("인증에 실패했습니다"); // TODO : swal
+    onError: (error: any) => {
+      alert(error.response.data.message); // TODO : swal
+      console.log(error);
       navigate("/login");
     },
   });
 
-  // TODO : mutate 왜 안되지
   useEffect(() => {
     mutate.mutate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // TODO : 스피너
   return <div></div>;
 }

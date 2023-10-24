@@ -4,12 +4,14 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faUser, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { darkmodeState, loginState } from "../../recoil/atoms/common";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import Logo from "../../assets/images/logo.png";
 import LogoDark from "../../assets/images/logo_dark.png";
 import Badge from "@mui/material/Badge";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import { logout } from "../../apis/auth/logout";
+import { useMutation } from "react-query";
 
 interface parameter {
   istoggled: string;
@@ -100,10 +102,10 @@ export default function Header() {
   const [isToggled, setIsToggled] = useState<boolean>(false);
   const [userToggled, setUserToggled] = useState<boolean>(false);
   const isLogin = useRecoilValue(loginState);
+  const setIsLogin = useSetRecoilState(loginState);
   const isDark = useRecoilValue<boolean>(darkmodeState);
 
-  // const defaultUserMenuList = ["로그인", "회원가입"];
-  // const authUserMenuList = ["마이페이지", "로그아웃"];
+  // const defaultUserMenuList = ["로그인", "회원가입"];  // const authUserMenuList = ["마이페이지", "로그아웃"];
   const navigate = useNavigate();
 
   const activeStyle = {
@@ -116,6 +118,22 @@ export default function Header() {
       navigate("/login");
     }
   };
+
+  const tryLogout = async () => {
+    logoutMutation.mutate();
+  };
+
+  const logoutMutation = useMutation(["logout"], () => logout(), {
+    onSuccess: () => {
+      localStorage.removeItem("accessToken");
+      setIsLogin(false);
+      alert("로그아웃 성공");
+    },
+    onError: (error: any) => {
+      alert(error.response.data.message);
+      console.log(error);
+    },
+  });
 
   return (
     <HeaderStyle
@@ -215,7 +233,14 @@ export default function Header() {
           <li className="font-light dark:text-grayscale1">
             <NavLink to="/mypage">마이페이지</NavLink>
           </li>
-          <li className="font-light dark:text-grayscale1">로그아웃</li>
+          <li>
+            <button
+              className="font-light dark:text-grayscale1"
+              onClick={tryLogout}
+            >
+              로그아웃
+            </button>
+          </li>
         </ul>
       ) : (
         <ul className="header__right">
