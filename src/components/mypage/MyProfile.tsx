@@ -7,7 +7,7 @@ import {
   authorityState,
   loginState,
 } from "../../recoil/atoms/common";
-import { useRecoilValue, useResetRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilValue, useResetRecoilState, useRecoilState } from "recoil";
 import { Button, Modal } from "antd";
 import { Toast } from "../common/Toast";
 import { useMutation, useQuery } from "react-query";
@@ -20,6 +20,16 @@ interface memberInfoUpdateDto {
   memberNickname: string | null;
   memberProfileImg: string | null;
 }
+interface traineeInfo {
+  name: string;
+  classId: number;
+}
+
+interface memberInfo {
+  memberId: string;
+  remainCredit: number;
+  classId: number;
+}
 
 export default function MyProfile() {
   const [changeToggle, setChangeToggle] = useState<boolean>(false);
@@ -28,7 +38,7 @@ export default function MyProfile() {
   const [nickName, setNickname] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [isSetName, setIsSetName] = useState<boolean>(false);
-  const setMemberInfo = useSetRecoilState(memberState);
+  const [memberInfo, setMemberInfo] = useRecoilState<memberInfo>(memberState);
   const isDark = useRecoilValue<boolean>(darkmodeState);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const resetAccessToken = useResetRecoilState(accessToken);
@@ -63,7 +73,11 @@ export default function MyProfile() {
           color: isDark ? "#FFFFFF" : "#212B36",
         });
       } else {
-        updateNameMutation.mutate(name);
+        const traineeInfo = {
+          name: name,
+          classId: memberInfo.classId
+        }
+        updateNameMutation.mutate(traineeInfo);
       }
     } else {
       setIsModalOpen(false);
@@ -172,7 +186,7 @@ export default function MyProfile() {
   // 교육생 초기 이름 등록
   const updateNameMutation = useMutation(
     ["updateMemberName"],
-    (memberName: string) => updateMemberName(memberName),
+    (traineeInfo: traineeInfo) => updateMemberName(traineeInfo),
     {
       onSuccess: () => {
         setChangeToggle((cur) => !cur);
@@ -216,11 +230,20 @@ export default function MyProfile() {
   // 회원 전역 변수 저장
   useEffect(() => {
     if (data != null) {
-      setMemberInfo({
-        memberId: data.memberId,
-        remainCredit: data.memberCredit,
-        classId: data.classId,
-      });
+      if (memberInfo.classId === -1) {
+        setMemberInfo({
+          memberId: data.memberId,
+          remainCredit: data.memberCredit,
+          classId: data.classId,
+        });
+      } else {
+        setMemberInfo({
+          memberId: data.memberId,
+          remainCredit: data.memberCredit,
+          classId: memberInfo.classId,
+        });
+      }
+      
       setProfileImage(data.memberProfileImg);
 
       if (

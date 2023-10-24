@@ -99,11 +99,16 @@ export const getMyGrades = async () => {
   return data;
 };
 
+interface memberInfo {
+  name: string;
+  classId: number;
+}
+
 /**
- * 교육생 이름 등록
+ * 교육생 정보 등록
  */
-export const updateMemberName = async (name: string) => {
-  const { data } = await authInstance.patch("/user-service/member/name", name);
+export const updateMemberName = async (memberInfo: memberInfo) => {
+  const { data } = await authInstance.patch("/user-service/member/name", memberInfo);
   return data;
 };
 

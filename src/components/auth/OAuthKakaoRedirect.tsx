@@ -1,9 +1,8 @@
 import { useEffect } from "react";
-import { useSetRecoilState } from "recoil";
+import { useSetRecoilState, useRecoilState } from "recoil";
 import { useMutation } from "react-query";
 
-import { authorityState } from "../../recoil/atoms/common";
-import { loginState } from "../../recoil/atoms/common";
+import { authorityState, loginState, memberState } from "../../recoil/atoms/common";
 import { oauthKakao } from "../../apis/auth/oauthKakao";
 import { useNavigate } from "react-router-dom";
 
@@ -11,9 +10,16 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import { getConnectionList } from "../../apis/chatting/chatting";
 
+interface memberInfo {
+  memberId: string;
+  remainCredit: number;
+  classId: number;
+}
+
 export default function OAuthKakaoRedirect() {
   const setAuthority = useSetRecoilState<string>(authorityState);
   const setIsLogin = useSetRecoilState<boolean>(loginState);
+  const [memberInfo, setMemberInfo] = useRecoilState<memberInfo>(memberState);
 
   const url = new URL(window.location.href);
   const error: string | null = url.searchParams.get("error");
@@ -51,10 +57,14 @@ export default function OAuthKakaoRedirect() {
         });
       });
 
-      if (data.authority === "TRAINEE") {
+      if (data.isInvited) {
         alert(
           "교육생으로 등록된 경우 이름 추가 기입이 필요합니다. 마이페이지로 이동합니다."
         );
+        setMemberInfo({
+          ...memberInfo,
+          classId: data.classId
+        })
         navigate("/mypage");
       } else {
         navigate("/");

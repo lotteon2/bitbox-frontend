@@ -15,11 +15,6 @@ interface loginDto {
   password: string;
 }
 
-type FieldType = {
-  username: string;
-  password: string;
-};
-
 export default function LocalLogin() {
   const isDark = useRecoilValue(darkmodeState);
   const setAuthority = useSetRecoilState<string>(authorityState);
