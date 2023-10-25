@@ -24,7 +24,7 @@ export default function ChattingButton() {
   return (
     <div className="relative">
       <div
-        className="bg-primary7 rounded-full w-20 h-20 p-4 fixed bottom-5 right-32 dark:bg-primary4"
+        className="bg-primary7 rounded-full w-20 h-20 p-4 fixed bottom-5 right-32 z-20 dark:bg-primary4"
         onClick={handleChatModalOpen}
       >
         <Badge

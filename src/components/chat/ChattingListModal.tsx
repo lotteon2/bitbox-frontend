@@ -1,6 +1,6 @@
 import { PropsWithChildren, useEffect, useState } from "react";
 import ClearIcon from "@mui/icons-material/Clear";
-import { useSetRecoilState, useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { getChattingList } from "../../apis/chatting/chatting";
 import { chatroomState } from "../../recoil/atoms/common";
 import {
@@ -27,14 +27,14 @@ export default function ChattingListModal({
   children,
 }: PropsWithChildren<ModalDefaultType>) {
   const [chatList, setChatList] = useState<ChattingListItem[]>([]);
-  const [isChat, setIsChat] = useRecoilState<boolean>(chatroomState);
-  const [userProfile, setChattingUserName] = useRecoilState<string>(
+  const setIsChat = useSetRecoilState<boolean>(chatroomState);
+  const setChattingUserName = useSetRecoilState<string>(chattingUserName);
+  const setChattingUserProfileImg = useSetRecoilState<string>(
     chattingUserProfileImg
   );
-  const [userName, setChattingUserProfileImg] =
-    useRecoilState<string>(chattingUserName);
-  const [chattingRoomNumber, setChattingRoomNumberState] =
-    useRecoilState<number>(chattingRoomNumberState);
+  const setChattingRoomNumberState = useSetRecoilState<number>(
+    chattingRoomNumberState
+  );
 
   useEffect(() => {
     getChattingList().then((data) => {
@@ -43,7 +43,7 @@ export default function ChattingListModal({
   }, []);
 
   return (
-    <div className="fixed w-[400px] h-[600px] bottom-28 right-4 rounded-xl shadow-lg bg-grayscale1 dark:bg-grayscale6">
+    <div className="fixed w-[400px] h-[600px] bottom-28 right-4 rounded-xl shadow-lg bg-grayscale1 z-20 dark:bg-grayscale6">
       <header className="w-full h-10 bg-primary7 rounded-xl rounded-b-none p-2 text-grayscale1 dark:bg-primary4">
         <div className="relative w-[350px] h-[25px] ml-8 rounded-lg">
           <ClearIcon
@@ -52,7 +52,7 @@ export default function ChattingListModal({
           />
         </div>
       </header>
-      <div className="p-2 dark:text-grayscale1">
+      <div className="p-4 border-b-[1px] dark:text-grayscale1">
         {chatList.map((item) => (
           <div
             key={item.chatRoomId}
@@ -63,19 +63,23 @@ export default function ChattingListModal({
                 item.otherUserName
               )
             }
+            className="flex flex-row gap-3"
           >
             <img
               src={item.otherUserProfileImg}
               alt={item.otherUserName}
-              width={50}
-              height={50}
+              className="w-14 h-14 rounded-full"
             />
-            <div>{item.otherUserName}</div>
-            {item.isSecret === 0 ? (
-              <div>{item.latestMessage}</div>
-            ) : (
-              <div>비공개 메시지</div>
-            )}
+            <div>
+              <div className="font-bold">{item.otherUserName}</div>
+              {item.isSecret === 0 ? (
+                <div>{item.latestMessage}</div>
+              ) : (
+                <p className="w-[250px] h-[24px] whitespace-nowrap text-ellipsis overflow-hidden ...">
+                  비공개된 메세지입니다.
+                </p>
+              )}
+            </div>
           </div>
         ))}
       </div>
