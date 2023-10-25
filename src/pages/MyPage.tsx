@@ -6,6 +6,7 @@ import MyBoard from "../components/mypage/MyBoard";
 import MyScoreGraph from "../components/mypage/MyScoreGraph";
 import { useQuery } from "react-query";
 import { getMyInfo } from "../apis/member/member";
+import Loading from "../components/common/Loading";
 
 export default function MyPage() {
   // 내 정보 조회
@@ -15,7 +16,7 @@ export default function MyPage() {
   });
   const authority = data?.memberAuthority;
 
-  if (data === undefined || isLoading) return null;
+  if (data === undefined || isLoading) return <Loading />;
   return (
     <div className="mt-10 flex flex-col gap-10">
       <p className="font-extrabold lg:text-4xl sm:text-sm">마이페이지</p>

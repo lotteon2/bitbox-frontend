@@ -281,7 +281,13 @@ export default function MyProfile() {
             <span className="text-primary7 dark:primary4">
               {data.memberCredit}
             </span>{" "}
-            크레딧
+            <span className="text-grayscale7 dark:text-grayscale1">크레딧</span>
+            <button
+              className="text-sm ml-3 bg-grayscale2 hover:bg-grayscale3 px-4 py-2 rounded-lg dark:bg-grayscale6 dark:hover:bg-grayscale5"
+              onClick={() => navigate("/payment")}
+            >
+              충전하기
+            </button>
           </div>
         </div>
         <div className="w-1/2 flex flex-row gap-10 justify-end">
