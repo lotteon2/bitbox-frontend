@@ -15,6 +15,7 @@ import { getMyInfo, updateMemberName } from "../../apis/member/member";
 import { updateMemberInfo, withdrawMember } from "../../apis/member/member";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { authInstance } from "../../apis/utils";
 
 interface memberInfoUpdateDto {
   memberNickname: string | null;
@@ -197,6 +198,12 @@ export default function MyProfile() {
           background: isDark ? "#4D4D4D" : "#FFFFFF",
           color: isDark ? "#FFFFFF" : "#212B36",
         });
+
+        authInstance.delete(
+          "/authentication-service/auth/invitation",
+          undefined
+        );
+
         setIsSetName(false);
         setIsModalOpen(false);
       },
