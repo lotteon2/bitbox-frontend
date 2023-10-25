@@ -69,6 +69,7 @@ export default function OAuthKakaoRedirect() {
 
       stompClient = Stomp.over(socket);
 
+      // TODO 비동기
       stompClient.connect({}, (frame: any) => {
         getConnectionList().then((data) => {
           stompClient.subscribe("/room/0", function (chatMessage: any) {
@@ -86,15 +87,15 @@ export default function OAuthKakaoRedirect() {
           //   console.log(chatMessage);
           // });
 
-          stompClient.send(
-            "/send/23",
-            {},
-            JSON.stringify({
-              chatContent: "hello csh",
-              transmitterId: "sibal22",
-              receiverId: "78cc4e3a-df3d-4cf5-a4cd-a7523c16206a",
-            })
-          );
+          // stompClient.send(
+          //   "/send/22",
+          //   {},
+          //   JSON.stringify({
+          //     chatContent: "hello csh",
+          //     transmitterId: "sibal22",
+          //     receiverId: "78cc4e3a-df3d-4cf5-a4cd-a7523c16206a",
+          //   })
+          // );
 
           data.data.rooms.forEach((item: subscribe) => {
             stompClient.subscribe(
@@ -118,7 +119,8 @@ export default function OAuthKakaoRedirect() {
               }
             );
           });
-          setChattingCount(data.data.rooms.unReadMessageCount);
+
+          setChattingCount(data.data.unReadMessageCount);
         });
       });
 

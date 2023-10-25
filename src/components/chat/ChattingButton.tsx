@@ -56,14 +56,12 @@ export default function ChattingButton() {
             onClickToggleModal={() => setIsChat((cur) => !cur)}
           >
             {/*TODO: 아래 div에 채팅방 목록 구성*/}
-            <div>목록</div>
           </ChattingListModal>
         ) : (
           <ChattingDetailModal
             onClickToggleModal={() => setIsChat((cur) => !cur)}
           >
             {/*TODO: 아래 div에 채팅방 상세 구성*/}
-            <div>상세</div>
           </ChattingDetailModal>
         ))}
     </div>
