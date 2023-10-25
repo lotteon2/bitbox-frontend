@@ -64,7 +64,7 @@ export const chatState = atom({
  */
 export const chatroomState = atom({
   key: "chatroomState",
-  default: false,
+  default: true,
   effects_UNSTABLE: [persistAtom],
 });
 
