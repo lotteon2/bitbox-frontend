@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faUser, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { darkmodeState, loginState } from "../../recoil/atoms/common";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-
+import NotificationDropDown from "../notification/NotificationDropDown";
 import Logo from "../../assets/images/logo.png";
 import LogoDark from "../../assets/images/logo_dark.png";
 import Badge from "@mui/material/Badge";
@@ -223,6 +223,7 @@ export default function Header() {
       {isLogin ? (
         <ul className="header__right">
           {/* TODO: 여기 개수 추가 */}
+          <NotificationDropDown />
           <Badge badgeContent={1} color="warning">
             {isDark ? (
               <NotificationsIcon fontSize="medium" sx={{ color: "#FFFFFF" }} />
