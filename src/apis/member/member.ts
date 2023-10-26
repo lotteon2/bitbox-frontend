@@ -32,6 +32,15 @@ export const getMyInfo = async () => {
 };
 
 /**
+ * 내정보 조회(관리자)
+ * @returns
+ */
+export const getAdminInfo = async () => {
+  const { data } = await authInstance.get("/admin-service/admin/one");
+  return data;
+};
+
+/**
  * 내 정보 수정
  */
 interface memberInfoUpdateDto {
@@ -46,6 +55,19 @@ export const updateMemberInfo = async (update: memberInfoUpdateDto) => {
   return data;
 };
 
+/**
+ * 내 정보 수정(관리자)
+ */
+interface adminInfoUpdateDto {
+  adminProfileImg: string;
+  adminName: null;
+  adminPassword: null;
+  isDeleted: null;
+}
+export const updateAdminMemberInfo = async (update: adminInfoUpdateDto) => {
+  const { data } = await authInstance.patch("/admin-service/admin", update);
+  return data;
+};
 /**
  * 회원 탈퇴
  */
@@ -108,7 +130,10 @@ interface memberInfo {
  * 교육생 정보 등록
  */
 export const updateMemberName = async (memberInfo: memberInfo) => {
-  const { data } = await authInstance.patch("/user-service/member/name", memberInfo);
+  const { data } = await authInstance.patch(
+    "/user-service/member/name",
+    memberInfo
+  );
   return data;
 };
 

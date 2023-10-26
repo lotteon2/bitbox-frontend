@@ -2,7 +2,11 @@ import { useEffect } from "react";
 import { useSetRecoilState, useRecoilState } from "recoil";
 import { useMutation } from "react-query";
 
-import { authorityState, loginState, memberState } from "../../recoil/atoms/common";
+import {
+  authorityState,
+  loginState,
+  memberState,
+} from "../../recoil/atoms/common";
 import { oauthKakao } from "../../apis/auth/oauthKakao";
 import { useNavigate } from "react-router-dom";
 
@@ -63,8 +67,8 @@ export default function OAuthKakaoRedirect() {
         );
         setMemberInfo({
           ...memberInfo,
-          classId: data.classId
-        })
+          classId: data.classId,
+        });
         navigate("/mypage");
       } else {
         navigate("/");
