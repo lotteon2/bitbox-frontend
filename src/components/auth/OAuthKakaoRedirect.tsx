@@ -13,9 +13,6 @@ import { useNavigate } from "react-router-dom";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import { getConnectionList } from "../../apis/chatting/chatting";
-import { EventSourcePolyfill } from "event-source-polyfill";
-
-import "";
 
 interface memberInfo {
   memberId: string;
@@ -45,12 +42,12 @@ export default function OAuthKakaoRedirect() {
 
   const mutate = useMutation(["oauthKakao"], () => oauthKakao(code), {
     onSuccess: (data) => {
-      console.log("test");
       setIsLogin(true);
       setAuthority(data["authority"]);
       localStorage.setItem("accessToken", data["accessToken"]);
       localStorage.setItem("sessionToken", data["sessionToken"]);
 
+      /*
       let socket = new SockJS(
         "http://localhost:8000/chatting-service/chattings?sessionToken=" +
           localStorage.getItem("sessionToken")
@@ -63,18 +60,28 @@ export default function OAuthKakaoRedirect() {
           console.log(data);
         });
       });
+      */
 
-      const eventSource = new EventSourcePolyfill(
-        `${process.env.REACT_APP_API_URL}/notification-service/notifications/subscription`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
+      let eventSource = new EventSource(
+        `${
+          process.env.REACT_APP_API_URL
+        }/notification-service/notifications/subscription?sessionToken=${localStorage.getItem(
+          "sessionToken"
+        )}`
       );
 
-      eventSource.addEventListener("sse", (event: any) => {
-        console.log("SSE message : " + JSON.parse(event.data));
+      console.log(eventSource);
+
+      eventSource.addEventListener("CONNECT", (event: any) => {
+        console.log(event);
+      });
+
+      eventSource.addEventListener("ATTENDANCE", (event: any) => {
+        console.log(event);
+      });
+
+      eventSource.addEventListener("SUBSCRIPTION", (event: any) => {
+        console.log(event);
       });
 
       if (data.invited) {
