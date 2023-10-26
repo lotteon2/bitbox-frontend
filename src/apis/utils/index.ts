@@ -85,9 +85,7 @@ const axiosAuthApi = (baseURL: any) => {
 
   // TODO: 로그인 정보 저장 및 API에 인증 토큰 붙이는 코드
   instance.interceptors.request.use((config) => {
-    config.headers.Authorization = `Bearer ${localStorage.getItem(
-      "accessToken"
-    )}`;
+    config.headers.Authorization = `Bearer eyJ0eXAiOiJBQ0NFU1MiLCJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJfaWQiOiJiYTkzYTM2MS1jMWRiLTQ0YjUtODZiNi0zZWE0NmIzZjhiMmUiLCJtZW1iZXJfbmlja25hbWUiOiLsoITsooXrr7wiLCJtZW1iZXJfcHJvZmlsZV9pbWciOm51bGwsImNsYXNzX2lkIjpudWxsLCJtZW1iZXJfYXV0aG9yaXR5IjoiR0VORVJBTCIsImV4cCI6MTY5OTQzNDc3M30.xFCTq6uK3Se4FtBe3p9q-OmZYUrurXJIzhkItzBYI-E`;
     return config;
   });
 
