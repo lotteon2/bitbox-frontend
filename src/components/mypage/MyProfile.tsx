@@ -213,6 +213,7 @@ export default function MyProfile() {
     (image: any) => imageUpload(image),
     {
       onSuccess: (data) => {
+        console.log(data);
         setProfileImage(data);
       },
       onError: () => {
