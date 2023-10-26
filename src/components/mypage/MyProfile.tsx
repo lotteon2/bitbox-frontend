@@ -213,9 +213,7 @@ export default function MyProfile() {
     (image: any) => imageUpload(image),
     {
       onSuccess: (data) => {
-        console.log(typeof(data));
-        console.log(data.value);
-        setProfileImage(data.value);
+        setProfileImage(data);
       },
       onError: () => {
         Toast.fire({
@@ -348,7 +346,7 @@ export default function MyProfile() {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, profileImage]);
+  }, [data]);
 
   if (isLoading || data === undefined) return null;
 
