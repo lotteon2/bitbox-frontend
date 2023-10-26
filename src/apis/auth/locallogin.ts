@@ -1,8 +1,13 @@
 import { defaultInstance } from "../utils";
 
-export const localLogin = async () => {
-  const { data } = await defaultInstance.get(
-    "/authentication-service/auth/admin"
+interface loginDto {
+  email: string;
+  password: string;
+}
+export const localLogin = async (loginDto: loginDto) => {
+  const { data } = await defaultInstance.post(
+    "/authentication-service/auth/admin",
+    loginDto
   );
   return data;
 };

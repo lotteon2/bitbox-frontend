@@ -82,7 +82,16 @@ export default function AttendanceButton() {
           color: isDark ? "#FFFFFF" : "#212B36",
         });
       },
-      onError: () => {},
+      onError: (error: any) => {
+        console.log(error.response.data.message);
+        Toast.fire({
+          iconHtml:
+            '<a><img style="width: 80px" src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
+          title: error.response.data.message,
+          background: isDark ? "#4D4D4D" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#212B36",
+        });
+      },
     }
   );
 
@@ -111,12 +120,12 @@ export default function AttendanceButton() {
       <div className="w-full flex flex-row flex-wrap gap-10 justify-end mr-10">
         <button
           className={
-            Number(hours) >= 7 && Number(hours) <= 13
+            Number(hours) >= 7 && Number(hours) <= 14
               ? "text-3xl w-[120px] h-16 bg-[#9463D3] rounded-lg text-grayscale1 hover:opacity-80"
               : "text-3xl w-[120px] h-16 bg-[#9463D3] opacity-20 rounded-lg text-grayscale1 cursor-default"
           }
           onClick={(e) => {
-            Number(hours) >= 7 && Number(hours) <= 13
+            Number(hours) >= 7 && Number(hours) <= 14
               ? handleEntrance()
               : handlePreventEvent(e);
           }}
@@ -125,12 +134,12 @@ export default function AttendanceButton() {
         </button>
         <button
           className={
-            Number(hours) >= 14 && Number(hours) <= 18
+            Number(hours) >= 14 && Number(hours) <= 22
               ? "text-3xl w-32 h-16 bg-secondary1 rounded-lg text-grayscale1 hover:opacity-80"
               : "text-3xl w-32 h-16 bg-secondary1 opacity-20 rounded-lg text-grayscale1 cursor-default"
           }
           onClick={(e) => {
-            Number(hours) >= 14 && Number(hours) <= 18
+            Number(hours) >= 14 && Number(hours) <= 22
               ? handleQuit()
               : handlePreventEvent(e);
           }}

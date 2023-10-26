@@ -16,6 +16,7 @@ import OAuthKakaoRedirect from "../components/auth/OAuthKakaoRedirect";
 import PaySuccess from "../components/payment/PaySuccess";
 import PayFail from "../components/payment/PayFail";
 import DevLogRegister from "../components/board/devlog/DevLogRegister";
+import DevLogModify from "../components/board/devlog/DevLogModify";
 
 const router = createBrowserRouter([
   {
@@ -57,6 +58,7 @@ const router = createBrowserRouter([
     children: [
       { path: "devlog", element: <DevLogPage /> },
       { path: "devlog/register", element: <DevLogRegister /> },
+      { path: "devlog/modify/:boardId", element: <DevLogModify /> },
       { path: "community", element: <CommunityPage /> },
       { path: "review", element: <ReviewPage /> },
       { path: "alumni", element: <AlumniPage /> },

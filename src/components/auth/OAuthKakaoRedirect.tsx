@@ -1,15 +1,29 @@
 import { useEffect } from "react";
-import { useSetRecoilState } from "recoil";
+import { useSetRecoilState, useRecoilState } from "recoil";
 import { useMutation } from "react-query";
 
-import { authorityState } from "../../recoil/atoms/common";
-import { loginState } from "../../recoil/atoms/common";
+import {
+  authorityState,
+  loginState,
+  memberState,
+} from "../../recoil/atoms/common";
 import { oauthKakao } from "../../apis/auth/oauthKakao";
 import { useNavigate } from "react-router-dom";
+
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+import { getConnectionList } from "../../apis/chatting/chatting";
+
+interface memberInfo {
+  memberId: string;
+  remainCredit: number;
+  classId: number;
+}
 
 export default function OAuthKakaoRedirect() {
   const setAuthority = useSetRecoilState<string>(authorityState);
   const setIsLogin = useSetRecoilState<boolean>(loginState);
+  const [memberInfo, setMemberInfo] = useRecoilState<memberInfo>(memberState);
 
   const url = new URL(window.location.href);
   const error: string | null = url.searchParams.get("error");
@@ -19,6 +33,8 @@ export default function OAuthKakaoRedirect() {
 
   const navigate = useNavigate();
 
+  var stompClient: any = null;
+
   if (!!error && !!errorDescription) {
     alert(errorDescription); // TODO : swal
     navigate("/login");
@@ -26,22 +42,50 @@ export default function OAuthKakaoRedirect() {
 
   const mutate = useMutation(["oauthKakao"], () => oauthKakao(code), {
     onSuccess: (data) => {
+      console.log("test");
       setIsLogin(true);
       setAuthority(data["authority"]);
       localStorage.setItem("accessToken", data["accessToken"]);
-      navigate("/");
+      localStorage.setItem("sessionToken", data["sessionToken"]);
+
+      let socket = new SockJS(
+        "http://localhost:8000/chatting-service/chattings?sessionToken=" +
+          localStorage.getItem("sessionToken")
+      );
+
+      stompClient = Stomp.over(socket);
+
+      stompClient.connect({}, (frame: any) => {
+        getConnectionList().then((data) => {
+          console.log(data);
+        });
+      });
+
+      if (data.isInvited) {
+        alert(
+          "교육생으로 등록된 경우 이름 추가 기입이 필요합니다. 마이페이지로 이동합니다."
+        );
+        setMemberInfo({
+          ...memberInfo,
+          classId: data.classId,
+        });
+        navigate("/mypage");
+      } else {
+        navigate("/");
+      }
     },
-    onError: () => {
-      alert("인증에 실패했습니다"); // TODO : swal
+    onError: (error: any) => {
+      alert(error.response.data.message); // TODO : swal
+      console.log(error);
       navigate("/login");
     },
   });
 
-  // TODO : mutate 왜 안되지
   useEffect(() => {
     mutate.mutate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // TODO : 스피너
   return <div></div>;
 }

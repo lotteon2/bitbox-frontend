@@ -4,8 +4,11 @@ import moment from "moment";
 import CalendarToolbar from "./CalendarToolbar";
 import "../../css/react-big-calendar.css";
 import { useState } from "react";
-import { useQuery } from "react-query";
-import { getAllMyAttendance } from "../../apis/member/member";
+import { useMutation, useQuery } from "react-query";
+import {
+  getAllMyAttendance,
+  registReasonStatement,
+} from "../../apis/member/member";
 import { changeState, dateState } from "../../recoil/atoms/member";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { Button, Modal } from "antd";
@@ -30,14 +33,22 @@ interface dateInfo {
   year: number;
   month: number;
 }
+interface reasonStatementRegisterDto {
+  attendanceId: number;
+  reasonTitle: string;
+  reasonContent: string;
+  reasonAttachedFile: string | null;
+}
 export default function AttendanceCalendar() {
   const isDark = useRecoilValue<boolean>(darkmodeState);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
+  const [attachedFile, setAttachedFile] = useState<string | null>(null);
   const setDate = useSetRecoilState<dateInfo>(dateState);
   const [events, setEvents] = useState<calendarEvents[]>();
   const [isChange, setIschange] = useRecoilState<boolean>(changeState);
+  const [attendanceId, setAttendanceId] = useState<number>(0);
 
   moment.locale("ko-KR");
   const localizer = momentLocalizer(moment);
@@ -84,14 +95,13 @@ export default function AttendanceCalendar() {
       });
     } else {
       setIsModalOpen(false);
-
-      Toast.fire({
-        iconHtml:
-          '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
-        title: "제출되었습니다",
-        background: isDark ? "#4D4D4D" : "#FFFFFF",
-        color: isDark ? "#FFFFFF" : "#212B36",
-      });
+      const registDto = {
+        attendanceId: attendanceId,
+        reasonTitle: title,
+        reasonContent: content,
+        reasonAttachedFile: attachedFile,
+      };
+      registerMutation.mutate(registDto);
     }
   };
 
@@ -103,6 +113,7 @@ export default function AttendanceCalendar() {
   // 사유서 모달 Open
   const handleClickSelect = (select: any) => {
     if (select.title !== "출석") {
+      setAttendanceId(select.id);
       showModal();
     }
   };
@@ -133,6 +144,35 @@ export default function AttendanceCalendar() {
     }
   }, [data]);
 
+  const handleAttachedFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // TODO: 나중에 S3서버 올라오면 붙이기
+    setAttachedFile(e.target.value);
+  };
+  const registerMutation = useMutation(
+    ["registReasonStatement"],
+    (statementDto: reasonStatementRegisterDto) =>
+      registReasonStatement(statementDto),
+    {
+      onSuccess: () => {
+        Toast.fire({
+          iconHtml:
+            '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
+          title: "제출되었습니다",
+          background: isDark ? "#4D4D4D" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#212B36",
+        });
+      },
+      onError: () => {
+        Toast.fire({
+          iconHtml:
+            '<a><img style="width: 80px" src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
+          title: "시스템 오류 - 다시 시도해주세요.",
+          background: isDark ? "#4D4D4D" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#212B36",
+        });
+      },
+    }
+  );
   if (isLoading || data === undefined || events === undefined) return null;
 
   return (
@@ -188,7 +228,11 @@ export default function AttendanceCalendar() {
             className="w-full h-[200px] pl-2 border-2 border-grayscale2 rounded-lg dark:border-grayscale5 dark:bg-grayscale7 dark:text-grayscale1"
             onChange={(e) => setContent(e.target.value)}
           ></textarea>
-          <input type="file" className="my-3 dark:text-grayscale1" />
+          <input
+            type="file"
+            className="my-3 dark:text-grayscale1"
+            onChange={handleAttachedFile}
+          />
         </div>
       </Modal>
     </>

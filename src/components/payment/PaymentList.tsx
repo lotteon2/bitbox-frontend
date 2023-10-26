@@ -4,13 +4,12 @@ import {
   getPaymentListCount,
 } from "../../apis/payment/payment";
 import { useMutation } from "react-query";
-import { Pagination } from "@mui/material";
 import crditImg from "../../assets/images/credit.png";
 import subscriptionImg from "../../assets/images/subscription.png";
-import Stack from "@mui/material/Stack";
-import { Button, Modal } from "antd";
+import { Button, Modal, Pagination, ConfigProvider, theme } from "antd";
 import { useRecoilValue } from "recoil";
 import { darkmodeState } from "../../recoil/atoms/common";
+import { Empty } from "antd";
 
 type Payment = {
   paymentId: number;
@@ -80,44 +79,63 @@ export default function PaymentList() {
 
   return (
     <div>
-      <div className="flex flex-col w-[800px] m-auto my-5 gap-5 relative">
-        {payments.map((payment) => (
-          <div
-            key={payment.paymentId}
-            className="flex flex-row px-10 py-5 gap-5 shadow-xl rounded-lg"
-          >
-            <img
-              src={
-                payment.productName.slice(0, 3) === "크레딧"
-                  ? crditImg
-                  : subscriptionImg
-              }
-              alt={`Payment ${payment.paymentId}`}
-              className="w-32 h-32 mt-2"
-            />
-            <div className="mt-8">
-              <p>{payment.paymentDate.slice(0, 10)}</p>
-              <p className="text-xl">{payment.productName}</p>
-              <p className="font-bold">{payment.paymentAmount}원</p>
-            </div>
+      {payments.length === 0 ? (
+        <>
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={false} />
+          <p className="text-center text-grayscale4">결제 내역이 없습니다.</p>
+        </>
+      ) : (
+        <>
+          <div className="flex flex-col w-[800px] m-auto my-5 gap-5 relative">
+            {payments.map((payment) => (
+              <div
+                key={payment.paymentId}
+                className="flex flex-row px-10 py-5 gap-5 shadow-xl rounded-lg"
+              >
+                <img
+                  src={
+                    payment.productName.slice(0, 3) === "크레딧"
+                      ? crditImg
+                      : subscriptionImg
+                  }
+                  alt={`Payment ${payment.paymentId}`}
+                  className="w-32 h-32 mt-2"
+                />
+                <div className="mt-8">
+                  <p>{payment.paymentDate.slice(0, 10)}</p>
+                  <p className="text-xl">{payment.productName}</p>
+                  <p className="font-bold">{payment.paymentAmount}원</p>
+                </div>
 
-            <button
-              className="my-10 px-10 py-5 text-grayscale1 bg-secondary1 rounded-lg absolute right-10 dark:bg-secondary2"
-              onClick={() => handleDetailClick(payment)}
-            >
-              상세보기
-            </button>
+                <button
+                  className="my-10 px-10 py-5 text-grayscale1 bg-secondary1 rounded-lg absolute right-10 dark:bg-secondary2"
+                  onClick={() => handleDetailClick(payment)}
+                >
+                  상세보기
+                </button>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <Stack alignItems="center" className="mt-16">
-        <Pagination
-          count={pageCount}
-          page={currentPage}
-          onChange={handlerPageChange}
-          sx={{ color: "#fff" }}
-        />
-      </Stack>
+          <div className="flex justify-center mt-10">
+            <ConfigProvider
+              theme={{
+                algorithm: isDark
+                  ? theme.darkAlgorithm
+                  : theme.defaultAlgorithm,
+                token: {
+                  colorPrimary: isDark ? "#" : "#F92525",
+                },
+              }}
+            >
+              <Pagination
+                defaultCurrent={currentPage}
+                total={pageCount}
+                onChange={handlerPageChange}
+              />
+            </ConfigProvider>
+          </div>
+        </>
+      )}
       <Modal
         className={isDark ? "dark" : "light"}
         title={
@@ -130,15 +148,8 @@ export default function PaymentList() {
         maskClosable={false}
         footer={[
           <Button
-            key="cancel"
-            className="w-[150px] h-[40px] text-lg font-regular bg-grayscale4 text-grayscale1 border-none dark:bg-grayscale6 hover:text-grayscale1 hover:opacity-80"
-            onClick={handleCancel}
-          >
-            닫기
-          </Button>,
-          <Button
             key="save"
-            className="w-[150px] h-[40px] text-lg font-regular bg-secondary1 text-grayscale1 border-none dark:bg-secondary2 hover:text-grayscale1 hover:opacity-80"
+            className="w-[400px] h-[40px] text-lg font-regular bg-secondary1 text-grayscale1 border-none ml-[-40px] dark:bg-secondary2 hover:text-grayscale1 hover:opacity-80"
             onClick={handleOk}
           >
             확인
