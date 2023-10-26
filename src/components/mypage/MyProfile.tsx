@@ -213,8 +213,9 @@ export default function MyProfile() {
     (image: any) => imageUpload(image),
     {
       onSuccess: (data) => {
-        console.log(data);
-        setProfileImage(data.trim());
+        console.log(typeof(data));
+        console.log(data.value);
+        setProfileImage(data.value);
       },
       onError: () => {
         Toast.fire({
