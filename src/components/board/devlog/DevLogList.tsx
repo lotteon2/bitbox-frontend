@@ -6,10 +6,14 @@ import { useMutation } from "react-query";
 import { Modal } from "antd";
 import { useRecoilValue } from "recoil";
 import { darkmodeState } from "../../../recoil/atoms/common";
+import { useNavigate } from "react-router-dom";
+import { authorityState } from "../../../recoil/atoms/common";
 
 export default function DevLogList() {
   const isDark = useRecoilValue(darkmodeState);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const authority = useRecoilValue<string>(authorityState);
 
   // const { data, isLoading } = useQuery({
   //   queryKey: ["getBoardList"],
@@ -72,8 +76,22 @@ export default function DevLogList() {
         footer={""}
       >
         <div className="max-h-[500px] overflow-scroll">
+          {authority === "ADMIN" ||
+          authority === "MANAGER" ||
+          authority === "TEACHER" ? (
+            <div className="flex justify-end">
+              <button
+                className="font-regular bg-primary7 px-5 py-2 rounded-lg text-grayscale1 dark:bg-primary4 hover:bg-primary5 dark:hover:bg-primary5"
+                onClick={() => navigate("/board/devlog/register")}
+              >
+                수정
+              </button>
+            </div>
+          ) : (
+            ""
+          )}
           <img
-            className="w-full h-[300px]"
+            className="w-full h-[300px] mt-5"
             src="https://images.velog.io/images/young_pallete/post/91983ddb-182f-44ee-a9f2-c37ed4b391e6/%EC%BA%A1%EC%B2%98.PNG"
             alt=""
           />

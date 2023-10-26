@@ -82,7 +82,7 @@ export default function PaymentList() {
       {payments.length === 0 ? (
         <>
           <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={false} />
-          <p>결제 내역이 없습니다.</p>
+          <p className="text-center text-grayscale4">결제 내역이 없습니다.</p>
         </>
       ) : (
         <>
@@ -128,7 +128,7 @@ export default function PaymentList() {
               }}
             >
               <Pagination
-                defaultCurrent={pageCount}
+                defaultCurrent={currentPage}
                 total={pageCount}
                 onChange={handlerPageChange}
               />

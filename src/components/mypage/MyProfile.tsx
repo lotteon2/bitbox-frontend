@@ -11,15 +11,29 @@ import { useRecoilValue, useResetRecoilState, useRecoilState } from "recoil";
 import { Button, Modal } from "antd";
 import { Toast } from "../common/Toast";
 import { useMutation, useQuery } from "react-query";
-import { getMyInfo, updateMemberName } from "../../apis/member/member";
+import {
+  getMyInfo,
+  updateMemberName,
+  getAdminInfo,
+  updateAdminMemberInfo,
+} from "../../apis/member/member";
 import { updateMemberInfo, withdrawMember } from "../../apis/member/member";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { imageUpload } from "../../apis/common/common";
 
 interface memberInfoUpdateDto {
   memberNickname: string | null;
   memberProfileImg: string | null;
 }
+
+interface adminInfoUpdateDto {
+  adminProfileImg: string;
+  adminName: null;
+  adminPassword: null;
+  isDeleted: null;
+}
+
 interface traineeInfo {
   name: string;
   classId: number;
@@ -32,6 +46,7 @@ interface memberInfo {
 }
 
 export default function MyProfile() {
+  const authority = useRecoilValue<string>(authorityState);
   const [changeToggle, setChangeToggle] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [profileImage, setProfileImage] = useState<string>("");
@@ -49,8 +64,20 @@ export default function MyProfile() {
 
   // 내 정보 조회
   const { data, isLoading } = useQuery({
-    queryKey: ["getMyInfo", changeToggle],
-    queryFn: () => getMyInfo(),
+    queryKey: [
+      authority === "ADMIN" ||
+      authority === "MANAGER" ||
+      authority === "TEACHER"
+        ? "getAdminInfo"
+        : "getMyInfo",
+      changeToggle,
+    ],
+    queryFn: () =>
+      authority === "ADMIN" ||
+      authority === "MANAGER" ||
+      authority === "TEACHER"
+        ? getAdminInfo()
+        : getMyInfo(),
   });
 
   // Profile Modify Modal Show
@@ -80,27 +107,41 @@ export default function MyProfile() {
         updateNameMutation.mutate(traineeInfo);
       }
     } else {
-      setIsModalOpen(false);
-
-      if (nickName === "") {
+      if (
+        authority === "ADMIN" ||
+        authority === "MANAGER" ||
+        authority === "TEACHER"
+      ) {
         const updateInfo = {
-          memberNickname: data.memberNickname,
-          memberProfileImg: profileImage,
+          adminProfileImg: profileImage,
+          adminName: null,
+          adminPassword: null,
+          isDeleted: null,
         };
-
-        // 내 정보 수정 API
-        updateMutation.mutate(updateInfo);
+        updateAdminMutation.mutate(updateInfo);
       } else {
-        const updateInfo = {
-          memberNickname: nickName,
-          memberProfileImg: profileImage,
-        };
+        setIsModalOpen(false);
 
-        // 내 정보 수정 API
-        updateMutation.mutate(updateInfo);
+        if (nickName === "") {
+          const updateInfo = {
+            memberNickname: data.memberNickname,
+            memberProfileImg: profileImage,
+          };
+
+          // 내 정보 수정 API
+          updateMutation.mutate(updateInfo);
+        } else {
+          const updateInfo = {
+            memberNickname: nickName,
+            memberProfileImg: profileImage,
+          };
+
+          // 내 정보 수정 API
+          updateMutation.mutate(updateInfo);
+        }
+
+        setChangeToggle((cur) => !cur);
       }
-
-      setChangeToggle((cur) => !cur);
     }
   };
 
@@ -123,10 +164,12 @@ export default function MyProfile() {
     } else {
       const formData = new FormData();
       formData.append("file", event.target.files[0]);
-      const imgsrc = URL.createObjectURL(event.target.files[0]);
+      imageMutation.mutate(formData);
 
+      // const imgsrc = URL.createObjectURL(event.target.files[0]);
       // TODO: 여기에 이미지 업로드 처리 api 붙이기
-      setProfileImage(imgsrc);
+
+      // setProfileImage(imgsrc);
     }
   };
 
@@ -165,9 +208,48 @@ export default function MyProfile() {
   };
 
   // 내 정보 수정 API 처리
+  const imageMutation = useMutation(
+    ["imageUpload"],
+    (image: any) => imageUpload(image),
+    {
+      onSuccess: (data) => {
+        setProfileImage(data);
+      },
+      onError: () => {
+        Toast.fire({
+          iconHtml:
+            '<a><img style="width: 80px" src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
+          title: "이미지 업로드 실패",
+          background: isDark ? "#4D4D4D" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#212B36",
+        });
+      },
+    }
+  );
+
+  // 내 정보 수정 API 처리
   const updateMutation = useMutation(
     ["updateMemberInfo"],
     (updateInfo: memberInfoUpdateDto) => updateMemberInfo(updateInfo),
+    {
+      onSuccess: () => {
+        setChangeToggle((cur) => !cur);
+        Toast.fire({
+          iconHtml:
+            '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
+          title: "수정되었습니다",
+          background: isDark ? "#4D4D4D" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#212B36",
+        });
+      },
+      onError: () => {},
+    }
+  );
+
+  // 내 정보 수정 API 처리(관리자)
+  const updateAdminMutation = useMutation(
+    ["updateAdminMemberInfo"],
+    (updateInfo: adminInfoUpdateDto) => updateAdminMemberInfo(updateInfo),
     {
       onSuccess: () => {
         setChangeToggle((cur) => !cur);
@@ -230,30 +312,39 @@ export default function MyProfile() {
   // 회원 전역 변수 저장
   useEffect(() => {
     if (data != null) {
-      if (memberInfo.classId === -1) {
-        setMemberInfo({
-          memberId: data.memberId,
-          remainCredit: data.memberCredit,
-          classId: data.classId,
-        });
-      } else {
-        setMemberInfo({
-          memberId: data.memberId,
-          remainCredit: data.memberCredit,
-          classId: memberInfo.classId,
-        });
-      }
-
-      setProfileImage(data.memberProfileImg);
-
       if (
-        data.memberAuthority === "TRAINEE" &&
-        (data.memberName === null || data.memberName === "")
+        authority === "ADMIN" ||
+        authority === "MANAGER" ||
+        authority === "TEACHER"
       ) {
-        setIsSetName(true);
-        setIsModalOpen(true);
+        setProfileImage(data.adminProfileImg);
+      } else {
+        if (memberInfo.classId === -1) {
+          setMemberInfo({
+            memberId: data.memberId,
+            remainCredit: data.memberCredit,
+            classId: data.classId,
+          });
+        } else {
+          setMemberInfo({
+            memberId: data.memberId,
+            remainCredit: data.memberCredit,
+            classId: memberInfo.classId,
+          });
+        }
+
+        setProfileImage(data.memberProfileImg);
+
+        if (
+          data.memberAuthority === "TRAINEE" &&
+          (data.memberName === null || data.memberName === "")
+        ) {
+          setIsSetName(true);
+          setIsModalOpen(true);
+        }
       }
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, profileImage]);
 
@@ -265,30 +356,64 @@ export default function MyProfile() {
         <div className="w-1/2 flex flex-row flex-wrap gap-20">
           <div className="flex flex-row gap-5">
             <img
-              src={data.memberProfileImg}
+              src={
+                authority === "ADMIN" ||
+                authority === "MANAGER" ||
+                authority === "TEACHER"
+                  ? data.adminProfileImg
+                  : data.memberProfileImg
+              }
               alt="프로필 이미지"
               className="w-20 h-20 rounded-full"
             />
             <div className="flex flex-col">
               <div className="flex flex-row gap-4 mt-3">
-                <Badge authority={data.memberAuthority} />
-                <div className="mt-1">{data.memberNickname}</div>
+                <Badge
+                  authority={
+                    authority === "ADMIN" ||
+                    authority === "MANAGER" ||
+                    authority === "TEACHER"
+                      ? data.adminAuthority
+                      : data.memberAuthority
+                  }
+                />
+                <div className="mt-1">
+                  {authority === "ADMIN" ||
+                  authority === "MANAGER" ||
+                  authority === "TEACHER"
+                    ? data.adminName
+                    : data.memberNickname}
+                </div>
               </div>
-              <div className="text-grayscale5 mt-1">{data.memberEmail}</div>
+              <div className="text-grayscale5 mt-1">
+                {authority === "ADMIN" ||
+                authority === "MANAGER" ||
+                authority === "TEACHER"
+                  ? data.adminEmail
+                  : data.memberEmail}
+              </div>
             </div>
           </div>
-          <div className="mt-5 text-2xl">
-            <span className="text-primary7 dark:primary4">
-              {data.memberCredit}
-            </span>{" "}
-            <span className="text-grayscale7 dark:text-grayscale1">크레딧</span>
-            <button
-              className="text-sm ml-3 bg-grayscale2 hover:bg-grayscale3 px-4 py-2 rounded-lg dark:bg-grayscale6 dark:hover:bg-grayscale5"
-              onClick={() => navigate("/payment")}
-            >
-              충전하기
-            </button>
-          </div>
+          {authority === "ADMIN" ||
+          authority === "MANAGER" ||
+          authority === "TEACHER" ? (
+            ""
+          ) : (
+            <div className="mt-5 text-2xl">
+              <span className="text-primary7 dark:primary4">
+                {data.memberCredit}
+              </span>{" "}
+              <span className="text-grayscale7 dark:text-grayscale1">
+                크레딧
+              </span>
+              <button
+                className="text-sm ml-3 bg-grayscale2 hover:bg-grayscale3 px-4 py-2 rounded-lg dark:bg-grayscale6 dark:hover:bg-grayscale5"
+                onClick={() => navigate("/payment")}
+              >
+                충전하기
+              </button>
+            </div>
+          )}
         </div>
         <div className="w-1/2 flex flex-row gap-10 justify-end">
           <button
@@ -297,12 +422,18 @@ export default function MyProfile() {
           >
             정보수정
           </button>
-          <button
-            className=" w-30 h-10 mt-5 bg-grayscale2 hover:bg-grayscale3 px-4 py-2 rounded-lg dark:bg-grayscale6 dark:hover:bg-grayscale5"
-            onClick={handleWithdraw}
-          >
-            회원 탈퇴
-          </button>
+          {authority === "ADMIN" ||
+          authority === "MANAGER" ||
+          authority === "TEACHER" ? (
+            ""
+          ) : (
+            <button
+              className=" w-30 h-10 mt-5 bg-grayscale2 hover:bg-grayscale3 px-4 py-2 rounded-lg dark:bg-grayscale6 dark:hover:bg-grayscale5"
+              onClick={handleWithdraw}
+            >
+              회원 탈퇴
+            </button>
+          )}
         </div>
       </div>
       <Modal
@@ -375,13 +506,25 @@ export default function MyProfile() {
                 alt="프로필 이미지"
               />
             </div>
-            <input
-              className="ml-[28%] mb-10 mt-5 text-center outline-none text-lg dark:bg-grayscale7 dark:text-white"
-              type="text"
-              placeholder={data.memberNickname}
-              value={nickName}
-              onChange={handleUpdateNickname}
-            />
+            {authority === "ADMIN" ||
+            authority === "MANAGER" ||
+            authority === "TEACHER" ? (
+              <div className="p-5"></div>
+            ) : (
+              <input
+                className="ml-[28%] mb-10 mt-5 text-center outline-none text-lg dark:bg-grayscale7 dark:text-white"
+                type="text"
+                placeholder={
+                  authority === "ADMIN" ||
+                  authority === "MANAGER" ||
+                  authority === "TEACHER"
+                    ? data.adminName
+                    : data.memberNickname
+                }
+                value={nickName}
+                onChange={handleUpdateNickname}
+              />
+            )}
           </>
         )}
       </Modal>

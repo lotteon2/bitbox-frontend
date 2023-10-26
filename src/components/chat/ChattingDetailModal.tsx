@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect } from "react";
+import { PropsWithChildren, useEffect } from "react";
 import ClearIcon from "@mui/icons-material/Clear";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { useSetRecoilState } from "recoil";
