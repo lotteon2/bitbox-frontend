@@ -47,3 +47,14 @@ export const chattingRoomNumberState = atom({
   default: null,
   effects_UNSTABLE: [persistAtom],
 });
+
+export const chattingClient = atom({
+  key: "chattingClient",
+  default: null,
+  effects_UNSTABLE: [persistAtom],
+});
+
+export const chattingChangeState = atom({
+  key: "chattingChangeState",
+  default: false,
+});

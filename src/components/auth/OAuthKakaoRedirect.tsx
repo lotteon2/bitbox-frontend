@@ -14,6 +14,7 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import { getConnectionList } from "../../apis/chatting/chatting";
 import {
+  chattingClient,
   chattingCountState,
   chattingRoomListState,
 } from "../../recoil/atoms/chatting";
@@ -46,6 +47,7 @@ export default function OAuthKakaoRedirect() {
   const [memberInfo, setMemberInfo] = useRecoilState<memberInfo>(memberState);
   const setChattingCount = useSetRecoilState<number>(chattingCountState);
   const setChatList = useSetRecoilState<listState[]>(chattingRoomListState);
+  const setChattingClient = useSetRecoilState(chattingClient);
 
   const url = new URL(window.location.href);
   const error: string | null = url.searchParams.get("error");
@@ -148,6 +150,7 @@ export default function OAuthKakaoRedirect() {
           });
 
           setChattingCount(data.data.unReadMessageCount);
+          setChattingClient(Object.assign({}, stompClient));
         });
       });
     },

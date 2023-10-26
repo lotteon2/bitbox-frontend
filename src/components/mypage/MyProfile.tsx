@@ -138,7 +138,7 @@ export default function MyProfile() {
       iconHtml:
         '<a><img src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
       showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
-      confirmButtonColor: isDark ? "#FF8888" : "#DC2626", // confrim 버튼 색깔 지정
+      confirmButtonColor: isDark ? "#66B966" : "#00A400", // confrim 버튼 색깔 지정
       cancelButtonColor: isDark ? "#C6C6C6" : "#808080", // cancel 버튼 색깔 지정
       confirmButtonText: "탈퇴하기", // confirm 버튼 텍스트 지정
       cancelButtonText: "취소", // cancel 버튼 텍스트 지정

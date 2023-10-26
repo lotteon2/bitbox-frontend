@@ -1,17 +1,20 @@
-import React, { PropsWithChildren, useState } from "react";
+import React, { PropsWithChildren, useState, useEffect } from "react";
 import ClearIcon from "@mui/icons-material/Clear";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import { useSetRecoilState, useRecoilValue } from "recoil";
-import { chatroomState } from "../../recoil/atoms/common";
+import { useSetRecoilState, useRecoilValue, useRecoilState } from "recoil";
+import { chatroomState, darkmodeState } from "../../recoil/atoms/common";
 import {
   chattingUserProfileImg,
   chattingRoomNumberState,
   chattingUserName,
+  chattingChangeState,
+  chattingClient,
 } from "../../recoil/atoms/chatting";
 import { getChatting, payChatting } from "../../apis/chatting/chatting";
 import Loading from "../common/Loading";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import SendIcon from "@mui/icons-material/Send";
+import Swal from "sweetalert2";
 
 interface ModalDefaultType {
   onClickToggleModal: () => void;
@@ -32,7 +35,7 @@ export default function ChattingDetailModal({
   const handleChatState = () => {
     setIsChat((cur: boolean) => !cur);
   };
-
+  const isDark = useRecoilValue<boolean>(darkmodeState);
   const userProfile = useRecoilValue(chattingUserProfileImg);
   const userName = useRecoilValue<string>(chattingUserName);
   const chattingRoomNumber = useRecoilValue(chattingRoomNumberState);
@@ -40,25 +43,56 @@ export default function ChattingDetailModal({
   const [chattingList, setChattingRoomListState] = useState<ChattingListItem[]>(
     []
   );
+  const [isChange, setIsChange] = useRecoilState<boolean>(chattingChangeState);
+  const stompClient = useRecoilValue(chattingClient);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["getChatting", chattingRoomNumber],
+    queryKey: ["getChatting", chattingRoomNumber, isChange],
     queryFn: () => getChatting(chattingRoomNumber),
   });
 
-  if (data === undefined || isLoading) return <Loading />;
-
   const handleSecretMessageClick = (chatId: number) => {
-    payChatting(chatId)
-      .then((data) => {
-        // 여기서 해당 메시지를 갈아껴야 하는데 이게 요청의 응답은 message만 주고 secret 여부를 N으로 바꿔야함
-        console.log(data);
-      })
-      .catch((error) => {
-        alert("크레딧이 부족하거나 결제 서버에 연결 할 수 없습니다.");
-      });
+    Swal.fire({
+      title: '<p style="text-align: center">크레딧을 사용하시겠습니까?</p>',
+      text: "구독권 정보가 없어 메세지 확인을 위해 크레딧을 사용해야 합니다. 메세지당 1 크레딧이 차감됩니다.",
+      iconHtml:
+        '<a><img src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
+      showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+      confirmButtonColor: isDark ? "#66B966" : "#00A400", // confrim 버튼 색깔 지정
+      cancelButtonColor: isDark ? "#C6C6C6" : "#808080", // cancel 버튼 색깔 지정
+      confirmButtonText: "사용하기", // confirm 버튼 텍스트 지정
+      cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+      reverseButtons: true, // 버튼 순서 거꾸로
+      background: isDark ? "#202027" : "#FFFFFF",
+      color: isDark ? "#FFFFFF" : "#212B36",
+    }).then((result) => {
+      // 만약 Promise리턴을 받으면,
+      if (result.isConfirmed) {
+        messageClickMutation.mutate(chatId);
+      } else {
+        // 모달창에서 cancel 버튼을 눌렀다면
+      }
+    });
   };
 
+  const messageClickMutation = useMutation(
+    ["withdrawMember"],
+    (chatId: number) => payChatting(chatId),
+    {
+      onSuccess: () => {
+        setIsChange((cur) => !cur);
+      },
+      onError: () => {
+        alert("크레딧이 부족하거나 결제 서버에 연결 할 수 없습니다.");
+      },
+    }
+  );
+
+  useEffect(() => {
+    console.log(stompClient);
+  }, [stompClient]);
+
+  if (data === undefined || isLoading) return <Loading />;
   return (
     <div className="fixed w-[400px] h-[600px] bottom-28 right-4 rounded-xl shadow-lg bg-grayscale1 z-20 dark:bg-grayscale6">
       <header className="w-full h-10 bg-primary7 rounded-xl rounded-b-none p-2 text-grayscale1 dark:bg-primary4">
