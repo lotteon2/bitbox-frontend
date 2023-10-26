@@ -13,6 +13,9 @@ import { useNavigate } from "react-router-dom";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import { getConnectionList } from "../../apis/chatting/chatting";
+import { EventSourcePolyfill } from "event-source-polyfill";
+
+import "";
 
 interface memberInfo {
   memberId: string;
@@ -61,7 +64,20 @@ export default function OAuthKakaoRedirect() {
         });
       });
 
-      if (data.isInvited) {
+      const eventSource = new EventSourcePolyfill(
+        `${process.env.REACT_APP_API_URL}/notification-service/notifications/subscription`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+
+      eventSource.addEventListener("sse", (event: any) => {
+        console.log("SSE message : " + JSON.parse(event.data));
+      });
+
+      if (data.invited) {
         alert(
           "교육생으로 등록된 경우 이름 추가 기입이 필요합니다. 마이페이지로 이동합니다."
         );
