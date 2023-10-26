@@ -26,6 +26,7 @@ const axiosAuthApi = (baseURL: any) => {
     config.headers.Authorization = `Bearer ${localStorage.getItem(
       "accessToken"
     )}`;
+    config.headers["Content-Type"] = "multipart/form-data";
     return config;
   });
 
