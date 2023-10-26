@@ -17,6 +17,7 @@ import {
   chattingCountState,
   chattingRoomListState,
 } from "../../recoil/atoms/chatting";
+import { getMyInfo } from "../../apis/member/member";
 
 interface memberInfo {
   memberId: string;
@@ -31,6 +32,12 @@ interface subscribe {
 interface listState {
   roomId: number;
   chattingMessage: object;
+}
+
+interface chattingCreationInfo {
+  chatRoomId: number;
+  guestId: string;
+  hostId: string;
 }
 
 export default function OAuthKakaoRedirect() {
@@ -55,6 +62,18 @@ export default function OAuthKakaoRedirect() {
     navigate("/login");
   }
 
+  function handleMessageEvent(roomId: number, chatMessage: any) {
+    console.log(roomId);
+    console.log(chatMessage.body);
+    /*
+      1. 내가 현재 목록을 보고 있으면 리플레시
+      2. 내가 상세를 보고 있는 경우
+        -> 만약 내 채팅방 번호하고 일치한다면 대화창 추가한다
+        -> 그렇지 않으면 chatMessage+1(밑에 안읽은 메시지 수)
+
+    */
+  }
+
   const mutate = useMutation(["oauthKakao"], () => oauthKakao(code), {
     onSuccess: (data) => {
       setIsLogin(true);
@@ -62,67 +81,7 @@ export default function OAuthKakaoRedirect() {
       localStorage.setItem("accessToken", data["accessToken"]);
       localStorage.setItem("sessionToken", data["sessionToken"]);
 
-      let socket = new SockJS(
-        "http://localhost:8000/chatting-service/chattings?sessionToken=" +
-          localStorage.getItem("sessionToken")
-      );
-
-      stompClient = Stomp.over(socket);
-
-      // TODO 비동기
-      stompClient.connect({}, (frame: any) => {
-        getConnectionList().then((data) => {
-          stompClient.subscribe("/room/0", function (chatMessage: any) {
-            console.log(chatMessage.body);
-            /*
-              if(guestId거나 hostId라면 해당 chatRoom을 구독한다){
-                stompClient.subscribe
-              }
-
-              아니 근데 위에서 한 구독을 아래에서 체크하는 구조인데? 이게 됨??
-            */
-          });
-
-          // stompClient.subscribe("/room/23", function (chatMessage: any) {
-          //   console.log(chatMessage);
-          // });
-
-          // stompClient.send(
-          //   "/send/22",
-          //   {},
-          //   JSON.stringify({
-          //     chatContent: "hello csh",
-          //     transmitterId: "sibal22",
-          //     receiverId: "78cc4e3a-df3d-4cf5-a4cd-a7523c16206a",
-          //   })
-          // );
-
-          data.data.rooms.forEach((item: subscribe) => {
-            stompClient.subscribe(
-              "/room/" + item.roomId,
-              function (chatMessage: any) {
-                console.log(chatMessage.body);
-                /*
-                  let commonAction = "내가 채팅 목록을 보고 있는데"
-                  
-
-                  if(commonAction && 내가 구독하는 채팅방에서 알림이 오면){
-                    목록을 새로고침한다(API를 호출)
-                  }
-                  if(commonAction && 채팅방 생성 이벤트에서 알림이 오면 ){
-                    목록을 새로고침 한다(API를 호출)
-                  }
-
-
-
-                */
-              }
-            );
-          });
-
-          setChattingCount(data.data.unReadMessageCount);
-        });
-      });
+      myInfo.mutate();
 
       if (data.isInvited) {
         alert(
@@ -142,6 +101,54 @@ export default function OAuthKakaoRedirect() {
       console.log(error);
       navigate("/login");
     },
+  });
+
+  const myInfo = useMutation(["getMyInfo"], () => getMyInfo(), {
+    onSuccess: (user) => {
+      let socket = new SockJS(
+        "http://localhost:8000/chatting-service/chattings?sessionToken=" +
+          localStorage.getItem("sessionToken")
+      );
+      stompClient = Stomp.over(socket);
+
+      stompClient.connect({}, (frame: any) => {
+        getConnectionList().then((data) => {
+          stompClient.subscribe("/room/0", function (creationEvent: any) {
+            const roomCreationObject: chattingCreationInfo = JSON.parse(
+              creationEvent.body
+            );
+
+            if (
+              roomCreationObject.guestId == user.memberId ||
+              roomCreationObject.hostId == user.memberId
+            ) {
+              // 내가 현재 목록을 보고 있으면 목록 새로고침 해야함
+              stompClient.subscribe(
+                "/room/" + roomCreationObject.chatRoomId,
+                function (chatMessage: any) {
+                  handleMessageEvent(
+                    roomCreationObject.chatRoomId,
+                    chatMessage
+                  );
+                }
+              );
+            }
+          });
+
+          data.data.rooms.forEach((item: subscribe) => {
+            stompClient.subscribe(
+              "/room/" + item.roomId,
+              function (chatMessage: any) {
+                handleMessageEvent(item.roomId, chatMessage);
+              }
+            );
+          });
+
+          setChattingCount(data.data.unReadMessageCount);
+        });
+      });
+    },
+    onError: () => {},
   });
 
   useEffect(() => {

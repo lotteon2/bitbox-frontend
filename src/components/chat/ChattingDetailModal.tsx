@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect, useState } from "react";
+import React, { PropsWithChildren, useState } from "react";
 import ClearIcon from "@mui/icons-material/Clear";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { useSetRecoilState, useRecoilValue } from "recoil";
@@ -7,9 +7,8 @@ import {
   chattingUserProfileImg,
   chattingRoomNumberState,
   chattingUserName,
-  chattingRoomListState,
 } from "../../recoil/atoms/chatting";
-import { getChatting } from "../../apis/chatting/chatting";
+import { getChatting, payChatting } from "../../apis/chatting/chatting";
 import Loading from "../common/Loading";
 import { useQuery } from "react-query";
 import SendIcon from "@mui/icons-material/Send";
@@ -49,7 +48,17 @@ export default function ChattingDetailModal({
 
   if (data === undefined || isLoading) return <Loading />;
 
-  console.log(userProfile);
+  const handleSecretMessageClick = (chatId: number) => {
+    payChatting(chatId)
+      .then((data) => {
+        // 여기서 해당 메시지를 갈아껴야 하는데 이게 요청의 응답은 message만 주고 secret 여부를 N으로 바꿔야함
+        console.log(data);
+      })
+      .catch((error) => {
+        alert("크레딧이 부족하거나 결제 서버에 연결 할 수 없습니다.");
+      });
+  };
+
   return (
     <div className="fixed w-[400px] h-[600px] bottom-28 right-4 rounded-xl shadow-lg bg-grayscale1 z-20 dark:bg-grayscale6">
       <header className="w-full h-10 bg-primary7 rounded-xl rounded-b-none p-2 text-grayscale1 dark:bg-primary4">
@@ -93,6 +102,7 @@ export default function ChattingDetailModal({
                     ? "mt-6 ml-[-45px] max-w-[80%] py-1 px-2 rounded-lg bg-grayscale2 dark:bg-grayscale5"
                     : "max-w-[80%] py-1 px-2 rounded-lg bg-primary1 dark:bg-primary4"
                 }
+                onClick={() => handleSecretMessageClick(item.chatId)}
               >
                 {item.secret ? "비공개된 메세지입니다." : item.message}
               </span>

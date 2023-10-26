@@ -13,3 +13,7 @@ export const getChattingList = async () => {
 export const getChatting = async (chatRoomId: number) => {
   return await authInstance.get(fixUrl + "chatting-room/" + chatRoomId);
 };
+
+export const payChatting = async (chatId: number) => {
+  return await authInstance.post(fixUrl + "message/" + chatId);
+};

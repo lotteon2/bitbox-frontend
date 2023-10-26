@@ -127,6 +127,7 @@ export default function Header() {
     onSuccess: () => {
       localStorage.removeItem("accessToken");
       setIsLogin(false);
+      // 이 시점에서 stompClient.disconnect();이걸 해야함
       alert("로그아웃 성공");
     },
     onError: (error: any) => {
