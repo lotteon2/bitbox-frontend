@@ -214,7 +214,7 @@ export default function MyProfile() {
     {
       onSuccess: (data) => {
         console.log(data);
-        setProfileImage(data);
+        setProfileImage(data.trim());
       },
       onError: () => {
         Toast.fire({
