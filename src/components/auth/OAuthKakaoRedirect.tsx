@@ -69,6 +69,9 @@ export default function OAuthKakaoRedirect() {
       1. 내가 현재 목록을 보고 있으면 리플레시
       2. 내가 상세를 보고 있는 경우
         -> 만약 내 채팅방 번호하고 일치한다면 대화창 추가한다
+        (단 대화창을 추가하는데 transmitterId랑 내가 같으면 메시지를 공개하고 
+          transmitterId랑 같지 않은데 hasSubscription이 존재하면 메시지를 공개하고
+          그외에는 비밀 메시지다)
         -> 그렇지 않으면 chatMessage+1(밑에 안읽은 메시지 수)
 
     */
