@@ -163,7 +163,7 @@ export default function MyProfile() {
       alert("사진 크기가 3MB를 넘을 수 없습니다.");
     } else {
       const formData = new FormData();
-      formData.append("file", event.target.files[0]);
+      formData.append("image", event.target.files[0]);
       imageMutation.mutate(formData);
 
       // const imgsrc = URL.createObjectURL(event.target.files[0]);
