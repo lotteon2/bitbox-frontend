@@ -12,7 +12,6 @@ import Badge from "@mui/material/Badge";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { logout } from "../../apis/auth/logout";
 import { useMutation } from "react-query";
-
 interface parameter {
   istoggled: string;
   usertoggled: string;
@@ -126,6 +125,7 @@ export default function Header() {
   const logoutMutation = useMutation(["logout"], () => logout(), {
     onSuccess: () => {
       localStorage.removeItem("accessToken");
+      localStorage.removeItem("sessionToken");
       setIsLogin(false);
       alert("로그아웃 성공");
     },
