@@ -1,33 +1,47 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "../../../css/quill.snow.css";
-import { ImageResize } from "quill-image-resize-module-ts";
 import { darkmodeState } from "../../../recoil/atoms/common";
 import { useRecoilValue } from "recoil";
 import CollectionsIcon from "@mui/icons-material/Collections";
 import { Toast } from "../../common/Toast";
-import { registerBoard } from "../../../apis/community/community";
-import { useMutation } from "react-query";
+import {
+  getCategoryList,
+  registerBoard,
+} from "../../../apis/community/community";
+import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
-
-Quill.register("modules/imageResize", ImageResize);
+import { imageUpload } from "../../../apis/common/common";
+import Loading from "../../common/Loading";
+import { Select } from "antd";
+import LoaddingGif from "../../../assets/images/Loading.gif";
 
 interface boardRegisterDto {
-  memberId: string;
-  memberName: string;
   categoryId: number;
   boardTitle: string;
   boardContents: string;
+  thumbnail: string | null;
 }
 
+interface categoryResponse {
+  categoryId: number;
+  categoryName: string;
+}
+interface selectCategories {
+  value: number;
+  label: string;
+}
 export default function DevLogRegister() {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [thumbnail, setThumbnail] = useState<string>("");
+  const [thumbnail, setThumbnail] = useState<string | null>(null);
   const [title, setTitle] = useState<string>("");
   const quillRef = useRef<any>();
   const [value, setValue] = useState<string>("");
   const isDark = useRecoilValue(darkmodeState);
   const navigate = useNavigate();
+  const [categories, setCategories] = useState<selectCategories[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const formats = [
     "header",
@@ -86,11 +100,8 @@ export default function DevLogRegister() {
       alert("사진 크기가 3MB를 넘을 수 없습니다.");
     } else {
       const formData = new FormData();
-      formData.append("file", event.target.files[0]);
-      const imgsrc = URL.createObjectURL(event.target.files[0]);
-
-      // TODO: 여기에 이미지 업로드 처리 api 붙이기
-      setThumbnail(imgsrc);
+      formData.append("image", event.target.files[0]);
+      imageMutation.mutate(formData);
     }
   };
 
@@ -115,7 +126,7 @@ export default function DevLogRegister() {
         background: isDark ? "#4D4D4D" : "#FFFFFF",
         color: isDark ? "#FFFFFF" : "#212B36",
       });
-    } else if (value === "") {
+    } else if (thumbnail === null) {
       Toast.fire({
         iconHtml:
           '<a><img style="width: 80px" src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
@@ -125,11 +136,10 @@ export default function DevLogRegister() {
       });
     } else {
       const registerDto = {
-        memberId: "",
-        memberName: "",
-        categoryId: 1, // 나중에 기수 선택박스에서 선택한 categoryId로 바꾸기
+        categoryId: selectedCategory,
         boardTitle: title,
         boardContents: value,
+        thumbnail: thumbnail,
       };
 
       registerMutation.mutate(registerDto);
@@ -138,27 +148,92 @@ export default function DevLogRegister() {
 
   const registerMutation = useMutation(
     ["registerBoard"],
-    (registerdto: boardRegisterDto) => registerBoard("데브로그", registerdto),
+    (registerdto: boardRegisterDto) => registerBoard("devlog", registerdto),
     {
       onSuccess: () => {
+        setLoading(true);
+        setTimeout(function () {
+          setLoading(false);
+          Toast.fire({
+            iconHtml:
+              '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
+            title: "등록되었습니다.",
+            background: isDark ? "#4D4D4D" : "#FFFFFF",
+            color: isDark ? "#FFFFFF" : "#212B36",
+          });
+
+          navigate("/board/devlog");
+        }, Math.floor(2000));
+      },
+      onError: () => {
         Toast.fire({
           iconHtml:
-            '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
-          title: "등록되었습니다.",
+            '<a><img style="width: 80px" src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
+          title: "오류가 발생했습니다.",
           background: isDark ? "#4D4D4D" : "#FFFFFF",
           color: isDark ? "#FFFFFF" : "#212B36",
         });
-        navigate("/board/devlog");
-      },
-      onError: () => {
-        alert("게시글 등록 중 오류가 발생했습니다.");
       },
     }
   );
+
+  // 이미지 등록
+  const imageMutation = useMutation(
+    ["imageUpload"],
+    (image: any) => imageUpload(image),
+    {
+      onSuccess: (data) => {
+        setThumbnail(data);
+      },
+      onError: () => {
+        Toast.fire({
+          iconHtml:
+            '<a><img style="width: 80px" src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
+          title: "이미지 업로드 실패",
+          background: isDark ? "#4D4D4D" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#212B36",
+        });
+      },
+    }
+  );
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["getCategoryList"],
+    queryFn: () => getCategoryList(1),
+  });
+
+  const handleChange = (value: number) => {
+    setSelectedCategory(value);
+  };
+
+  useEffect(() => {
+    if (data) {
+      let categoryTmp: selectCategories[] = [];
+      data.forEach((item: categoryResponse) => {
+        const category = {
+          value: item.categoryId,
+          label: item.categoryName,
+        };
+        categoryTmp.push(category);
+      });
+      setCategories(categoryTmp);
+      setSelectedCategory(categoryTmp[0].value);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+  if (isLoading || data === undefined) return <Loading />;
+
   return (
     <div className="mx-5 flex flex-col">
       <div className="relative">
-        <span className="absolute left-0">기수 선택 박스</span>
+        <div className="absolute top-0">
+          <Select
+            defaultValue={data[0].categoryName}
+            options={categories}
+            style={{ width: 150 }}
+            onChange={handleChange}
+          />
+        </div>
         <span className="absolute right-0">
           <button
             className="mx-3 bg-grayscale5 px-5 py-2 rounded-lg text-grayscale1 dark:bg-grayscale4"
@@ -195,7 +270,7 @@ export default function DevLogRegister() {
             onChange={handleChangeFile}
             style={{ display: "none" }}
           />
-          {thumbnail === "" ? (
+          {thumbnail === null ? (
             <div className="w-full h-full rounded-lg border-2 border-grayscale3 ">
               <div className="pl-[30%] pt-6">
                 <CollectionsIcon sx={{ fontSize: 50 }} />
@@ -225,6 +300,11 @@ export default function DevLogRegister() {
           ref={quillRef}
         />
       </div>
+      <img
+        src={LoaddingGif}
+        alt=""
+        className={loading ? "absolute top-[25%] left-[40%]" : "LoaddingGif"}
+      />
     </div>
   );
 }

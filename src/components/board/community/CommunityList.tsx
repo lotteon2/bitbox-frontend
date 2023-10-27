@@ -8,7 +8,7 @@ import BoardItem from "../BoardItem";
 export default function CommunityList() {
   const { data, isLoading } = useQuery<BoardItem>({
     queryKey: ["getBoardList"],
-    queryFn: () => getBoardList("community", 3),
+    queryFn: () => getBoardList("community", 3, 0, 10),
   });
   const navigate = useNavigate();
 

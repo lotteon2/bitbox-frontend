@@ -30,17 +30,20 @@ export default function CommunityPage() {
           </div>
         </div>
       </div>
-      <div className="w-full px-5 ml-20 mt-20">
-        <div className="bg-red-500 w-28 my-4 py-2 rounded-md text-center text-xl text-white font-normal ml-auto">
-          글쓰기 🖍
+      <div className="w-full px-5 ml-20 mt-3">
+        <div className="flex flex-row">
+          <div className="w-[80%] h-9 rounded-xl mb-10">
+            <input
+              className="w-full h-full rounded-xl border-2 border-grayscale3 outline-none px-2 mt-5"
+              type="text"
+              placeholder="🔍 검색어를 입력하세요"
+            />
+          </div>
+          <div className="bg-primary7 w-28 my-4 py-2 rounded-md text-center text-xl text-white font-normal ml-auto">
+            글쓰기 🖍
+          </div>
         </div>
-        <div className="w-full h-9 left-36 top-9 bg-gray-300 rounded-xl mb-10">
-          <input
-            className="w-full h-full rounded-xl bg-transparent outline-none px-2"
-            type="text"
-            placeholder="🔍 검색어를 입력하세요"
-          />
-        </div>
+
         {selectedCategory === 0 ? (
           <>
             <div>

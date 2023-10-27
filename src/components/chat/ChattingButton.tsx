@@ -19,7 +19,6 @@ export default function ChattingButton() {
     setIsChat((cur) => !cur);
   };
 
-  console.log(isChatRoom);
   return (
     <div className="relative">
       <div
