@@ -47,41 +47,6 @@ export default function OAuthKakaoRedirect() {
       localStorage.setItem("accessToken", data["accessToken"]);
       localStorage.setItem("sessionToken", data["sessionToken"]);
 
-      /*
-      let socket = new SockJS(
-        "http://localhost:8000/chatting-service/chattings?sessionToken=" +
-          localStorage.getItem("sessionToken")
-      );
-
-      stompClient = Stomp.over(socket);
-
-      stompClient.connect({}, (frame: any) => {
-        getConnectionList().then((data) => {
-          console.log(data);
-        });
-      });
-      */
-
-      let eventSource = new EventSource(
-        `${
-          process.env.REACT_APP_API_URL
-        }/notification-service/notifications/subscription?sessionToken=${localStorage.getItem(
-          "sessionToken"
-        )}`
-      );
-
-      eventSource.addEventListener("CONNECT", (event: any) => {
-        console.log(event.data);
-      });
-
-      eventSource.addEventListener("ATTENDANCE", (event: any) => {
-        console.log(event.data);
-      });
-
-      eventSource.addEventListener("SUBSCRIPTION", (event: any) => {
-        console.log(event.data);
-      });
-
       if (data.invited) {
         alert(
           "교육생으로 등록된 경우 이름 추가 기입이 필요합니다. 마이페이지로 이동합니다."
