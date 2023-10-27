@@ -13,7 +13,6 @@ export default function CommunityList() {
   const navigate = useNavigate();
 
   if (data === undefined || isLoading) return <Loading />;
-  console.log(data);
 
   return (
     <div>

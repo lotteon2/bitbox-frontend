@@ -14,7 +14,6 @@ export default function BoardList(categoryId: any) {
   const navigate = useNavigate();
 
   if (data === undefined || isLoading) return <Loading />;
-  console.log(data);
 
   return (
     <div>

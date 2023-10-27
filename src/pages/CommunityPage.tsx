@@ -5,7 +5,7 @@ import BoardList from "../components/board/BoardList";
 export default function CommunityPage() {
   const [selectedCategory, setSelectedCategory] = useState<number>(0);
   const subCategory = ["✨   전체", "🤔   질문있어요", "🫂   공유해요"];
-  const search: string = "";
+  // const search: string = "";
 
   return (
     <div className="flex flex-row my-10">
