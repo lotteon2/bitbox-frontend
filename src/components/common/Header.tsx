@@ -128,6 +128,7 @@ export default function Header() {
       localStorage.removeItem("sessionToken");
       setIsLogin(false);
       alert("로그아웃 성공");
+      navigate("/");
     },
     onError: (error: any) => {
       alert(error.response.data.message);
