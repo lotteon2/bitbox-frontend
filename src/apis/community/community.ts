@@ -5,7 +5,7 @@ import { authInstance } from "../utils";
  */
 export const getBoardList = async (boardType: string, categoryId: number) => {
   const { data } = await authInstance.get(
-    "/board-service/board/" + boardType + "?category=" + categoryId
+    "/board-service/board/" + boardType + "?categoryId=" + categoryId
   );
   return data;
 };
