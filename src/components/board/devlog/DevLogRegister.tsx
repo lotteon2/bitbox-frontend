@@ -9,12 +9,11 @@ import { Toast } from "../../common/Toast";
 import { registerBoard } from "../../../apis/community/community";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
+import { imageUpload } from "../../../apis/common/common";
 
 Quill.register("modules/imageResize", ImageResize);
 
 interface boardRegisterDto {
-  memberId: string;
-  memberName: string;
   categoryId: number;
   boardTitle: string;
   boardContents: string;
@@ -90,7 +89,7 @@ export default function DevLogRegister() {
       const imgsrc = URL.createObjectURL(event.target.files[0]);
 
       // TODO: 여기에 이미지 업로드 처리 api 붙이기
-      setThumbnail(imgsrc);
+      imageMutation.mutate(imgsrc);
     }
   };
 
@@ -132,26 +131,46 @@ export default function DevLogRegister() {
         boardContents: value,
       };
 
-      registerMutation.mutate(registerDto);
+      // registerMutation.mutate(registerDto);
     }
   };
 
-  const registerMutation = useMutation(
-    ["registerBoard"],
-    (registerdto: boardRegisterDto) => registerBoard("데브로그", registerdto),
+  // const registerMutation = useMutation(
+  //   ["registerBoard"],
+  //   (registerdto: boardRegisterDto) => registerBoard("devlog", registerdto),
+  //   {
+  //     onSuccess: () => {
+  //       Toast.fire({
+  //         iconHtml:
+  //           '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
+  //         title: "등록되었습니다.",
+  //         background: isDark ? "#4D4D4D" : "#FFFFFF",
+  //         color: isDark ? "#FFFFFF" : "#212B36",
+  //       });
+  //       navigate("/board/devlog");
+  //     },
+  //     onError: () => {
+  //       alert("게시글 등록 중 오류가 발생했습니다.");
+  //     },
+  //   }
+  // );
+
+  // 이미지 등록
+  const imageMutation = useMutation(
+    ["imageUpload"],
+    (image: any) => imageUpload(image),
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        setThumbnail(data);
+      },
+      onError: () => {
         Toast.fire({
           iconHtml:
-            '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
-          title: "등록되었습니다.",
+            '<a><img style="width: 80px" src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
+          title: "이미지 업로드 실패",
           background: isDark ? "#4D4D4D" : "#FFFFFF",
           color: isDark ? "#FFFFFF" : "#212B36",
         });
-        navigate("/board/devlog");
-      },
-      onError: () => {
-        alert("게시글 등록 중 오류가 발생했습니다.");
       },
     }
   );

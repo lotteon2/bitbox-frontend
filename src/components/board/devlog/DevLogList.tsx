@@ -1,6 +1,6 @@
 import { useState } from "react";
-// import { useQuery } from "react-query";
-// import { getBoardList } from "../../../apis/community/community";
+import { useQuery } from "react-query";
+import { getBoardList } from "../../../apis/community/community";
 import { getBoardDetail } from "../../../apis/community/community";
 import { useMutation } from "react-query";
 import { Modal } from "antd";
@@ -8,6 +8,7 @@ import { useRecoilValue } from "recoil";
 import { darkmodeState } from "../../../recoil/atoms/common";
 import { useNavigate } from "react-router-dom";
 import { authorityState } from "../../../recoil/atoms/common";
+import Loading from "../../common/Loading";
 
 export default function DevLogList() {
   const isDark = useRecoilValue(darkmodeState);
@@ -15,10 +16,10 @@ export default function DevLogList() {
   const navigate = useNavigate();
   const authority = useRecoilValue<string>(authorityState);
 
-  // const { data, isLoading } = useQuery({
-  //   queryKey: ["getBoardList"],
-  //   queryFn: () => getBoardList("데브로그", 1),
-  // });
+  const { data, isLoading } = useQuery({
+    queryKey: ["getBoardList"],
+    queryFn: () => getBoardList("devlog", 1),
+  });
 
   const handleDevlogDetail = (boardId: number) => {
     setIsModalOpen(true);
@@ -41,10 +42,12 @@ export default function DevLogList() {
     setIsModalOpen(false);
   };
 
-  // if (isLoading || data === undefined) return null;
+  if (isLoading || data === undefined) return <Loading />;
 
+  console.log(data);
   return (
     <div className="flex flex-row flex-wrap gap-5 mt-10">
+      <div></div>
       <div className="w-[400px] h-[500px] bg-grayscale2 relative group">
         <img
           className="w-full h-full cursor-pointe"

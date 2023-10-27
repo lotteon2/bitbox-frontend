@@ -207,7 +207,7 @@ export default function MyProfile() {
     setName(e.target.value);
   };
 
-  // 내 정보 수정 API 처리
+  // 이미지 등록 API 처리
   const imageMutation = useMutation(
     ["imageUpload"],
     (image: any) => imageUpload(image),
