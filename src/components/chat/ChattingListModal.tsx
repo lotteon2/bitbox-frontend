@@ -7,6 +7,7 @@ import {
   chattingUserProfileImg,
   chattingRoomNumberState,
   chattingUserName,
+  chattingUserId,
 } from "../../recoil/atoms/chatting";
 
 interface ModalDefaultType {
@@ -29,6 +30,7 @@ export default function ChattingListModal({
   const [chatList, setChatList] = useState<ChattingListItem[]>([]);
   const setIsChat = useSetRecoilState<boolean>(chatroomState);
   const setChattingUserName = useSetRecoilState<string>(chattingUserName);
+  const setChattingUserId = useSetRecoilState<string>(chattingUserId);
   const setChattingUserProfileImg = useSetRecoilState<string>(
     chattingUserProfileImg
   );
@@ -52,7 +54,7 @@ export default function ChattingListModal({
           />
         </div>
       </header>
-      <div className="p-4 border-b-[1px] dark:text-grayscale1">
+      <div className="h-[550px] overflow-scroll">
         {chatList.map((item) => (
           <div
             key={item.chatRoomId}
@@ -60,10 +62,11 @@ export default function ChattingListModal({
               handleChatRoomClick(
                 item.chatRoomId,
                 item.otherUserProfileImg,
-                item.otherUserName
+                item.otherUserName,
+                item.otherUserId
               )
             }
-            className="flex flex-row gap-3"
+            className="p-4 border-b-[1px] dark:text-grayscale1 flex flex-row gap-3"
           >
             <img
               src={item.otherUserProfileImg}
@@ -89,11 +92,13 @@ export default function ChattingListModal({
   function handleChatRoomClick(
     chatRoomId: number,
     otherUserProfileImg: string,
-    otherUserName: string
+    otherUserName: string,
+    otherUserId: string
   ) {
     setIsChat(false);
     setChattingUserProfileImg(otherUserProfileImg);
     setChattingRoomNumberState(chatRoomId);
     setChattingUserName(otherUserName);
+    setChattingUserId(otherUserId);
   }
 }

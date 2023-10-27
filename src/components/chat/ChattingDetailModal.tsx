@@ -6,21 +6,25 @@ import { chatroomState, darkmodeState } from "../../recoil/atoms/common";
 import {
   chattingUserProfileImg,
   chattingRoomNumberState,
+  chattingUserId,
   chattingUserName,
   chattingChangeState,
-  chattingClient,
 } from "../../recoil/atoms/chatting";
 import { getChatting, payChatting } from "../../apis/chatting/chatting";
 import Loading from "../common/Loading";
 import { useMutation, useQuery } from "react-query";
 import SendIcon from "@mui/icons-material/Send";
 import Swal from "sweetalert2";
+import { getMyInfo } from "../../apis/member/member";
+import SockJS from "sockjs-client";
+import { Client } from "stompjs";
+import Stomp from "stompjs";
 
 interface ModalDefaultType {
   onClickToggleModal: () => void;
 }
 
-interface ChattingListItem {
+interface chatting {
   location: string;
   message: string;
   chatId: number;
@@ -33,25 +37,31 @@ export default function ChattingDetailModal({
   const setIsChat = useSetRecoilState(chatroomState);
 
   const handleChatState = () => {
+    stompClient?.disconnect(() => {});
     setIsChat((cur: boolean) => !cur);
   };
   const isDark = useRecoilValue<boolean>(darkmodeState);
   const userProfile = useRecoilValue(chattingUserProfileImg);
   const userName = useRecoilValue<string>(chattingUserName);
   const chattingRoomNumber = useRecoilValue(chattingRoomNumberState);
-  const chattingUser = useRecoilValue(chattingUserName);
-  const [chattingList, setChattingRoomListState] = useState<ChattingListItem[]>(
-    []
-  );
+  const chattingUser = useRecoilValue(chattingUserId);
   const [isChange, setIsChange] = useRecoilState<boolean>(chattingChangeState);
-  const stompClient = useRecoilValue(chattingClient);
+  const [stompClient, setStompClient] = useState<null | Client>(null);
+  const [myInfoData, setMyInfoData] = useState(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["getChatting", chattingRoomNumber, isChange],
     queryFn: () => getChatting(chattingRoomNumber),
   });
 
-  const handleSecretMessageClick = (chatId: number) => {
+  const [inputValue, setInputValue] = useState("");
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+  };
+
+  const handleSecretMessageClick = (chatId: number, isScrect: boolean) => {
+    if (!isScrect) return;
+
     Swal.fire({
       title: '<p style="text-align: center">크레딧을 사용하시겠습니까?</p>',
       text: "구독권 정보가 없어 메세지 확인을 위해 크레딧을 사용해야 합니다. 메세지당 1 크레딧이 차감됩니다.",
@@ -88,11 +98,68 @@ export default function ChattingDetailModal({
     }
   );
 
+  const myInfo = useMutation(["getMyInfo"], () => getMyInfo(), {
+    onSuccess: (user) => {
+      setMyInfoData(user.memberId);
+      let socket = new SockJS(
+        "http://localhost:8000/chatting-service/chattings"
+      );
+      const stompClient = Stomp.over(socket);
+      stompClient.connect({}, (frame: any) => {
+        stompClient.subscribe(
+          "/room/" + chattingRoomNumber,
+          function (chatMessage: any) {
+            const chatData = JSON.parse(chatMessage.body);
+
+            let secret =
+              chatData.hasSubscription ||
+              chatData.transmitterId === user.memberId
+                ? false
+                : true;
+            let location = chatData.transmitterId === user.memberId ? "R" : "L";
+            let chatId = chatData.chatId;
+            let msg = secret ? "" : chatData.message;
+
+            const message = {
+              location: location,
+              message: msg,
+              chatId: chatId,
+              secret: secret,
+            };
+
+            console.log(message);
+          }
+        );
+        setStompClient(stompClient);
+      });
+    },
+    onError: () => {},
+  });
+
+  const sendMessage = () => {
+    if (inputValue === "") {
+      return;
+    }
+
+    setInputValue("");
+
+    stompClient!.send(
+      "/send/" + chattingRoomNumber,
+      {},
+      JSON.stringify({
+        chatContent: inputValue,
+        transmitterId: myInfoData,
+        receiverId: chattingUser,
+      })
+    );
+  };
+
   useEffect(() => {
-    console.log(stompClient);
-  }, [stompClient]);
+    myInfo.mutate();
+  }, []);
 
   if (data === undefined || isLoading) return <Loading />;
+
   return (
     <div className="fixed w-[400px] h-[600px] bottom-28 right-4 rounded-xl shadow-lg bg-grayscale1 z-20 dark:bg-grayscale6">
       <header className="w-full h-10 bg-primary7 rounded-xl rounded-b-none p-2 text-grayscale1 dark:bg-primary4">
@@ -107,11 +174,11 @@ export default function ChattingDetailModal({
           />
         </div>
       </header>
-      <div className="flex flex-col h-[524px] gap-2 p-2 dark:text-grayscale1">
-        {data.data.map((item: any) => {
+      <div className="flex flex-col h-[524px] gap-2 p-2 overflow-scroll dark:text-grayscale1">
+        {data.data.map((item: chatting, index: number) => {
           return (
             <div
-              key={item.chatId}
+              key={index}
               className={
                 item.location === "L"
                   ? "flex justify-start"
@@ -136,9 +203,11 @@ export default function ChattingDetailModal({
                     ? "mt-6 ml-[-45px] max-w-[80%] py-1 px-2 rounded-lg bg-grayscale2 dark:bg-grayscale5"
                     : "max-w-[80%] py-1 px-2 rounded-lg bg-primary1 dark:bg-primary4"
                 }
-                onClick={() => handleSecretMessageClick(item.chatId)}
+                onClick={() =>
+                  handleSecretMessageClick(item.chatId, item.secret)
+                }
               >
-                {item.secret ? "비공개된 메세지입니다." : item.message}
+                {item.message === "" ? "비공개된 메세지입니다." : item.message}
               </span>
             </div>
           );
@@ -148,9 +217,11 @@ export default function ChattingDetailModal({
         <input
           type="text"
           className="w-[90%] py-1 border-2 border-r-0 border-grayscale4 rounded-lg rounded-r-none dark:bg-grayscale6 dark:border-grayscale1"
+          value={inputValue}
+          onChange={handleInputChange}
         />
         <button className="w-[10%] py-1 bg-primary7 dark:bg-primary4 rounded-lg rounded-l-none">
-          <SendIcon sx={{ color: "#fff" }} />
+          <SendIcon sx={{ color: "#fff" }} onClick={sendMessage} />
         </button>
       </footer>
     </div>

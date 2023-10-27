@@ -2,10 +2,6 @@ import { authInstance } from "../utils";
 
 const fixUrl = "/chatting-service/";
 
-export const getConnectionList = async () => {
-  return await authInstance.get(fixUrl + "connection/list");
-};
-
 export const getChattingList = async () => {
   return await authInstance.get(fixUrl + "chatting-room");
 };

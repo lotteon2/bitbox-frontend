@@ -31,6 +31,15 @@ export const chattingUserProfileImg = atom({
 });
 
 /**
+ * 클릭한 유저아이디
+ */
+export const chattingUserId = atom({
+  key: "chattingUserId",
+  default: [],
+  effects_UNSTABLE: [persistAtom],
+});
+
+/**
  * 클릭한 유저명
  */
 export const chattingUserName = atom({
@@ -44,12 +53,6 @@ export const chattingUserName = atom({
  */
 export const chattingRoomNumberState = atom({
   key: "chattingRoomNumberState",
-  default: null,
-  effects_UNSTABLE: [persistAtom],
-});
-
-export const chattingClient = atom({
-  key: "chattingClient",
   default: null,
   effects_UNSTABLE: [persistAtom],
 });
