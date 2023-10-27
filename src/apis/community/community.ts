@@ -1,4 +1,3 @@
-import { async } from "q";
 import { authInstance } from "../utils";
 
 /**
@@ -6,9 +5,21 @@ import { authInstance } from "../utils";
  * @param boardType
  * @param categoryId
  */
-export const getBoardList = async (boardType: string, categoryId: number) => {
+export const getBoardList = async (
+  boardType: string,
+  categoryId: number,
+  page: number,
+  size: number
+) => {
   const { data } = await authInstance.get(
-    "/board-service/board/" + boardType + "?categoryId=" + categoryId
+    "/board-service/board/" +
+      boardType +
+      "?categoryId=" +
+      categoryId +
+      "&page=" +
+      page +
+      "&size=" +
+      size
   );
   return data;
 };
@@ -19,7 +30,7 @@ export const getBoardList = async (boardType: string, categoryId: number) => {
  */
 export const getCategoryList = async (categoryId: number) => {
   const { data } = await authInstance.get(
-    "/board-service/board/categoryId=" + categoryId
+    "/board-service/board/category?categoryId=" + categoryId
   );
   return data;
 };
@@ -138,7 +149,7 @@ interface boardModifyRequestDto {
   boardContents: string;
   thumbnail: string | null;
 }
-export const modifyboard = async (
+export const modifyBoard = async (
   boardType: string,
   boardModifyRequestDto: boardModifyRequestDto
 ) => {
