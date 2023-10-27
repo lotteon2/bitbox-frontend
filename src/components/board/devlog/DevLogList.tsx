@@ -156,7 +156,7 @@ export default function DevLogList() {
                     {item.boardTitle}
                   </p>
                   <div
-                    className="text-xl text-grayscale1 mt-5 h-[200px] overflow-hidden"
+                    className="text-xl text-grayscale1 mt-5 max-h-[200px] overflow-hidden"
                     dangerouslySetInnerHTML={{
                       __html: item.boardContents,
                     }}
