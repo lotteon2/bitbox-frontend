@@ -6,10 +6,9 @@ import Loading from "../common/Loading";
 import BoardCategory from "./BoardCategory";
 
 export default function BoardList(categoryId: any) {
-  console.log(categoryId);
   const { data, isLoading } = useQuery<BoardItem>({
     queryKey: ["getBoardList"],
-    queryFn: () => getBoardList("community", categoryId.categoryId),
+    queryFn: () => getBoardList("community", categoryId.categoryId, 0, 10),
   });
   const navigate = useNavigate();
 
