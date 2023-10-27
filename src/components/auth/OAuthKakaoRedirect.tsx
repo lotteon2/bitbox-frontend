@@ -70,18 +70,16 @@ export default function OAuthKakaoRedirect() {
         )}`
       );
 
-      console.log(eventSource);
-
       eventSource.addEventListener("CONNECT", (event: any) => {
-        console.log(event);
+        console.log(event.data);
       });
 
       eventSource.addEventListener("ATTENDANCE", (event: any) => {
-        console.log(event);
+        console.log(event.data);
       });
 
       eventSource.addEventListener("SUBSCRIPTION", (event: any) => {
-        console.log(event);
+        console.log(event.data);
       });
 
       if (data.invited) {
