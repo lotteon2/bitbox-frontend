@@ -1,17 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faUser, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { darkmodeState, loginState } from "../../recoil/atoms/common";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  useRecoilValue,
+  useSetRecoilState,
+  useRecoilState,
+  useResetRecoilState,
+} from "recoil";
 import NotificationDropDown from "../notification/NotificationDropDown";
 import Logo from "../../assets/images/logo.png";
 import LogoDark from "../../assets/images/logo_dark.png";
 import Badge from "@mui/material/Badge";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { logout } from "../../apis/auth/logout";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
+import { getUnreadNotificationsCount } from "../../apis/noti/notification";
+import {
+  notiCountState,
+  notiEventState,
+  notiShowState,
+} from "../../recoil/atoms/noti";
+import Loading from "./Loading";
+
 interface parameter {
   istoggled: string;
   usertoggled: string;
@@ -100,12 +113,27 @@ const HeaderStyle = styled.div<parameter>`
 export default function Header() {
   const [isToggled, setIsToggled] = useState<boolean>(false);
   const [userToggled, setUserToggled] = useState<boolean>(false);
+
   const isLogin = useRecoilValue(loginState);
-  const setIsLogin = useSetRecoilState(loginState);
+  const resetIsLogin = useResetRecoilState(loginState);
   const isDark = useRecoilValue<boolean>(darkmodeState);
+  const setNotiShow = useSetRecoilState<boolean>(notiShowState);
+  const [notiCount, setNotiCount] = useRecoilState<number>(notiCountState);
+  const notiEvent = useRecoilValue(notiEventState);
 
   // const defaultUserMenuList = ["로그인", "회원가입"];  // const authUserMenuList = ["마이페이지", "로그아웃"];
   const navigate = useNavigate();
+
+  const notiCountMutate = useMutation(
+    ["countNoti", notiEvent],
+    () => getUnreadNotificationsCount(),
+    {
+      onSuccess: (data) => {
+        setNotiCount(data);
+      },
+      onError: () => {},
+    }
+  );
 
   const activeStyle = {
     borderBottom: "3px solid #F92525",
@@ -126,7 +154,7 @@ export default function Header() {
     onSuccess: () => {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("sessionToken");
-      setIsLogin(false);
+      resetIsLogin();
       alert("로그아웃 성공");
       navigate("/");
     },
@@ -135,6 +163,19 @@ export default function Header() {
       console.log(error);
     },
   });
+
+  useEffect(() => {
+    if (isLogin) {
+      console.log("event mutate from login state");
+      notiCountMutate.mutate();
+    }
+
+    if (notiEvent) {
+      console.log("event mutate from event state");
+      notiCountMutate.mutate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLogin, notiEvent]);
 
   return (
     <HeaderStyle
@@ -220,18 +261,33 @@ export default function Header() {
         </li>
       </ul>
 
+      {/*
+        버튼 외에 다른데 누르면 알림 드롭다운 꺼지게 하고 싶음, 
+        알림 드롭다운 위치가 고정이 아니라 버튼 따라가게 하고 싶음, 
+        알림 무한 스크롤 해야 함.
+      */}
+
       {/* User 메뉴 리스트 */}
       {isLogin ? (
         <ul className="header__right">
-          {/* TODO: 여기 개수 추가 */}
           <NotificationDropDown />
-          <Badge badgeContent={1} color="warning">
-            {isDark ? (
-              <NotificationsIcon fontSize="medium" sx={{ color: "#FFFFFF" }} />
-            ) : (
-              <NotificationsIcon fontSize="medium" sx={{ color: "#000000" }} />
-            )}
-          </Badge>
+          <li>
+            <button onClick={() => setNotiShow((cur) => !cur)}>
+              <Badge badgeContent={notiCount} color="warning">
+                {isDark ? (
+                  <NotificationsIcon
+                    fontSize="medium"
+                    sx={{ color: "#FFFFFF" }}
+                  />
+                ) : (
+                  <NotificationsIcon
+                    fontSize="medium"
+                    sx={{ color: "#000000" }}
+                  />
+                )}
+              </Badge>
+            </button>
+          </li>
           <li className="font-light dark:text-grayscale1">
             <NavLink to="/mypage">마이페이지</NavLink>
           </li>

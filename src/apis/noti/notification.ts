@@ -26,7 +26,7 @@ export const deleteAllNotifications = async () => {
   return data;
 };
 
-export const deleteNotification = async (notificationId: string) => {
+export const deleteNotification = async (notificationId: number) => {
   const { data } = await authInstance.delete(
     `${NOTIFICATION_PATH}/${notificationId}`
   );
@@ -40,10 +40,10 @@ export const readAllNotifications = async () => {
   return data;
 };
 
-export const readNotification = async (notificationId: string) => {
-  const { data } = await authInstance.put(`
-        ${NOTIFICATION_PATH}/${notificationId}
-    `);
+export const readNotification = async (notificationId: number) => {
+  const { data } = await authInstance.put(
+    `${NOTIFICATION_PATH}/${notificationId}`
+  );
 
   return data;
 };
