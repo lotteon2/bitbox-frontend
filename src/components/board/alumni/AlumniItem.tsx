@@ -19,7 +19,7 @@ interface commentRegisterRequestDto {
   masterCommentId: number | null;
 }
 
-export default function ReviewItem() {
+export default function AlumniItem() {
   const boardId = useParams();
   const isDark = useRecoilValue(darkmodeState);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -83,7 +83,7 @@ export default function ReviewItem() {
   return (
     <div className="w-full h-full">
       <p className="text-grayscale4">
-        선배들의 이야기 {" > " + data.boardResponse.categoryName}
+        알럼나이 {" > " + data.boardResponse.categoryName}
       </p>
       <br />
       <br />
