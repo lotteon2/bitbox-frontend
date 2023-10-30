@@ -10,8 +10,6 @@ import {
 import { oauthKakao } from "../../apis/auth/oauthKakao";
 import { useNavigate } from "react-router-dom";
 
-import Loading from "../common/Loading";
-
 interface memberInfo {
   memberId: string;
   remainCredit: number;
