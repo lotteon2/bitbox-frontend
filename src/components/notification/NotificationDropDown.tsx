@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { loginState } from "../../recoil/atoms/common";
+import { darkmodeState, loginState } from "../../recoil/atoms/common";
 import { notiChangedState, notiShowState } from "../../recoil/atoms/noti";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { notiEventState } from "../../recoil/atoms/noti";
+
+import ClearIcon from "@mui/icons-material/Clear";
 
 import {
   getAllNotifications,
@@ -24,6 +26,7 @@ export default function NotificationDropDown() {
   const isLogin = useRecoilValue<boolean>(loginState);
   const [notiEvent, setNotiEvent] = useRecoilState<boolean>(notiEventState);
   const [notiShow, setNotiShow] = useRecoilState<boolean>(notiShowState);
+  const isDark = useRecoilValue<boolean>(darkmodeState);
   const [notiChanged, setNotiChanged] =
     useRecoilState<boolean>(notiChangedState);
 
@@ -174,42 +177,41 @@ export default function NotificationDropDown() {
 
   return notiShow ? (
     <div
-      className="absolute top-20 right-80 w-70 h-[500px] z-50 text-center
-rounded-md drop-shadow-md shadow-lg font-light bg-grayscale1 text-grayscale7 dark:bg-grayscale7 dark:text-grayscale1"
+      className="absolute top-20 2xl:right-80 xl:right-20 lg:right-10 md:right-10 sm:right-10 w-80 h-[500px] z-50 text-center 
+    rounded-md drop-shadow-md shadow-lg font-light bg-grayscale1 text-grayscale7 dark:bg-grayscale7 dark:text-grayscale1"
     >
       {notifications === undefined || notifications.length === 0 ? (
-        <div className="py-3">
-          <p>미확인 알림이 없습니다</p>
-        </div>
+        <div className="h-full pt-[230px]">미확인 알림이 없습니다</div>
       ) : (
         <>
-          <div className="h-[465px] overflow-scroll py-3 items-stretch">
+          <div className="h-[465px] overflow-scroll py-1">
             {notifications.map((noti: Notification) => (
               <div
-                className={`flex border-b-[1px] border-solid ${
+                className={`flex border-b-[1px] px-6 items-center border-solid ${
                   noti.read ? "text-grayscale4" : ""
                 }`}
               >
                 <div
-                  className="gap-2 py-2"
+                  className="w-11/12 py-2 float-left"
                   onClick={() => {
                     readNoti(noti);
                   }}
                 >
                   <a href={noti.notificationLink}>
-                    <p>{noti.notificationInfo}</p>
+                    <p className="truncate ...">{noti.notificationInfo}</p>
                   </a>
                 </div>
-                <button
-                  className="font-bold text-grayscale7"
-                  onClick={() => deleteNoti(noti.notificationId)}
-                >
-                  x
-                </button>
+                <div className="w-1/12">
+                  <ClearIcon
+                    className="cursor-pointer"
+                    sx={{ color: isDark ? "white" : "black" }}
+                    onClick={() => deleteNoti(noti.notificationId)}
+                  ></ClearIcon>
+                </div>
               </div>
             ))}
           </div>
-          <div className="float-right text-grayscale5 text-bold">
+          <div className="float-right text-grayscale5 text-bold pr-4">
             <button className="mr-2" onClick={() => readAllNoti()}>
               전체 읽음
             </button>
