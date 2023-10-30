@@ -119,7 +119,13 @@ export default function BoardRegister() {
             color: isDark ? "#FFFFFF" : "#212B36",
           });
 
-          navigate("/board/review");
+          navigate(
+            masterBoardId === "2"
+              ? "/board/alumni"
+              : masterBoardId === "3"
+              ? "/board/community"
+              : "/board/review"
+          );
         }, Math.floor(2000));
       },
       onError: () => {
@@ -151,7 +157,7 @@ export default function BoardRegister() {
         );
         try {
           const url = await imageUpload(formData);
-          console.log(url);
+
           editor.deleteText(range.index, 1);
           editor.insertEmbed(range.index, "image", url);
           editor.setSelection(range.index + 1);

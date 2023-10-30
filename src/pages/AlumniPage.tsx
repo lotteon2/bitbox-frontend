@@ -1,42 +1,69 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery } from "react-query";
+import { getCategoryList } from "../apis/community/community";
+import Loading from "./Loading";
+import AlumniList from "../components/board/alumni/AlumniList";
 
-export default function AlumniPage() {
-  const [selectedCategory, setSelectedCategory] = useState<number>(0);
-  const subCategory = ["✨   전체", "🔊   모두모여라"];
-  // TODO: 여기 생성된 반 전체 개수 가져와서 subCategory에 N기 게시판 넣어주기
-  const classCount = 2;
-  for (let i = 1; i <= classCount; i++) {
-    subCategory.push("❤️   " + i + "기 모여라");
-  }
+interface categoryType {
+  categoryId: number;
+  categoryName: string;
+}
+
+export default function ReviewPage() {
+  const [categories, setSelectedCategory] = useState<number>(0);
+  const [allCategories, setAllCategories] = useState<categoryType[]>([]);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["getCategoryListAlumni"],
+    queryFn: () => getCategoryList(2),
+  });
+
+  useEffect(() => {
+    if (data && categories === 0) {
+      const tmpCategories: categoryType[] = [];
+      tmpCategories.push({
+        categoryId: 2,
+        categoryName: "✨ 전체",
+      });
+      data.forEach((item: categoryType) => {
+        const category = {
+          categoryId: item.categoryId,
+          categoryName: item.categoryName,
+        };
+        tmpCategories.push(category);
+      });
+
+      setAllCategories(tmpCategories);
+      setSelectedCategory(2);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+  if (data === undefined || isLoading) return <Loading />;
 
   return (
     <div className="flex flex-row my-10">
-      <div className="w-[230px] mr-10">
+      <div className="w-[300px] mr-10">
         <div className="w-full h-full dark:text-grayscale1">
           <div className="font-extrabold text-3xl ml-2">알럼나이</div>
-          {/* TODO: 나중에 여기 카테고리 PK를 key 값으로 설정 후 index를 갈아 끼워줘야됨 */}
           <div className="font-bold text-2xl mt-10 cursor-pointer">
-            {subCategory.map((sub: string, index: number) => (
+            {allCategories.map((item: categoryType) => (
               <div
-                key={index}
+                key={item.categoryId}
                 className={
-                  index === selectedCategory
+                  item.categoryId === categories
                     ? "py-5 px-10 rounded-xl bg-primary1 dark:bg-primary4"
                     : "py-5 px-10 rounded-xl"
                 }
-                onClick={() => setSelectedCategory(index)}
+                onClick={() => setSelectedCategory(item.categoryId)}
               >
-                {sub}
+                {item.categoryName}
               </div>
             ))}
           </div>
         </div>
       </div>
-      {selectedCategory === 0
-        ? "전체"
-        : selectedCategory === 1
-        ? "모두 모여라"
-        : "N기 모여라"}
+      <AlumniList categoryId={categories} />
     </div>
   );
 }
