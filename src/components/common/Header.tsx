@@ -3,20 +3,14 @@ import styled from "styled-components";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faUser, faTimes } from "@fortawesome/free-solid-svg-icons";
-import NotificationDropDown from "../notification/NotificationDropDown";
-import {
-  authorityState,
-  darkmodeState,
-  loginState,
-  memberState,
-} from "../../recoil/atoms/common";
+import { darkmodeState, loginState } from "../../recoil/atoms/common";
 import {
   useRecoilValue,
   useSetRecoilState,
   useRecoilState,
   useResetRecoilState,
 } from "recoil";
-
+import NotificationDropDown from "../notification/NotificationDropDown";
 import Logo from "../../assets/images/logo.png";
 import LogoDark from "../../assets/images/logo_dark.png";
 import Badge from "@mui/material/Badge";
@@ -61,10 +55,6 @@ const HeaderStyle = styled.div<parameter>`
   .header__right {
     list-style: none;
     display: flex;
-  }
-
-  .header__right div {
-    margin: 0 1rem;
   }
 
   li {
@@ -122,8 +112,6 @@ export default function Header() {
 
   const isLogin = useRecoilValue(loginState);
   const resetIsLogin = useResetRecoilState(loginState);
-  const resetMemberState = useResetRecoilState(memberState);
-  const resetAuthority = useResetRecoilState(authorityState);
   const isDark = useRecoilValue<boolean>(darkmodeState);
   const setNotiShow = useSetRecoilState<boolean>(notiShowState);
   const [notiCount, setNotiCount] = useRecoilState<number>(notiCountState);
@@ -163,9 +151,7 @@ export default function Header() {
     onSuccess: () => {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("sessionToken");
-      resetAuthority();
       resetIsLogin();
-      resetMemberState();
       alert("로그아웃 성공");
       navigate("/");
     },
