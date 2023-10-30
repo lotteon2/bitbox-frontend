@@ -7,7 +7,7 @@ import BoardCategory from "./BoardCategory";
 
 export default function BoardList(categoryId: any) {
   const { data, isLoading } = useQuery<BoardItem>({
-    queryKey: ["getBoardList"],
+    queryKey: ["getBoardList", categoryId.categoryId],
     queryFn: () => getBoardList("community", categoryId.categoryId, 0, 10),
   });
   const navigate = useNavigate();

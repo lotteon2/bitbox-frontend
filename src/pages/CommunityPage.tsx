@@ -1,10 +1,38 @@
 import React, { useState } from "react";
+import { useQuery } from "react-query";
 import CommunityList from "../components/board/community/CommunityList";
 import BoardList from "../components/board/BoardList";
+import { getCategoryList } from "../apis/community/community";
+import Loading from "../components/common/Loading";
+import Category from "../components/board/Category";
 
 export default function CommunityPage() {
-  const [selectedCategory, setSelectedCategory] = useState<number>(0);
-  const subCategory = ["✨   전체", "🤔   질문있어요", "🫂   공유해요"];
+  const [selectedCategory, setSelectedCategory] = useState<number>(3);
+  const { data, isLoading } = useQuery<Category[]>({
+    queryKey: ["getCategoryList"],
+    queryFn: () => getCategoryList(3),
+  });
+  // const navigate = useNavigate();
+
+  if (data === undefined || isLoading) return <Loading />;
+  // const subCategory = ["✨   전체", "🤔   질문있어요", "🫂   공유해요"];
+  const subCategory = [
+    { name: "✨   전체", id: 3 },
+    { name: "🤔   질문있어요", id: 0 },
+    { name: "🫂   공유해요", id: 0 },
+  ];
+
+  if (data) {
+    subCategory.length = 0;
+    subCategory.push({ name: "✨   전체", id: 3 }); // 기본 카테고리를 다시 추가합니다.
+    data.forEach((category) => {
+      subCategory.push({
+        name: String(category.categoryName),
+        id: category.categoryId,
+      });
+    });
+  }
+
   // const search: string = "";
 
   return (
@@ -14,7 +42,7 @@ export default function CommunityPage() {
           <div className="font-extrabold text-3xl ml-2">커뮤니티</div>
           {/* TODO: 나중에 여기 카테고리 PK를 key 값으로 설정 후 index를 갈아 끼워줘야됨 */}
           <div className="font-bold text-2xl mt-10 cursor-pointer">
-            {subCategory.map((sub: string, index: number) => (
+            {subCategory.map((sub, index) => (
               <div
                 key={index}
                 className={
@@ -22,9 +50,9 @@ export default function CommunityPage() {
                     ? "py-5 px-10 rounded-xl bg-primary1 dark:bg-primary4"
                     : "py-5 px-10 rounded-xl"
                 }
-                onClick={() => setSelectedCategory(index)}
+                onClick={() => setSelectedCategory(sub.id)}
               >
-                {sub}
+                {sub.name}
               </div>
             ))}
           </div>
@@ -43,8 +71,10 @@ export default function CommunityPage() {
             글쓰기 🖍
           </div>
         </div>
-
-        {selectedCategory === 0 ? (
+        <div>
+          <BoardList categoryId={selectedCategory} />
+        </div>
+        {/* {selectedCategory === 0 ? (
           <>
             <div>
               <CommunityList />
@@ -55,25 +85,14 @@ export default function CommunityPage() {
             <div>
               <BoardList categoryId={5} />
             </div>
-            {/* <div className="h-0.5 my-5 bg-gray-300"></div>
-              <div className="bg-sky-700 w-32 my-4 py-1 px-4 rounded-md text-center text-xl text-white font-thin">
-                질문있어요
-              </div>
-              <div className="text-lg font-medium m-2">게시글 제목</div>
-              <div className="text-lg font-light mx-2">게시글 내용</div> */}
           </>
         ) : (
           <>
             <div>
-              <div className="h-0.5 my-5 bg-gray-300"></div>
-              <div className="bg-sky-900 w-32 my-4 py-1 px-4 rounded-md text-center text-xl text-white font-thin">
-                공유해요
-              </div>
-              <div className="text-lg font-medium m-2">게시글 제목</div>
-              <div className="text-lg font-light mx-2">게시글 내용</div>
+              <BoardList categoryId={6} />
             </div>
           </>
-        )}
+        )} */}
       </div>
     </div>
   );
