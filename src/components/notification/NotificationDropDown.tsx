@@ -148,7 +148,10 @@ export default function NotificationDropDown() {
       onSuccess: (data) => {
         setNotifications(data);
       },
-      onError: () => alert("오류"),
+      onError: (error: any) => {
+        alert(error.response.data.message);
+        console.log(error);
+      },
     }
   );
 
