@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import { getCategoryList } from "../apis/community/community";
 import Loading from "./Loading";
+
 import CommunityList from "../components/board/community/CommunityList";
 
 interface categoryType {
@@ -14,7 +15,7 @@ export default function CommunityPage() {
   const [allCategories, setAllCategories] = useState<categoryType[]>([]);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["getCategoryListAlumni"],
+    queryKey: ["getCategoryListCommunity"],
     queryFn: () => getCategoryList(3),
   });
 

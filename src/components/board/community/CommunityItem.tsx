@@ -75,15 +75,15 @@ export default function CommunityItem() {
 
   const { data, isLoading } = useQuery({
     queryKey: ["getBoardDetail", isChange],
-    queryFn: () => getBoardDetail("senior", Number(boardId.boardId)),
+    queryFn: () => getBoardDetail("community", Number(boardId.boardId)),
   });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   if (data === undefined || isLoading) return <Loading />;
-  console.log(data);
+
   return (
     <div className="w-full h-full">
       <p className="text-grayscale4">
-        선배들의 이야기 {" > " + data.boardResponse.categoryName}
+        커뮤니티 {" > " + data.boardResponse.categoryName}
       </p>
       <br />
       <br />
