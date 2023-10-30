@@ -22,6 +22,7 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { imageUpload } from "../../apis/common/common";
 import { authInstance } from "../../apis/utils";
+import Loading from "../../pages/Loading";
 
 interface memberInfoUpdateDto {
   memberNickname: string | null;
@@ -86,7 +87,15 @@ export default function MyProfile() {
     setIsModalOpen(true);
     e.stopPropagation();
     setNickname("");
-    setProfileImage(data.memberProfileImg);
+    if (
+      authority === "ADMIN" ||
+      authority === "MANAGER" ||
+      authority === "TEACHER"
+    ) {
+      setProfileImage(data.adminProfileImg);
+    } else {
+      setProfileImage(data.memberProfileImg);
+    }
   };
 
   // Click 저장
@@ -208,7 +217,7 @@ export default function MyProfile() {
     setName(e.target.value);
   };
 
-  // 내 정보 수정 API 처리
+  // 이미지 등록 API 처리
   const imageMutation = useMutation(
     ["imageUpload"],
     (image: any) => imageUpload(image),
@@ -318,12 +327,13 @@ export default function MyProfile() {
   );
   // 회원 전역 변수 저장
   useEffect(() => {
-    if (data != null) {
+    if (data) {
       if (
         authority === "ADMIN" ||
         authority === "MANAGER" ||
         authority === "TEACHER"
       ) {
+        console.log(data.adminProfileImg);
         setProfileImage(data.adminProfileImg);
       } else {
         if (memberInfo.classId === -1) {
@@ -351,11 +361,10 @@ export default function MyProfile() {
         }
       }
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
-  if (isLoading || data === undefined) return null;
+  if (isLoading || data === undefined) return <Loading />;
 
   return (
     <>

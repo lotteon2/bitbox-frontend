@@ -15,10 +15,10 @@ export default function DevLogPage() {
         authority === "MANAGER" ||
         authority === "TEACHER" ? (
           <button
-            className="bg-primary7 px-5 py-2 rounded-lg text-grayscale1 dark:bg-primary4 hover:bg-primary5 dark:hover:bg-primary5"
+            className="bg-red-500 w-28 my-4 py-2 rounded-md text-center text-xl text-white font-normal ml-auto dark:bg-primary4"
             onClick={() => navigate("/board/devlog/register")}
           >
-            글쓰기
+            글쓰기 🖍
           </button>
         ) : (
           ""
