@@ -212,6 +212,7 @@ export default function BoardRegister() {
       setAllCategories(categoryTmp);
       setSelectedCategory(data[0].categoryId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
   if (data === undefined || isLoading) return <Loading />;
 

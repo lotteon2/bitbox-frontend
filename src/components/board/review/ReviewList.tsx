@@ -16,7 +16,6 @@ import { darkmodeState } from "../../../recoil/atoms/common";
 import Loading from "../../../pages/Loading";
 import { useNavigate } from "react-router";
 import CategoryBadge from "../CategoryBadge";
-import { isTemplateElement } from "@babel/types";
 
 interface boardResponse {
   boardContents: string;

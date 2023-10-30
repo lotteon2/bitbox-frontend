@@ -37,6 +37,7 @@ export default function ReviewPage() {
       setAllCategories(tmpCategories);
       setSelectedCategory(4);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   if (data === undefined || isLoading) return <Loading />;

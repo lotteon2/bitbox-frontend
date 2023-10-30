@@ -24,7 +24,6 @@ export default function ReviewItem() {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const reInputRef = useRef<HTMLInputElement | null>(null);
   const [isChange, setIsChange] = useState<boolean>(false);
-  const [commentOpen, setCommentOpen] = useState<boolean>(false);
 
   const handleCommentRegist = () => {
     if (inputRef.current !== null) {
@@ -63,9 +62,9 @@ export default function ReviewItem() {
     queryKey: ["getBoardDetail", isChange],
     queryFn: () => getBoardDetail("senior", Number(boardId.boardId)),
   });
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   if (data === undefined || isLoading) return <Loading />;
-  console.log(data);
+
   return (
     <div className="w-full h-full">
       <p className="text-grayscale4">
