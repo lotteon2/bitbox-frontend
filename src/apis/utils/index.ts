@@ -1,7 +1,6 @@
 import axios, { HttpStatusCode } from "axios";
 
 const BASE_URL = process.env.REACT_APP_API_URL;
-const IMAGE_URL = process.env.REACT_APP_API_IMAGE_URL;
 // 기본 API 요청 처리
 const axiosApi = (baseURL: any) => {
   const instance = axios.create({
@@ -141,4 +140,4 @@ const axiosAuthApi = (baseURL: any) => {
 
 export const defaultInstance = axiosApi(BASE_URL);
 export const authInstance = axiosAuthApi(BASE_URL);
-export const imageInstance = axiosImageApi(IMAGE_URL);
+export const imageInstance = axiosImageApi(BASE_URL);
