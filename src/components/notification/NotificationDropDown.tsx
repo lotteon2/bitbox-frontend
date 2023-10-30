@@ -1,8 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { loginState } from "../../recoil/atoms/common";
-import { notiShowState } from "../../recoil/atoms/noti";
-import { useRecoilValue, useSetRecoilState, useRecoilState } from "recoil";
-import { useNavigate } from "react-router-dom";
+import { notiChangedState, notiShowState } from "../../recoil/atoms/noti";
+import { useRecoilValue, useRecoilState } from "recoil";
 import { notiEventState } from "../../recoil/atoms/noti";
 
 import {
@@ -18,25 +17,25 @@ interface Notification {
   notificationId: number;
   notificationInfo: string;
   notificationLink: string;
-  isRead: boolean;
+  read: boolean;
 }
 
 export default function NotificationDropDown() {
   const isLogin = useRecoilValue<boolean>(loginState);
-  const setNotiEvent = useSetRecoilState<boolean>(notiEventState);
+  const [notiEvent, setNotiEvent] = useRecoilState<boolean>(notiEventState);
   const [notiShow, setNotiShow] = useRecoilState<boolean>(notiShowState);
+  const [notiChanged, setNotiChanged] =
+    useRecoilState<boolean>(notiChangedState);
+
+  const [notifications, setNotifications] = useState([]);
+
   const subscribeUrl = `${process.env.REACT_APP_API_URL}/notification-service/notifications/subscription?sessionToken=`;
 
-  const navigate = useNavigate();
-
-  const notifications = new Array<Notification>();
-
   useEffect(() => {
-    if (notiShow) {
-      console.log("get all notis");
-    }
+    getAllNoti();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [notiEvent, notiChanged]);
 
   useEffect(() => {
     if (isLogin) {
@@ -45,53 +44,39 @@ export default function NotificationDropDown() {
       );
 
       eventSource.onopen = () => {
-        console.log("connected on open");
-        eventSource.addEventListener("CONNECT", (event: any) => {
-          console.log(event.data);
-        });
-
         eventSource.addEventListener("ATTENDANCE", (event: any) => {
           setNotiEvent((cur) => !cur);
-          console.log(event.data);
         });
 
         eventSource.addEventListener("SUBSCRIPTION", (event: any) => {
           setNotiEvent((cur) => !cur);
-          console.log(event.data);
         });
 
         eventSource.addEventListener("COMMENT", (event: any) => {
           setNotiEvent((cur) => !cur);
-          console.log(event.data);
         });
       };
 
       eventSource.onerror = () => {
-        console.log("connected after error");
         eventSource.close();
         eventSource = new EventSource(
           subscribeUrl + localStorage.getItem("accessToken")
         );
 
-        eventSource.addEventListener("CONNECT", (event: any) => {
-          console.log(event.data);
-        });
-
         eventSource.addEventListener("ATTENDANCE", (event: any) => {
           setNotiEvent((cur) => !cur);
-          console.log(event.data);
         });
 
         eventSource.addEventListener("SUBSCRIPTION", (event: any) => {
           setNotiEvent((cur) => !cur);
-          console.log(event.data);
         });
 
         eventSource.addEventListener("COMMENT", (event: any) => {
           setNotiEvent((cur) => !cur);
-          console.log(event.data);
         });
       };
+
+      getAllNoti();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -102,6 +87,7 @@ export default function NotificationDropDown() {
     {
       onSuccess: () => {
         setNotiShow((cur) => !cur);
+        setNotiChanged((cur) => !cur);
       },
       onError: (error: any) => {
         alert(error.response.data.message);
@@ -116,6 +102,7 @@ export default function NotificationDropDown() {
     {
       onSuccess: () => {
         console.log("삭제 처리가 완료됐습니다");
+        setNotiChanged((cur) => !cur);
       },
       onError: (error: any) => {
         alert(error.response.data.message);
@@ -130,6 +117,7 @@ export default function NotificationDropDown() {
     {
       onSuccess: () => {
         console.log("모든 읽음 처리가 완료됐습니다");
+        setNotiChanged((cur) => !cur);
       },
       onError: (error: any) => {
         alert(error.response.data.message);
@@ -144,6 +132,7 @@ export default function NotificationDropDown() {
     {
       onSuccess: () => {
         console.log("모든 삭제 처리가 완료됐습니다");
+        setNotiChanged((cur) => !cur);
       },
       onError: (error: any) => {
         alert(error.response.data.message);
@@ -151,6 +140,21 @@ export default function NotificationDropDown() {
       },
     }
   );
+
+  const getAllNotiMutation = useMutation(
+    ["getAllNotifications"],
+    () => getAllNotifications(),
+    {
+      onSuccess: (data) => {
+        setNotifications(data);
+      },
+      onError: () => alert("오류"),
+    }
+  );
+
+  const getAllNoti = async () => {
+    getAllNotiMutation.mutate();
+  };
 
   const readNoti = async (noti: Notification) => {
     readNotiMutation.mutate(noti);
@@ -170,41 +174,45 @@ export default function NotificationDropDown() {
 
   return notiShow ? (
     <div
-      className="absolute top-20 right-60 w-72 h-[500px] z-20 
-      rounded-md drop-shadow-md shadow-lg font-light bg-grayscale1 text-grayscale7 dark:bg-grayscale7 dark:text-grayscale1"
+      className="absolute top-20 right-80 w-70 h-[500px] z-50 text-center
+rounded-md drop-shadow-md shadow-lg font-light bg-grayscale1 text-grayscale7 dark:bg-grayscale7 dark:text-grayscale1"
     >
-      {notiList === undefined || notiList.length === 0 ? (
-        <p>미확인 알림이 없습니다</p>
+      {notifications === undefined || notifications.length === 0 ? (
+        <div className="py-3">
+          <p>미확인 알림이 없습니다</p>
+        </div>
       ) : (
         <>
-          {notiList.map((noti: Notification) =>
-            noti.isRead ? (
-              <div className="text-grayscale4">
-                <span
+          <div className="h-[465px] overflow-scroll py-3 items-stretch">
+            {notifications.map((noti: Notification) => (
+              <div
+                className={`flex border-b-[1px] border-solid ${
+                  noti.read ? "text-grayscale4" : ""
+                }`}
+              >
+                <div
+                  className="gap-2 py-2"
                   onClick={() => {
                     readNoti(noti);
-                    navigate(noti.notificationLink);
                   }}
                 >
-                  <p>${noti.notificationInfo}</p>
-                  <button onClick={() => deleteNoti(noti.notificationId)}>
-                    x
-                  </button>
-                </span>
+                  <a href={noti.notificationLink}>
+                    <p>{noti.notificationInfo}</p>
+                  </a>
+                </div>
+                <button
+                  className="font-bold text-grayscale7"
+                  onClick={() => deleteNoti(noti.notificationId)}
+                >
+                  x
+                </button>
               </div>
-            ) : (
-              <div>
-                <span onClick={() => readNoti(noti)}>
-                  <p>${noti.notificationInfo}</p>
-                  <button onClick={() => deleteNoti(noti.notificationId)}>
-                    x
-                  </button>
-                </span>
-              </div>
-            )
-          )}
-          <div className="float-right">
-            <button onClick={() => readAllNoti()}>전체 읽음</button>
+            ))}
+          </div>
+          <div className="float-right text-grayscale5 text-bold">
+            <button className="mr-2" onClick={() => readAllNoti()}>
+              전체 읽음
+            </button>
             <button onClick={() => deleteAllNoti()}>전체 삭제</button>
           </div>
         </>

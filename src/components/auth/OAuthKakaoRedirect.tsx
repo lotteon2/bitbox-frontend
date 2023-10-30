@@ -10,9 +10,7 @@ import {
 import { oauthKakao } from "../../apis/auth/oauthKakao";
 import { useNavigate } from "react-router-dom";
 
-import SockJS from "sockjs-client";
-import Stomp from "stompjs";
-import { getConnectionList } from "../../apis/chatting/chatting";
+import Loading from "../common/Loading";
 
 interface memberInfo {
   memberId: string;
@@ -32,8 +30,6 @@ export default function OAuthKakaoRedirect() {
   const code: string | null = url.searchParams.get("code");
 
   const navigate = useNavigate();
-
-  var stompClient: any = null;
 
   if (!!error && !!errorDescription) {
     alert(errorDescription); // TODO : swal
@@ -73,5 +69,5 @@ export default function OAuthKakaoRedirect() {
   }, []);
 
   // TODO : 스피너
-  return <div></div>;
+  return <Loading></Loading>;
 }

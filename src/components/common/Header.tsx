@@ -16,14 +16,14 @@ import LogoDark from "../../assets/images/logo_dark.png";
 import Badge from "@mui/material/Badge";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { logout } from "../../apis/auth/logout";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { getUnreadNotificationsCount } from "../../apis/noti/notification";
 import {
+  notiChangedState,
   notiCountState,
   notiEventState,
   notiShowState,
 } from "../../recoil/atoms/noti";
-import Loading from "./Loading";
 
 interface parameter {
   istoggled: string;
@@ -120,6 +120,7 @@ export default function Header() {
   const setNotiShow = useSetRecoilState<boolean>(notiShowState);
   const [notiCount, setNotiCount] = useRecoilState<number>(notiCountState);
   const notiEvent = useRecoilValue(notiEventState);
+  const notiChanged = useRecoilValue(notiChangedState);
 
   // const defaultUserMenuList = ["로그인", "회원가입"];  // const authUserMenuList = ["마이페이지", "로그아웃"];
   const navigate = useNavigate();
@@ -165,17 +166,9 @@ export default function Header() {
   });
 
   useEffect(() => {
-    if (isLogin) {
-      console.log("event mutate from login state");
-      notiCountMutate.mutate();
-    }
-
-    if (notiEvent) {
-      console.log("event mutate from event state");
-      notiCountMutate.mutate();
-    }
+    notiCountMutate.mutate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLogin, notiEvent]);
+  }, [isLogin, notiEvent, notiChanged]);
 
   return (
     <HeaderStyle

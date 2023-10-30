@@ -23,3 +23,11 @@ export const notiEventState = atom({
   key: "notiEventState",
   default: false,
 });
+
+/**
+ * FE에서 알림의 상태를 변경했을 때(읽음 처리, 삭제 처리) 바뀜
+ */
+export const notiChangedState = atom({
+  key: "notiChangedState",
+  default: false,
+});
