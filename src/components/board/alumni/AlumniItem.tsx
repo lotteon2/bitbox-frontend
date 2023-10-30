@@ -83,7 +83,7 @@ export default function AlumniItem() {
   return (
     <div className="w-full h-full">
       <p className="text-grayscale4">
-        선배들의 이야기 {" > " + data.boardResponse.categoryName}
+        알럼나이 {" > " + data.boardResponse.categoryName}
       </p>
       <br />
       <br />
