@@ -18,6 +18,7 @@ import PayFail from "../components/payment/PayFail";
 import DevLogRegister from "../components/board/devlog/DevLogRegister";
 import DevLogModify from "../components/board/devlog/DevLogModify";
 import CommunityDetail from "../components/board/community/CommunityDetail";
+import ReviewItem from "../components/board/review/ReviewItem";
 
 const router = createBrowserRouter([
   {
@@ -63,8 +64,9 @@ const router = createBrowserRouter([
       { path: "community", element: <CommunityPage /> },
       { path: "community/detail/:boardId", element: <CommunityDetail /> },
       { path: "review", element: <ReviewPage /> },
+      { path: "review/detail/:boardId", element: <ReviewItem /> },
       { path: "alumni", element: <AlumniPage /> },
-      { path: "register", element: <BoardRegister /> },
+      { path: "register/:boardId", element: <BoardRegister /> },
     ],
   },
   {

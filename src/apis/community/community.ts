@@ -91,7 +91,9 @@ export const deleteCategory = async (categoryId: number) => {
 export const searchBoardList = async (
   boardType: string,
   categoryId: number,
-  keyword: string
+  keyword: string,
+  page: number,
+  size: number
 ) => {
   const { data } = await authInstance.get(
     "/board-service/board/" +
@@ -99,7 +101,11 @@ export const searchBoardList = async (
       "/search?categoryId=" +
       categoryId +
       "&keyword=" +
-      keyword
+      keyword +
+      "&page=" +
+      page +
+      "&size=" +
+      size
   );
   return data;
 };
@@ -197,7 +203,7 @@ export const getMemberComment = async () => {
 interface commentRegisterRequestDto {
   boardId: number;
   commentContents: string;
-  masterCommentId: number;
+  masterCommentId: number | null;
 }
 export const registerComment = async (
   commentRegisterRequestDto: commentRegisterRequestDto

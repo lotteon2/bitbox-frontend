@@ -17,6 +17,7 @@ import { imageUpload } from "../../../apis/common/common";
 import Loading from "../../common/Loading";
 import { Select } from "antd";
 import LoaddingGif from "../../../assets/images/Loading.gif";
+import Swal from "sweetalert2";
 
 interface boardModifyRequestDto {
   boardId: number;
@@ -114,7 +115,28 @@ export default function DevLogRegister() {
   };
 
   const handleRemoveBoard = () => {
-    removeMutation.mutate();
+    Swal.fire({
+      title: '<p style="text-align: center">정말로 탈퇴하시겠습니까?</p>',
+      text: "삭제된 게시글은 다시 복구할 수 없습니다.",
+      iconHtml:
+        '<a><img src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
+      showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+      confirmButtonColor: isDark ? "#FF8888" : "#DC2626", // confrim 버튼 색깔 지정
+      cancelButtonColor: isDark ? "#C6C6C6" : "#808080", // cancel 버튼 색깔 지정
+      confirmButtonText: "삭제하기", // confirm 버튼 텍스트 지정
+      cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+      reverseButtons: true, // 버튼 순서 거꾸로
+      background: isDark ? "#202027" : "#FFFFFF",
+      color: isDark ? "#FFFFFF" : "#212B36",
+    }).then((result) => {
+      // 만약 Promise리턴을 받으면,
+      if (result.isConfirmed) {
+        // 모달창에서 confirm 버튼을 눌렀다면
+        removeMutation.mutate();
+      } else {
+        // 모달창에서 cancel 버튼을 눌렀다면
+      }
+    });
   };
 
   const handleSubmitBoard = () => {
