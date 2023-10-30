@@ -69,5 +69,5 @@ export default function OAuthKakaoRedirect() {
   }, []);
 
   // TODO : 스피너
-  return <Loading></Loading>;
+  return <></>;
 }
