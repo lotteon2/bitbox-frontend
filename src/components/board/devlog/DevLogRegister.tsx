@@ -13,8 +13,8 @@ import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { imageUpload } from "../../../apis/common/common";
 import Loading from "../../common/Loading";
-import { Select } from "antd";
-import LoaddingGif from "../../../assets/images/Loading.gif";
+import { Select, ConfigProvider, theme } from "antd";
+import LoadingGif from "../../../assets/images/Loading.gif";
 
 interface boardRegisterDto {
   categoryId: number;
@@ -227,12 +227,18 @@ export default function DevLogRegister() {
     <div className="mx-5 flex flex-col">
       <div className="relative">
         <div className="absolute top-0">
-          <Select
-            defaultValue={data[0].categoryName}
-            options={categories}
-            style={{ width: 150 }}
-            onChange={handleChange}
-          />
+          <ConfigProvider
+            theme={{
+              algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+            }}
+          >
+            <Select
+              defaultValue={data[0].categoryName}
+              options={categories}
+              style={{ width: 150 }}
+              onChange={handleChange}
+            />
+          </ConfigProvider>
         </div>
         <span className="absolute right-0">
           <button
@@ -301,9 +307,9 @@ export default function DevLogRegister() {
         />
       </div>
       <img
-        src={LoaddingGif}
+        src={LoadingGif}
         alt=""
-        className={loading ? "absolute top-[25%] left-[40%]" : "LoaddingGif"}
+        className={loading ? "absolute top-[25%] left-[40%]" : "hidden"}
       />
     </div>
   );

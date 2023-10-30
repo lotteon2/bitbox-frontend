@@ -3,8 +3,13 @@ import styled from "styled-components";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faUser, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { darkmodeState, loginState } from "../../recoil/atoms/common";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  authorityState,
+  darkmodeState,
+  loginState,
+  memberState,
+} from "../../recoil/atoms/common";
+import { useRecoilValue, useResetRecoilState } from "recoil";
 
 import Logo from "../../assets/images/logo.png";
 import LogoDark from "../../assets/images/logo_dark.png";
@@ -102,7 +107,9 @@ export default function Header() {
   const [isToggled, setIsToggled] = useState<boolean>(false);
   const [userToggled, setUserToggled] = useState<boolean>(false);
   const isLogin = useRecoilValue(loginState);
-  const setIsLogin = useSetRecoilState(loginState);
+  const resetIsLogin = useResetRecoilState(loginState);
+  const resetMemberState = useResetRecoilState(memberState);
+  const resetAuthority = useResetRecoilState(authorityState);
   const isDark = useRecoilValue<boolean>(darkmodeState);
 
   // const defaultUserMenuList = ["로그인", "회원가입"];  // const authUserMenuList = ["마이페이지", "로그아웃"];
@@ -126,7 +133,9 @@ export default function Header() {
   const logoutMutation = useMutation(["logout"], () => logout(), {
     onSuccess: () => {
       localStorage.removeItem("accessToken");
-      setIsLogin(false);
+      resetAuthority();
+      resetIsLogin();
+      resetMemberState();
       alert("로그아웃 성공");
     },
     onError: (error: any) => {

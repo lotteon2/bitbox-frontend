@@ -140,6 +140,7 @@ export default function DevLogList() {
           boardList?.content.map((item: boardResponse) => {
             return (
               <div
+                key={item.boardId}
                 className={
                   item.categoryId === category
                     ? "w-[400px] h-[500px] relative group mt-10"
