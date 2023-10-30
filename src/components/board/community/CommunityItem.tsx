@@ -19,7 +19,7 @@ interface commentRegisterRequestDto {
   masterCommentId: number | null;
 }
 
-export default function ReviewItem() {
+export default function CommunityItem() {
   const boardId = useParams();
   const isDark = useRecoilValue(darkmodeState);
   const inputRef = useRef<HTMLInputElement | null>(null);

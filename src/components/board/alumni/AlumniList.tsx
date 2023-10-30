@@ -53,9 +53,9 @@ export default function AlumniList(categoryId: any) {
   };
 
   const { data, isLoading } = useQuery({
-    queryKey: ["getCommunityBoardList", categoryId.categoryId],
+    queryKey: ["getAlumniBoardList", categoryId.categoryId],
     queryFn: () =>
-      getBoardList("community", categoryId.categoryId, currentPage - 1, 10),
+      getBoardList("alumni", categoryId.categoryId, currentPage - 1, 10),
   });
 
   useEffect(() => {
@@ -71,9 +71,9 @@ export default function AlumniList(categoryId: any) {
     }
   };
   const searchMutation = useMutation(
-    ["searchCommunityList"],
+    ["searchAlumniList"],
     (keyword: string) =>
-      searchBoardList("community", categoryId.categoryId, keyword, 0, 10),
+      searchBoardList("alumni", categoryId.categoryId, keyword, 0, 10),
     {
       onSuccess: (data) => {
         console.log(data);
@@ -104,7 +104,7 @@ export default function AlumniList(categoryId: any) {
         </div>
         <button
           className="bg-primary7 w-28 my-4 py-2 rounded-md text-center text-xl text-white font-normal ml-auto dark:bg-primary4"
-          onClick={() => navigate("/board/register/" + 3)}
+          onClick={() => navigate("/board/register/" + 2)}
         >
           글쓰기 🖍
         </button>
@@ -124,9 +124,7 @@ export default function AlumniList(categoryId: any) {
               <div
                 key={item.boardId}
                 className="w-full border-2 border-grayscale3 rounded-xl px-10 py-5 cursor-pointer hover:shadow-lg"
-                onClick={() =>
-                  navigate("/board/community/detail/" + item.boardId)
-                }
+                onClick={() => navigate("/board/alumni/detail/" + item.boardId)}
               >
                 <div>
                   <CategoryBadge
