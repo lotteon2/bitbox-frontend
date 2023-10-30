@@ -76,7 +76,7 @@ export default function ReviewList(categoryId: any) {
       searchBoardList("senior", categoryId.categoryId, keyword, 0, 10),
     {
       onSuccess: (data) => {
-        console.log(data);
+        setReviewList(data);
       },
       onError: () => alert("실패"),
     }

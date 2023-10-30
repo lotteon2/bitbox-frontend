@@ -76,7 +76,7 @@ export default function AlumniList(categoryId: any) {
       searchBoardList("community", categoryId.categoryId, keyword, 0, 10),
     {
       onSuccess: (data) => {
-        console.log(data);
+        setReviewList(data);
       },
       onError: () => alert("실패"),
     }
