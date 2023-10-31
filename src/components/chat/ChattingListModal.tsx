@@ -1,8 +1,8 @@
 import { PropsWithChildren, useEffect, useState } from "react";
 import ClearIcon from "@mui/icons-material/Clear";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { getChattingList } from "../../apis/chatting/chatting";
-import { chatState, chatroomState } from "../../recoil/atoms/common";
+import { chatroomState } from "../../recoil/atoms/common";
 import {
   chattingUserProfileImg,
   chattingRoomNumberState,
@@ -37,8 +37,6 @@ export default function ChattingListModal({
   const setChattingRoomNumberState = useSetRecoilState<number>(
     chattingRoomNumberState
   );
-
-  const isChat = useRecoilValue<boolean>(chatState);
 
   useEffect(() => {
     getChattingList().then((data) => {

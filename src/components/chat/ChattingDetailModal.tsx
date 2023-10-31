@@ -165,6 +165,7 @@ export default function ChattingDetailModal({
 
   useEffect(() => {
     myInfo.mutate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -184,6 +185,7 @@ export default function ChattingDetailModal({
     if (!isChat || !isLogin) {
       stompClient?.disconnect(() => {});
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isChat, isLogin]);
   if (data === undefined || isLoading) return <Loading />;
 
