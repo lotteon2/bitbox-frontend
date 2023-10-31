@@ -238,8 +238,9 @@ export const modifyComment = async (
  * @param commentId
  */
 export const removeComment = async (commentId: number) => {
+  console.log(commentId);
   const { data } = await authInstance.delete(
-    "/board-service/board/comment/" + commentId
+    "/board-service/board/comment?commentId=" + commentId
   );
   return data;
 };

@@ -20,6 +20,7 @@ import DevLogModify from "../components/board/devlog/DevLogModify";
 import ReviewItem from "../components/board/review/ReviewItem";
 import AlumniItem from "../components/board/alumni/AlumniItem";
 import CommunityItem from "../components/board/community/CommunityItem";
+import BoardModify from "../components/board/BoardModify";
 
 const router = createBrowserRouter([
   {
@@ -69,6 +70,10 @@ const router = createBrowserRouter([
       { path: "alumni", element: <AlumniPage /> },
       { path: "alumni/detail/:boardId", element: <AlumniItem /> },
       { path: "register/:boardId", element: <BoardRegister /> },
+      {
+        path: "modify/:masterBoardId/detail/:boardId",
+        element: <BoardModify />,
+      },
     ],
   },
   {

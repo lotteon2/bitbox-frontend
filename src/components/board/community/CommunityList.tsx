@@ -40,7 +40,7 @@ interface boardListResponse {
   totalPages: number;
 }
 
-export default function AlumniList(categoryId: any) {
+export default function CommunityList(categoryId: any) {
   const isDark = useRecoilValue(darkmodeState);
   const [pageCount, setPageCount] = useState(0); // 페이지 개수
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
