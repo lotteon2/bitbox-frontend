@@ -49,6 +49,15 @@ export const chattingUserName = atom({
 });
 
 /**
+ * 클릭한 유저의 역할(host or guest)
+ */
+export const chattingRoomGuestId = atom({
+  key: "chattingRoomGuestId",
+  default: [],
+  effects_UNSTABLE: [persistAtom],
+});
+
+/**
  * 채팅방 번호
  */
 export const chattingRoomNumberState = atom({
