@@ -37,7 +37,7 @@ export const memberState = atom({
  */
 export const authorityState = atom({
   key: "authorityState",
-  default: "TRAINEE",
+  default: "GENERAL",
   effects_UNSTABLE: [persistAtom],
 });
 

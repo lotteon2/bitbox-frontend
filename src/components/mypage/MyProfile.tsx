@@ -21,7 +21,7 @@ import { updateMemberInfo, withdrawMember } from "../../apis/member/member";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { imageUpload } from "../../apis/common/common";
-import { authInstance } from "../../apis/utils";
+import axios from "axios";
 import Loading from "../../pages/Loading";
 
 interface memberInfoUpdateDto {
@@ -290,10 +290,21 @@ export default function MyProfile() {
           color: isDark ? "#FFFFFF" : "#212B36",
         });
 
-        authInstance.delete(
-          "/authentication-service/auth/invitation",
-          undefined
-        );
+        axios
+          .delete(
+            `${process.env.REACT_APP_API_URL}/authentication-service/auth/invitation`,
+            { headers: { email: data.memberEmail } }
+          )
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        // authInstance.delete(
+        //   "/authentication-service/auth/invitation",
+        //   data.memberEmail
+        // );
 
         setIsSetName(false);
         setIsModalOpen(false);

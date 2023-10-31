@@ -14,7 +14,6 @@ import {
   readAllNotifications,
 } from "../../apis/noti/notification";
 import { useMutation } from "react-query";
-import { ACCESSOR_TYPES } from "@babel/types";
 
 interface Notification {
   notificationId: number;
