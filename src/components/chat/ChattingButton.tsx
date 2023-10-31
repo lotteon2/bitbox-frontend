@@ -50,20 +50,19 @@ export default function ChattingButton() {
         </Badge>
       </div>
 
-      {isChat &&
-        (isChatRoom ? (
+      {isChatRoom ? (
+        <div className={isChat ? "" : "hidden"}>
           <ChattingListModal
             onClickToggleModal={() => setIsChat((cur) => !cur)}
-          >
-            {/*TODO: 아래 div에 채팅방 목록 구성*/}
-          </ChattingListModal>
-        ) : (
+          />
+        </div>
+      ) : (
+        <div className={isChat ? "" : "hidden"}>
           <ChattingDetailModal
             onClickToggleModal={() => setIsChat((cur) => !cur)}
-          >
-            {/*TODO: 아래 div에 채팅방 상세 구성*/}
-          </ChattingDetailModal>
-        ))}
+          />
+        </div>
+      )}
     </div>
   );
 }

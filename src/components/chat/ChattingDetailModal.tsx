@@ -1,8 +1,13 @@
-import React, { PropsWithChildren, useState, useEffect } from "react";
+import React, { PropsWithChildren, useState, useEffect, useRef } from "react";
 import ClearIcon from "@mui/icons-material/Clear";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { useSetRecoilState, useRecoilValue, useRecoilState } from "recoil";
-import { chatroomState, darkmodeState } from "../../recoil/atoms/common";
+import {
+  chatState,
+  chatroomState,
+  darkmodeState,
+  loginState,
+} from "../../recoil/atoms/common";
 import {
   chattingUserProfileImg,
   chattingRoomNumberState,
@@ -48,6 +53,10 @@ export default function ChattingDetailModal({
   const [isChange, setIsChange] = useRecoilState<boolean>(chattingChangeState);
   const [stompClient, setStompClient] = useState<null | Client>(null);
   const [myInfoData, setMyInfoData] = useState(null);
+  const [chatList, setChatList] = useState<chatting[]>([]);
+  const isChat = useRecoilValue<boolean>(chatState);
+  const isLogin = useRecoilValue<boolean>(loginState);
+  const messagesEndRef: React.RefObject<HTMLDivElement> = useRef(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["getChatting", chattingRoomNumber, isChange],
@@ -102,7 +111,7 @@ export default function ChattingDetailModal({
     onSuccess: (user) => {
       setMyInfoData(user.memberId);
       let socket = new SockJS(
-        "http://localhost:8000/chatting-service/chattings"
+        `${process.env.REACT_APP_API_URL}/chatting-service/chattings`
       );
       const stompClient = Stomp.over(socket);
       stompClient.connect({}, (frame: any) => {
@@ -127,7 +136,7 @@ export default function ChattingDetailModal({
               secret: secret,
             };
 
-            console.log(message);
+            setChatList((prev) => [...prev, message]);
           }
         );
         setStompClient(stompClient);
@@ -158,6 +167,24 @@ export default function ChattingDetailModal({
     myInfo.mutate();
   }, []);
 
+  useEffect(() => {
+    if (data) {
+      setChatList(data.data);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      const messagesEnd = messagesEndRef.current;
+      messagesEnd.scrollTop = messagesEnd.scrollHeight;
+    }
+  }, [chatList]);
+
+  useEffect(() => {
+    if (!isChat || !isLogin) {
+      stompClient?.disconnect(() => {});
+    }
+  }, [isChat, isLogin]);
   if (data === undefined || isLoading) return <Loading />;
 
   return (
@@ -174,8 +201,11 @@ export default function ChattingDetailModal({
           />
         </div>
       </header>
-      <div className="flex flex-col h-[524px] gap-2 p-2 overflow-scroll dark:text-grayscale1">
-        {data.data.map((item: chatting, index: number) => {
+      <div
+        className="flex flex-col h-[524px] gap-2 p-2 overflow-scroll dark:text-grayscale1"
+        ref={messagesEndRef}
+      >
+        {chatList.map((item: chatting, index: number) => {
           return (
             <div
               key={index}
@@ -216,7 +246,7 @@ export default function ChattingDetailModal({
       <footer className="flex flex-row">
         <input
           type="text"
-          className="w-[90%] py-1 border-2 border-r-0 border-grayscale4 rounded-lg rounded-r-none dark:bg-grayscale6 dark:border-grayscale1"
+          className="outline-none w-[90%] py-1 border-2 border-r-0 border-grayscale4 rounded-lg rounded-r-none dark:bg-grayscale6 dark:border-grayscale1"
           value={inputValue}
           onChange={handleInputChange}
         />
