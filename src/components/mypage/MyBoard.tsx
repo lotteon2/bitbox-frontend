@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from "react";
-import {
-  getMemberBoard,
-  getMemberComment,
-} from "../../apis/community/community";
+import { useEffect, useState } from "react";
+import { getMemberBoard } from "../../apis/community/community";
 import { useRecoilValue } from "recoil";
-import { authorityState, darkmodeState } from "../../recoil/atoms/common";
+import { darkmodeState } from "../../recoil/atoms/common";
 import { useNavigate } from "react-router-dom";
 import {
   ConfigProvider,
@@ -41,7 +38,6 @@ interface boardListResponse {
 }
 
 export default function MyBoard() {
-  const authority = useRecoilValue(authorityState);
   const isDark = useRecoilValue(darkmodeState);
   const [pageCount, setPageCount] = useState(0); // 페이지 개수
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
@@ -64,16 +60,12 @@ export default function MyBoard() {
     }
   }, [data]);
 
-  console.log("dddd");
-  console.log(data);
   if (isLoading || data === undefined || reviewList === undefined)
     return <Loading />;
 
   return (
-    // <div>
-    //   <p className="text-2xl pb-5">게시글 관리</p>
-    // </div>
     <div>
+      <p className="text-2xl pb-5">게시글 관리</p>
       {reviewList?.content.length === 0 ? (
         <div className="py-20">
           <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={false} />

@@ -111,7 +111,7 @@ export default function CommunityList(categoryId: any) {
         authority === "GENERAL" ? (
           <button
             className="bg-primary7 w-28 my-4 py-2 rounded-md text-center text-xl text-white font-normal ml-auto dark:bg-primary4"
-            onClick={() => navigate("/board/register/" + 2)}
+            onClick={() => navigate("/board/register/" + 3)}
           >
             글쓰기 🖍
           </button>
