@@ -99,6 +99,8 @@ export default function NotificationDropDown() {
       };
 
       getAllNoti();
+
+      return () => eventSource.close();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -113,7 +115,6 @@ export default function NotificationDropDown() {
       },
       onError: (error: any) => {
         alert(error.response.data.message);
-        console.log(error);
       },
     }
   );
@@ -123,12 +124,10 @@ export default function NotificationDropDown() {
     (notiId: number) => deleteNotification(notiId),
     {
       onSuccess: () => {
-        console.log("삭제 처리가 완료됐습니다");
         setNotiChanged((cur) => !cur);
       },
       onError: (error: any) => {
         alert(error.response.data.message);
-        console.log(error);
       },
     }
   );
@@ -138,12 +137,10 @@ export default function NotificationDropDown() {
     () => readAllNotifications(),
     {
       onSuccess: () => {
-        console.log("모든 읽음 처리가 완료됐습니다");
         setNotiChanged((cur) => !cur);
       },
       onError: (error: any) => {
         alert(error.response.data.message);
-        console.log(error);
       },
     }
   );
@@ -153,12 +150,10 @@ export default function NotificationDropDown() {
     () => deleteAllNotifications(),
     {
       onSuccess: () => {
-        console.log("모든 삭제 처리가 완료됐습니다");
         setNotiChanged((cur) => !cur);
       },
       onError: (error: any) => {
         alert(error.response.data.message);
-        console.log(error);
       },
     }
   );

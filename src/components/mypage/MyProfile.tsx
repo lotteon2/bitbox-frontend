@@ -295,12 +295,8 @@ export default function MyProfile() {
             `${process.env.REACT_APP_API_URL}/authentication-service/auth/invitation`,
             { headers: { email: data.memberEmail } }
           )
-          .then((res) => {
-            console.log(res);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+          .then((res) => {})
+          .catch((err) => {});
         // authInstance.delete(
         //   "/authentication-service/auth/invitation",
         //   data.memberEmail
