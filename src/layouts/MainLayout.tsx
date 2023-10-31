@@ -4,12 +4,18 @@ import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import ModeButton from "../components/common/ModeButton";
 import ChattingButton from "../components/chat/ChattingButton";
-import { darkmodeState, loginState } from "../recoil/atoms/common";
+import {
+  authorityState,
+  darkmodeState,
+  loginState,
+} from "../recoil/atoms/common";
 import { useRecoilValue } from "recoil";
 
 export default function MainLayout() {
   const isDark = useRecoilValue(darkmodeState);
   const isLogin = useRecoilValue(loginState);
+  const authority = useRecoilValue(authorityState);
+
   return (
     <div
       className={
@@ -23,7 +29,14 @@ export default function MainLayout() {
         <Outlet />
         <Footer />
       </div>
-      {isLogin ? <ChattingButton /> : <></>}
+      {isLogin &&
+      (authority === "GENERAL" ||
+        authority === "TRAINEE" ||
+        authority === "GRADUATE") ? (
+        <ChattingButton />
+      ) : (
+        <></>
+      )}
       <ModeButton />
     </div>
   );
