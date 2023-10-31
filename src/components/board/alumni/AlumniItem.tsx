@@ -79,7 +79,7 @@ export default function AlumniItem() {
   });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   if (data === undefined || isLoading) return <Loading />;
-  console.log(data);
+
   return (
     <div className="w-full h-full">
       <p className="text-grayscale4">

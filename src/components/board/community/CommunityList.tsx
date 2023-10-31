@@ -12,7 +12,7 @@ import {
   PaginationProps,
 } from "antd";
 import { useRecoilValue } from "recoil";
-import { darkmodeState } from "../../../recoil/atoms/common";
+import { authorityState, darkmodeState } from "../../../recoil/atoms/common";
 import Loading from "../../../pages/Loading";
 import { useNavigate } from "react-router";
 import CategoryBadge from "../CategoryBadge";
@@ -41,6 +41,7 @@ interface boardListResponse {
 }
 
 export default function AlumniList(categoryId: any) {
+  const authority = useRecoilValue(authorityState);
   const isDark = useRecoilValue(darkmodeState);
   const [pageCount, setPageCount] = useState(0); // 페이지 개수
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
@@ -76,7 +77,7 @@ export default function AlumniList(categoryId: any) {
       searchBoardList("community", categoryId.categoryId, keyword, 0, 10),
     {
       onSuccess: (data) => {
-        console.log(data);
+        setReviewList(data);
       },
       onError: () => alert("실패"),
     }
@@ -102,12 +103,23 @@ export default function AlumniList(categoryId: any) {
             검색
           </button>
         </div>
-        <button
-          className="bg-primary7 w-28 my-4 py-2 rounded-md text-center text-xl text-white font-normal ml-auto dark:bg-primary4"
-          onClick={() => navigate("/board/register/" + 3)}
-        >
-          글쓰기 🖍
-        </button>
+        {authority === "ADMIN" ||
+        authority === "MANAGER" ||
+        authority === "TEACHER" ||
+        authority === "GRADUATE" ||
+        authority === "TRAINEE" ||
+        authority === "GENERAL" ? (
+          <button
+            className="bg-primary7 w-28 my-4 py-2 rounded-md text-center text-xl text-white font-normal ml-auto dark:bg-primary4"
+            onClick={() => navigate("/board/register/" + 2)}
+          >
+            글쓰기 🖍
+          </button>
+        ) : (
+          <div className="w-28 my-4 py-2 rounded-md text-center text-xl font-normal text-white ml-auto dark:text-black">
+            　
+          </div>
+        )}
       </div>
 
       {reviewList?.content.length === 0 ? (
