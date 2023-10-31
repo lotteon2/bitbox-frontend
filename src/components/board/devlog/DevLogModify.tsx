@@ -276,7 +276,7 @@ export default function DevLogRegister() {
 
   const { data, isLoading } = useQuery({
     queryKey: ["getBoardDetail"],
-    queryFn: () => getBoardDetail("devlog", Number(boardId)),
+    queryFn: () => getBoardDetail("devlog", Number(boardId), true),
   });
 
   const handleChange = (value: number) => {

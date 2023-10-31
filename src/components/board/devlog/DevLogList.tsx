@@ -66,7 +66,7 @@ export default function DevLogList() {
 
   const getBoardDetailMutation = useMutation(
     ["getBoardDetail"],
-    (boardId: number) => getBoardDetail("devlog", boardId),
+    (boardId: number) => getBoardDetail("devlog", boardId, true),
     {
       onSuccess: (data) => {
         setIsModalOpen(true);

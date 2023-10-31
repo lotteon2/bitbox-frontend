@@ -112,11 +112,12 @@ export default function AlumniItem() {
   );
   const { data, isLoading } = useQuery({
     queryKey: ["getBoardDetail", isChange],
-    queryFn: () => getBoardDetail("community", Number(boardId.boardId)),
+    queryFn: () =>
+      getBoardDetail("community", Number(boardId.boardId), isLogin),
   });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   if (data === undefined || isLoading) return <Loading />;
-  console.log(data);
+
   return (
     <div className="w-full h-full">
       <p className="text-grayscale4">
