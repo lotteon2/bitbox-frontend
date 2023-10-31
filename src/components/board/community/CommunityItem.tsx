@@ -10,7 +10,7 @@ import Loading from "../../../pages/Loading";
 import Badge from "../../common/Badge";
 import SmsIcon from "@mui/icons-material/Sms";
 import { useRecoilValue } from "recoil";
-import { darkmodeState } from "../../../recoil/atoms/common";
+import { darkmodeState, loginState } from "../../../recoil/atoms/common";
 import { Empty } from "antd";
 import { Toast } from "../../common/Toast";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +28,7 @@ export default function AlumniItem() {
   const reInputRef = useRef<any>([]);
   const [isChange, setIsChange] = useState<boolean>(false);
   const navigate = useNavigate();
+  const isLogin = useRecoilValue<boolean>(loginState);
 
   const handleCommentRegist = () => {
     if (inputRef.current !== null) {
@@ -167,7 +168,7 @@ export default function AlumniItem() {
       <p className="border-[1px] border-grayscale4"></p>
       <br />
       <div>
-        <div className="flex flex-row w-full gap-2">
+        <div className={isLogin ? "flex flex-row w-full gap-2" : "hidden"}>
           <input
             className="outline-none bg-transparent py-2 px-4 border-[1px] border-grayscale4 rounded-lg w-11/12"
             type="text"
@@ -259,7 +260,13 @@ export default function AlumniItem() {
                       );
                     })}
                   </div>
-                  <div className="pl-10 py-3 flex flex-row w-full gap-2">
+                  <div
+                    className={
+                      isLogin
+                        ? "pl-10 py-3 flex flex-row w-full gap-2"
+                        : "hidden"
+                    }
+                  >
                     <input
                       className="outline-none bg-transparent py-2 px-4 border-[1px] border-grayscale4 rounded-lg w-11/12"
                       type="text"
