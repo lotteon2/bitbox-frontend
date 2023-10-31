@@ -4,6 +4,7 @@ import { useParams } from "react-router";
 import {
   getBoardDetail,
   registerComment,
+  removeComment,
 } from "../../../apis/community/community";
 import Loading from "../../../pages/Loading";
 import Badge from "../../common/Badge";
@@ -12,6 +13,7 @@ import { useRecoilValue } from "recoil";
 import { darkmodeState } from "../../../recoil/atoms/common";
 import { Empty } from "antd";
 import { Toast } from "../../common/Toast";
+import { useNavigate } from "react-router-dom";
 
 interface commentRegisterRequestDto {
   boardId: number;
@@ -19,12 +21,13 @@ interface commentRegisterRequestDto {
   masterCommentId: number | null;
 }
 
-export default function ReviewItem() {
+export default function AlumniItem() {
   const boardId = useParams();
   const isDark = useRecoilValue(darkmodeState);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const reInputRef = useRef<HTMLInputElement | null>(null);
+  const reInputRef = useRef<any>([]);
   const [isChange, setIsChange] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handleCommentRegist = () => {
     if (inputRef.current !== null) {
@@ -37,13 +40,14 @@ export default function ReviewItem() {
     }
   };
 
-  const handleReCommentRegist = (commentId: number) => {
-    if (reInputRef.current !== null) {
+  const handleReCommentRegist = (commentId: number, index: number) => {
+    if (reInputRef.current[index] !== null) {
       const requestDto = {
         boardId: Number(boardId.boardId),
-        commentContents: reInputRef.current.value,
+        commentContents: reInputRef.current[index].value,
         masterCommentId: commentId,
       };
+      reInputRef.current[index].value = "";
       commentRegisterMutation.mutate(requestDto);
     }
   };
@@ -61,6 +65,10 @@ export default function ReviewItem() {
           background: isDark ? "#4D4D4D" : "#FFFFFF",
           color: isDark ? "#FFFFFF" : "#212B36",
         });
+
+        if (inputRef.current !== null) {
+          inputRef.current.value = "";
+        }
       },
       onError: () =>
         Toast.fire({
@@ -73,6 +81,34 @@ export default function ReviewItem() {
     }
   );
 
+  const handleRemoveComment = (commentId: number) => {
+    commentRemoveMutation.mutate(commentId);
+  };
+
+  const commentRemoveMutation = useMutation(
+    ["removeAlumniComment"],
+    (commentId: number) => removeComment(commentId),
+    {
+      onSuccess: () => {
+        setIsChange((cur) => !cur);
+        Toast.fire({
+          iconHtml:
+            '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
+          title: "삭제되었습니다.",
+          background: isDark ? "#4D4D4D" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#212B36",
+        });
+      },
+      onError: () =>
+        Toast.fire({
+          iconHtml:
+            '<a><img style="width: 80px" src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
+          title: "댓글 삭제 오류",
+          background: isDark ? "#4D4D4D" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#212B36",
+        }),
+    }
+  );
   const { data, isLoading } = useQuery({
     queryKey: ["getBoardDetail", isChange],
     queryFn: () => getBoardDetail("senior", Number(boardId.boardId)),
@@ -83,10 +119,24 @@ export default function ReviewItem() {
   return (
     <div className="w-full h-full">
       <p className="text-grayscale4">
-        선배들의 이야기 {" > " + data.boardResponse.categoryName}
+        알럼나이 {" > " + data.boardResponse.categoryName}
       </p>
       <br />
       <br />
+      {data.management ? (
+        <div className="flex flex-row justify-end gap-5">
+          <button
+            className="bg-grayscale5 text-grayscale1 py-2 px-4 rounded-lg dark:bg-grayscale4"
+            onClick={() =>
+              navigate("/board/modify/2/detail/" + boardId.boardId)
+            }
+          >
+            수정
+          </button>
+        </div>
+      ) : (
+        ""
+      )}
       <p className="font-bold text-4xl">{data.boardResponse.boardTitle}</p>
       <p className="text-grayscale4">
         {data.boardResponse.createdAt.split("T")[0]}
@@ -140,7 +190,7 @@ export default function ReviewItem() {
           </>
         ) : (
           <div className="w-full my-4">
-            {data.commentList.map((item: any) => {
+            {data.commentList.map((item: any, index: number) => {
               return (
                 <div
                   key={item.commentId}
@@ -158,6 +208,16 @@ export default function ReviewItem() {
                         {item.createdAt.split("T")[0]}
                       </span>
                     </div>
+                    {item.management ? (
+                      <button
+                        className="text-sm text-primary7 dark:text-primary4"
+                        onClick={() => handleRemoveComment(item.commentId)}
+                      >
+                        삭제
+                      </button>
+                    ) : (
+                      ""
+                    )}
                   </div>
                   <div className="px-12">{item.commentContents}</div>
                   <div>
@@ -180,6 +240,18 @@ export default function ReviewItem() {
                               <span className="text-sm text-grayscale4">
                                 {comment.createdAt.split("T")[0]}
                               </span>
+                              {comment.management ? (
+                                <button
+                                  className="text-sm text-primary7 dark:text-primary4"
+                                  onClick={() =>
+                                    handleRemoveComment(comment.commentId)
+                                  }
+                                >
+                                  삭제
+                                </button>
+                              ) : (
+                                ""
+                              )}
                             </div>
                           </div>
                           <div className="px-12">{comment.commentContents}</div>
@@ -192,11 +264,13 @@ export default function ReviewItem() {
                       className="outline-none bg-transparent py-2 px-4 border-[1px] border-grayscale4 rounded-lg w-11/12"
                       type="text"
                       placeholder="답댓글을 남겨보세요"
-                      ref={reInputRef}
+                      ref={(element) => (reInputRef.current[index] = element)}
                     />
                     <button
                       className="w-1/12 bg-secondary1 text-white  rounded-lg dark:bg-secondary2"
-                      onClick={() => handleReCommentRegist(item.commentId)}
+                      onClick={() =>
+                        handleReCommentRegist(item.commentId, index)
+                      }
                     >
                       등록
                     </button>

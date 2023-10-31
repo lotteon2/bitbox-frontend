@@ -116,7 +116,7 @@ export default function DevLogRegister() {
 
   const handleRemoveBoard = () => {
     Swal.fire({
-      title: '<p style="text-align: center">정말로 탈퇴하시겠습니까?</p>',
+      title: '<p style="text-align: center">정말로 삭제하시겠습니까?</p>',
       text: "삭제된 게시글은 다시 복구할 수 없습니다.",
       iconHtml:
         '<a><img src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
@@ -383,7 +383,7 @@ export default function DevLogRegister() {
       <img
         src={LoaddingGif}
         alt=""
-        className={loading ? "absolute top-[25%] left-[40%]" : "LoaddingGif"}
+        className={loading ? "absolute top-[25%] left-[40%]" : "hidden"}
       />
     </div>
   );
