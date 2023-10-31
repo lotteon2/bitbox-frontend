@@ -56,7 +56,6 @@ export default function OAuthKakaoRedirect() {
     },
     onError: (error: any) => {
       alert(error.response.data.message); // TODO : swal
-      console.log(error);
       navigate("/login");
     },
   });
