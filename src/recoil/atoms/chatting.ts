@@ -49,7 +49,7 @@ export const chattingUserName = atom({
 });
 
 /**
- * 클릭한 유저의 역할(host or guest)
+ * 특정 채팅방의 게스트
  */
 export const chattingRoomGuestId = atom({
   key: "chattingRoomGuestId",
