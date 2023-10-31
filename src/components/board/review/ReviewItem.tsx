@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useParams } from "react-router";
 import {
@@ -10,11 +10,10 @@ import Loading from "../../../pages/Loading";
 import Badge from "../../common/Badge";
 import SmsIcon from "@mui/icons-material/Sms";
 import { useRecoilValue } from "recoil";
-import { darkmodeState, memberState } from "../../../recoil/atoms/common";
+import { darkmodeState } from "../../../recoil/atoms/common";
 import { Empty } from "antd";
 import { Toast } from "../../common/Toast";
 import { useNavigate } from "react-router-dom";
-import { getMyInfo } from "../../../apis/member/member";
 
 interface commentRegisterRequestDto {
   boardId: number;
