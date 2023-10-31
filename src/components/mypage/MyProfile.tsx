@@ -333,7 +333,6 @@ export default function MyProfile() {
         authority === "MANAGER" ||
         authority === "TEACHER"
       ) {
-        console.log(data.adminProfileImg);
         setProfileImage(data.adminProfileImg);
       } else {
         if (memberInfo.classId === -1) {

@@ -110,6 +110,7 @@ export default function Header() {
   const [isToggled, setIsToggled] = useState<boolean>(false);
   const [userToggled, setUserToggled] = useState<boolean>(false);
 
+  const accessToken = localStorage.getItem("accessToken");
   const isLogin = useRecoilValue(loginState);
   const resetIsLogin = useResetRecoilState(loginState);
   const isDark = useRecoilValue<boolean>(darkmodeState);
@@ -162,9 +163,9 @@ export default function Header() {
   });
 
   useEffect(() => {
-    notiCountMutate.mutate();
+    if (accessToken !== null) notiCountMutate.mutate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLogin, notiEvent, notiChanged]);
+  }, [isLogin, notiEvent, notiChanged, accessToken]);
 
   return (
     <HeaderStyle

@@ -14,6 +14,7 @@ import {
   readAllNotifications,
 } from "../../apis/noti/notification";
 import { useMutation } from "react-query";
+import { ACCESSOR_TYPES } from "@babel/types";
 
 interface Notification {
   notificationId: number;
@@ -29,7 +30,6 @@ export default function NotificationDropDown() {
   const isDark = useRecoilValue<boolean>(darkmodeState);
   const [notiChanged, setNotiChanged] =
     useRecoilState<boolean>(notiChangedState);
-
   const [notifications, setNotifications] = useState([]);
 
   const subscribeUrl = `${process.env.REACT_APP_API_URL}/notification-service/notifications/subscription?sessionToken=`;
