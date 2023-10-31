@@ -39,8 +39,9 @@ export default function OAuthKakaoRedirect() {
       setIsLogin(true);
       setAuthority(data["authority"]);
       localStorage.setItem("accessToken", data["accessToken"]);
+      localStorage.setItem("sessionToken", data["sessionToken"]);
 
-      if (data.isInvited) {
+      if (data.invited) {
         alert(
           "교육생으로 등록된 경우 이름 추가 기입이 필요합니다. 마이페이지로 이동합니다."
         );
@@ -66,5 +67,5 @@ export default function OAuthKakaoRedirect() {
   }, []);
 
   // TODO : 스피너
-  return <div></div>;
+  return <></>;
 }

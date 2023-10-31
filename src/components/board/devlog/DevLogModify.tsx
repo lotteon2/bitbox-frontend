@@ -6,17 +6,21 @@ import { useRecoilValue } from "recoil";
 import CollectionsIcon from "@mui/icons-material/Collections";
 import { Toast } from "../../common/Toast";
 import {
+  getBoardDetail,
   getCategoryList,
-  registerBoard,
+  modifyBoard,
+  removeBoard,
 } from "../../../apis/community/community";
 import { useMutation, useQuery } from "react-query";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { imageUpload } from "../../../apis/common/common";
 import Loading from "../../common/Loading";
-import { Select, ConfigProvider, theme } from "antd";
-import LoadingGif from "../../../assets/images/Loading.gif";
+import { Select } from "antd";
+import LoaddingGif from "../../../assets/images/Loading.gif";
+import Swal from "sweetalert2";
 
-interface boardRegisterDto {
+interface boardModifyRequestDto {
+  boardId: number;
   categoryId: number;
   boardTitle: string;
   boardContents: string;
@@ -41,6 +45,7 @@ export default function DevLogRegister() {
   const navigate = useNavigate();
   const [categories, setCategories] = useState<selectCategories[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number>(0);
+  const boardId = useParams().boardId;
   const [loading, setLoading] = useState<boolean>(false);
 
   const formats = [
@@ -109,6 +114,31 @@ export default function DevLogRegister() {
     setTitle(e.target.value);
   };
 
+  const handleRemoveBoard = () => {
+    Swal.fire({
+      title: '<p style="text-align: center">정말로 탈퇴하시겠습니까?</p>',
+      text: "삭제된 게시글은 다시 복구할 수 없습니다.",
+      iconHtml:
+        '<a><img src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
+      showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+      confirmButtonColor: isDark ? "#FF8888" : "#DC2626", // confrim 버튼 색깔 지정
+      cancelButtonColor: isDark ? "#C6C6C6" : "#808080", // cancel 버튼 색깔 지정
+      confirmButtonText: "삭제하기", // confirm 버튼 텍스트 지정
+      cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+      reverseButtons: true, // 버튼 순서 거꾸로
+      background: isDark ? "#202027" : "#FFFFFF",
+      color: isDark ? "#FFFFFF" : "#212B36",
+    }).then((result) => {
+      // 만약 Promise리턴을 받으면,
+      if (result.isConfirmed) {
+        // 모달창에서 confirm 버튼을 눌렀다면
+        removeMutation.mutate();
+      } else {
+        // 모달창에서 cancel 버튼을 눌렀다면
+      }
+    });
+  };
+
   const handleSubmitBoard = () => {
     if (title === "") {
       Toast.fire({
@@ -135,33 +165,61 @@ export default function DevLogRegister() {
         color: isDark ? "#FFFFFF" : "#212B36",
       });
     } else {
-      const registerDto = {
+      const updateDto = {
+        boardId: Number(boardId),
         categoryId: selectedCategory,
         boardTitle: title,
         boardContents: value,
         thumbnail: thumbnail,
       };
 
-      registerMutation.mutate(registerDto);
+      updateMutation.mutate(updateDto);
     }
   };
 
-  const registerMutation = useMutation(
-    ["registerBoard"],
-    (registerdto: boardRegisterDto) => registerBoard("devlog", registerdto),
+  const removeMutation = useMutation(
+    ["removeBoard"],
+    () => removeBoard("devlog", Number(boardId)),
     {
       onSuccess: () => {
         setLoading(true);
         setTimeout(function () {
-          setLoading(false);
           Toast.fire({
             iconHtml:
               '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
-            title: "등록되었습니다.",
+            title: "삭제되었습니다.",
             background: isDark ? "#4D4D4D" : "#FFFFFF",
             color: isDark ? "#FFFFFF" : "#212B36",
           });
+          navigate("/board/devlog");
+        }, Math.floor(2000));
+      },
+      onError: () => {
+        Toast.fire({
+          iconHtml:
+            '<a><img style="width: 80px" src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
+          title: "오류가 발생했습니다.",
+          background: isDark ? "#4D4D4D" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#212B36",
+        });
+      },
+    }
+  );
 
+  const updateMutation = useMutation(
+    ["modifyBoard"],
+    (modifyboard: boardModifyRequestDto) => modifyBoard("devlog", modifyboard),
+    {
+      onSuccess: () => {
+        setLoading(true);
+        setTimeout(function () {
+          Toast.fire({
+            iconHtml:
+              '<a><img style="width: 80px" src="https://i.ibb.co/Y3dNf6N/success.png" alt="success"></a>',
+            title: "수정되었습니다.",
+            background: isDark ? "#4D4D4D" : "#FFFFFF",
+            color: isDark ? "#FFFFFF" : "#212B36",
+          });
           navigate("/board/devlog");
         }, Math.floor(2000));
       },
@@ -197,9 +255,28 @@ export default function DevLogRegister() {
     }
   );
 
+  const categoryListMutation = useMutation(
+    ["getCategoryList"],
+    () => getCategoryList(1),
+    {
+      onSuccess: (data) => {
+        let categoryTmp: selectCategories[] = [];
+        data.forEach((item: categoryResponse) => {
+          const category = {
+            value: item.categoryId,
+            label: item.categoryName,
+          };
+          categoryTmp.push(category);
+        });
+        setCategories(categoryTmp);
+      },
+      onError: () => {},
+    }
+  );
+
   const { data, isLoading } = useQuery({
-    queryKey: ["getCategoryList"],
-    queryFn: () => getCategoryList(1),
+    queryKey: ["getBoardDetail"],
+    queryFn: () => getBoardDetail("devlog", Number(boardId)),
   });
 
   const handleChange = (value: number) => {
@@ -208,37 +285,28 @@ export default function DevLogRegister() {
 
   useEffect(() => {
     if (data) {
-      let categoryTmp: selectCategories[] = [];
-      data.forEach((item: categoryResponse) => {
-        const category = {
-          value: item.categoryId,
-          label: item.categoryName,
-        };
-        categoryTmp.push(category);
-      });
-      setCategories(categoryTmp);
-      setSelectedCategory(categoryTmp[0].value);
+      categoryListMutation.mutate();
+      setValue(data.boardResponse.boardContents);
+      setTitle(data.boardResponse.boardTitle);
+      setThumbnail(data.boardResponse.thumbnail);
+      setSelectedCategory(data.boardResponse.categoryId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
-  if (isLoading || data === undefined) return <Loading />;
+
+  if (isLoading || data === undefined || categories.length === 0)
+    return <Loading />;
 
   return (
     <div className="mx-5 flex flex-col">
       <div className="relative">
         <div className="absolute top-0">
-          <ConfigProvider
-            theme={{
-              algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
-            }}
-          >
-            <Select
-              defaultValue={data[0].categoryName}
-              options={categories}
-              style={{ width: 150 }}
-              onChange={handleChange}
-            />
-          </ConfigProvider>
+          <Select
+            defaultValue={data.boardResponse.categoryId}
+            options={categories}
+            style={{ width: 150 }}
+            onChange={handleChange}
+          />
         </div>
         <span className="absolute right-0">
           <button
@@ -248,10 +316,16 @@ export default function DevLogRegister() {
             취소
           </button>
           <button
+            className="mx-3 bg-primary7 px-5 py-2 rounded-lg text-grayscale1 dark:bg-primary4"
+            onClick={handleRemoveBoard}
+          >
+            삭제
+          </button>
+          <button
             className="mx-3 bg-secondary1 px-5 py-2 rounded-lg text-grayscale1 dark:bg-secondary2"
             onClick={handleSubmitBoard}
           >
-            등록
+            수정
           </button>
         </span>
       </div>
@@ -307,9 +381,9 @@ export default function DevLogRegister() {
         />
       </div>
       <img
-        src={LoadingGif}
+        src={LoaddingGif}
         alt=""
-        className={loading ? "absolute top-[25%] left-[40%]" : "hidden"}
+        className={loading ? "absolute top-[25%] left-[40%]" : "LoaddingGif"}
       />
     </div>
   );

@@ -1,37 +1,70 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery } from "react-query";
+import { getCategoryList } from "../apis/community/community";
+import Loading from "./Loading";
+
+import CommunityList from "../components/board/community/CommunityList";
+
+interface categoryType {
+  categoryId: number;
+  categoryName: string;
+}
 
 export default function CommunityPage() {
-  const [selectedCategory, setSelectedCategory] = useState<number>(0);
-  const subCategory = ["✨   전체", "🤔   질문있어요", "🫂   공유해요"];
+  const [categories, setSelectedCategory] = useState<number>(0);
+  const [allCategories, setAllCategories] = useState<categoryType[]>([]);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["getCategoryListCommunity"],
+    queryFn: () => getCategoryList(3),
+  });
+
+  useEffect(() => {
+    if (data && categories === 0) {
+      const tmpCategories: categoryType[] = [];
+      tmpCategories.push({
+        categoryId: 3,
+        categoryName: "✨ 전체",
+      });
+      data.forEach((item: categoryType) => {
+        const category = {
+          categoryId: item.categoryId,
+          categoryName: item.categoryName,
+        };
+        tmpCategories.push(category);
+      });
+
+      setAllCategories(tmpCategories);
+      setSelectedCategory(3);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+  if (data === undefined || isLoading) return <Loading />;
 
   return (
     <div className="flex flex-row my-10">
-      <div className="w-[230px] mr-10">
+      <div className="w-[300px] mr-10">
         <div className="w-full h-full dark:text-grayscale1">
           <div className="font-extrabold text-3xl ml-2">커뮤니티</div>
-          {/* TODO: 나중에 여기 카테고리 PK를 key 값으로 설정 후 index를 갈아 끼워줘야됨 */}
           <div className="font-bold text-2xl mt-10 cursor-pointer">
-            {subCategory.map((sub: string, index: number) => (
+            {allCategories.map((item: categoryType) => (
               <div
-                key={index}
+                key={item.categoryId}
                 className={
-                  index === selectedCategory
+                  item.categoryId === categories
                     ? "py-5 px-10 rounded-xl bg-primary1 dark:bg-primary4"
                     : "py-5 px-10 rounded-xl"
                 }
-                onClick={() => setSelectedCategory(index)}
+                onClick={() => setSelectedCategory(item.categoryId)}
               >
-                {sub}
+                {item.categoryName}
               </div>
             ))}
           </div>
         </div>
       </div>
-      {selectedCategory === 0
-        ? "전체"
-        : selectedCategory === 1
-        ? "질문있어요"
-        : "공유해요"}
+      <CommunityList categoryId={categories} />
     </div>
   );
 }
