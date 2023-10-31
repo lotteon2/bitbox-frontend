@@ -14,6 +14,7 @@ import {
   readAllNotifications,
 } from "../../apis/noti/notification";
 import { useMutation } from "react-query";
+import { EventSourcePolyfill } from "event-source-polyfill";
 
 interface Notification {
   notificationId: number;
@@ -41,8 +42,18 @@ export default function NotificationDropDown() {
 
   useEffect(() => {
     if (isLogin) {
-      let eventSource = new EventSource(
-        subscribeUrl + localStorage.getItem("accessToken")
+      let eventSource = new EventSourcePolyfill(
+        subscribeUrl + localStorage.getItem("accessToken"),
+        {
+          headers: {
+            "Content-Type": "text/event-stream",
+            "Access-Control-Allow-Origin": "",
+            AccessToken: `Bearer ${localStorage.getItem("accessToken")}`,
+            "Cache-Control": "no-cache",
+          },
+          heartbeatTimeout: 86400000,
+          withCredentials: true,
+        }
       );
 
       eventSource.onopen = () => {
@@ -61,10 +72,19 @@ export default function NotificationDropDown() {
 
       eventSource.onerror = () => {
         eventSource.close();
-        eventSource = new EventSource(
-          subscribeUrl + localStorage.getItem("accessToken")
+        eventSource = new EventSourcePolyfill(
+          subscribeUrl + localStorage.getItem("accessToken"),
+          {
+            headers: {
+              "Content-Type": "text/event-stream",
+              "Access-Control-Allow-Origin": "",
+              AccessToken: `Bearer ${localStorage.getItem("accessToken")}`,
+              "Cache-Control": "no-cache",
+            },
+            heartbeatTimeout: 86400000,
+            withCredentials: true,
+          }
         );
-
         eventSource.addEventListener("ATTENDANCE", (event: any) => {
           setNotiEvent((cur) => !cur);
         });
