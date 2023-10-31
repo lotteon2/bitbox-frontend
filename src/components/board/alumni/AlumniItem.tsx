@@ -10,7 +10,7 @@ import Loading from "../../../pages/Loading";
 import Badge from "../../common/Badge";
 import SmsIcon from "@mui/icons-material/Sms";
 import { useRecoilValue } from "recoil";
-import { darkmodeState } from "../../../recoil/atoms/common";
+import { darkmodeState, loginState } from "../../../recoil/atoms/common";
 import { Empty } from "antd";
 import { Toast } from "../../common/Toast";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +28,7 @@ export default function AlumniItem() {
   const reInputRef = useRef<any>([]);
   const [isChange, setIsChange] = useState<boolean>(false);
   const navigate = useNavigate();
+  const isLogin = useRecoilValue<boolean>(loginState);
 
   const handleCommentRegist = () => {
     if (inputRef.current !== null) {
@@ -111,7 +112,7 @@ export default function AlumniItem() {
   );
   const { data, isLoading } = useQuery({
     queryKey: ["getBoardDetail", isChange],
-    queryFn: () => getBoardDetail("alumni", Number(boardId.boardId)),
+    queryFn: () => getBoardDetail("alumni", Number(boardId.boardId), isLogin),
   });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   if (data === undefined || isLoading) return <Loading />;

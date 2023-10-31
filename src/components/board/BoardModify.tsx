@@ -212,7 +212,8 @@ export default function BoardModify() {
           : masterBoardId === "3"
           ? "community"
           : "senior",
-        Number(boardId)
+        Number(boardId),
+        true
       ),
     {
       onSuccess: (data) => {

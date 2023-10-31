@@ -114,11 +114,22 @@ export const searchBoardList = async (
  * 게시글 상세
  * @param boardId
  */
-export const getBoardDetail = async (boardType: string, boardId: number) => {
-  const { data } = await defaultInstance.get(
-    "/board-service/board/" + boardType + "/detail?boardId=" + boardId
-  );
-  return data;
+export const getBoardDetail = async (
+  boardType: string,
+  boardId: number,
+  isLogin: boolean
+) => {
+  if (isLogin) {
+    const { data } = await authInstance.get(
+      "/board-service/board/" + boardType + "/detail?boardId=" + boardId
+    );
+    return data;
+  } else {
+    const { data } = await defaultInstance.get(
+      "/board-service/board/" + boardType + "/detail?boardId=" + boardId
+    );
+    return data;
+  }
 };
 
 interface boardRegisterDto {
