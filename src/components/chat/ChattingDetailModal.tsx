@@ -14,6 +14,7 @@ import {
   chattingUserId,
   chattingUserName,
   chattingChangeState,
+  chattingRoomGuestId,
 } from "../../recoil/atoms/chatting";
 import { getChatting, payChatting } from "../../apis/chatting/chatting";
 import Loading from "../common/Loading";
@@ -50,6 +51,7 @@ export default function ChattingDetailModal({
   const userName = useRecoilValue<string>(chattingUserName);
   const chattingRoomNumber = useRecoilValue(chattingRoomNumberState);
   const chattingUser = useRecoilValue(chattingUserId);
+  const guestId = useRecoilValue(chattingRoomGuestId);
   const [isChange, setIsChange] = useRecoilState<boolean>(chattingChangeState);
   const [stompClient, setStompClient] = useState<null | Client>(null);
   const [myInfoData, setMyInfoData] = useState(null);
@@ -114,6 +116,7 @@ export default function ChattingDetailModal({
         `${process.env.REACT_APP_API_URL}/chatting-service/chattings`
       );
       const stompClient = Stomp.over(socket);
+      stompClient.debug = () => {};
       stompClient.connect({}, (frame: any) => {
         stompClient.subscribe(
           "/room/" + chattingRoomNumber,
@@ -122,7 +125,8 @@ export default function ChattingDetailModal({
 
             let secret =
               chatData.hasSubscription ||
-              chatData.transmitterId === user.memberId
+              chatData.transmitterId === user.memberId ||
+              user.memberId === guestId
                 ? false
                 : true;
             let location = chatData.transmitterId === user.memberId ? "R" : "L";
