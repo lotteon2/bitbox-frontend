@@ -150,7 +150,7 @@ export default function AlumniItem() {
           alt="프로필 이미지"
         />
         <span className="mt-4">
-          <Badge authority={data.boardResponse.authority} />
+          <Badge authority={data.boardResponse.memberAuthority} />
         </span>
         <span className="mt-5">{data.boardResponse.memberName}</span>
       </div>
