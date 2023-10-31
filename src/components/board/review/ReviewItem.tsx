@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useParams } from "react-router";
 import {
@@ -10,10 +10,11 @@ import Loading from "../../../pages/Loading";
 import Badge from "../../common/Badge";
 import SmsIcon from "@mui/icons-material/Sms";
 import { useRecoilValue } from "recoil";
-import { darkmodeState } from "../../../recoil/atoms/common";
+import { darkmodeState, memberState } from "../../../recoil/atoms/common";
 import { Empty } from "antd";
 import { Toast } from "../../common/Toast";
 import { useNavigate } from "react-router-dom";
+import { getMyInfo } from "../../../apis/member/member";
 
 interface commentRegisterRequestDto {
   boardId: number;
@@ -27,6 +28,7 @@ export default function AlumniItem() {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const reInputRef = useRef<any>([]);
   const [isChange, setIsChange] = useState<boolean>(false);
+
   const navigate = useNavigate();
 
   const handleCommentRegist = () => {
@@ -113,7 +115,7 @@ export default function AlumniItem() {
     queryKey: ["getBoardDetail", isChange],
     queryFn: () => getBoardDetail("senior", Number(boardId.boardId)),
   });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   if (data === undefined || isLoading) return <Loading />;
 
   return (
@@ -193,10 +195,10 @@ export default function AlumniItem() {
             {data.commentList.map((item: any, index: number) => {
               return (
                 <div
-                  key={item.commentId}
+                  key={index}
                   className="py-5 border-b-[1px] border-grayscale4"
                 >
-                  <div className="flex flex-row gap-3" key={item.commentId}>
+                  <div className="flex flex-row gap-3">
                     <img
                       className="w-8 h-8 rounded-full"
                       src={item.memberProfileImage}
@@ -207,6 +209,13 @@ export default function AlumniItem() {
                       <span className="text-sm text-grayscale4">
                         {item.createdAt.split("T")[0]}
                       </span>
+                      {data.boardResponse.memberId === item.memberId ? (
+                        <p className="text-sm bg-primary1 px-2 text-primary4">
+                          작성자
+                        </p>
+                      ) : (
+                        ""
+                      )}
                     </div>
                     {item.management ? (
                       <button
@@ -221,9 +230,9 @@ export default function AlumniItem() {
                   </div>
                   <div className="px-12">{item.commentContents}</div>
                   <div>
-                    {item.commentList.map((comment: any) => {
+                    {item.commentList.map((comment: any, index: number) => {
                       return (
-                        <div key={comment.commentId} className=" my-3 pl-10">
+                        <div key={index} className=" my-3 pl-10">
                           <div
                             className="flex flex-row gap-3"
                             key={comment.commentId}
@@ -240,6 +249,14 @@ export default function AlumniItem() {
                               <span className="text-sm text-grayscale4">
                                 {comment.createdAt.split("T")[0]}
                               </span>
+                              {data.boardResponse.memberId ===
+                              comment.memberId ? (
+                                <p className="text-sm bg-primary1 px-2 text-primary4">
+                                  작성자
+                                </p>
+                              ) : (
+                                ""
+                              )}
                               {comment.management ? (
                                 <button
                                   className="text-sm text-primary7 dark:text-primary4"
