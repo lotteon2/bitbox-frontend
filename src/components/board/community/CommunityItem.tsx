@@ -208,6 +208,13 @@ export default function AlumniItem() {
                       <span className="text-sm text-grayscale4">
                         {item.createdAt.split("T")[0]}
                       </span>
+                      {data.boardResponse.memberId === item.memberId ? (
+                        <p className="text-sm bg-primary1 px-2 text-primary4">
+                          작성자
+                        </p>
+                      ) : (
+                        ""
+                      )}
                     </div>
                     {item.management ? (
                       <button
@@ -241,6 +248,14 @@ export default function AlumniItem() {
                               <span className="text-sm text-grayscale4">
                                 {comment.createdAt.split("T")[0]}
                               </span>
+                              {data.boardResponse.memberId ===
+                              comment.memberId ? (
+                                <p className="text-sm bg-primary1 px-2 text-primary4">
+                                  작성자
+                                </p>
+                              ) : (
+                                ""
+                              )}
                               {comment.management ? (
                                 <button
                                   className="text-sm text-primary7 dark:text-primary4"
