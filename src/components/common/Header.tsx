@@ -174,7 +174,6 @@ export default function Header() {
     },
     onError: (error: any) => {
       alert(error.response.data.message);
-      console.log(error);
     },
   });
 
