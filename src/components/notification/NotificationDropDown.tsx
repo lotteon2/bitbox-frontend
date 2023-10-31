@@ -29,7 +29,6 @@ export default function NotificationDropDown() {
   const isDark = useRecoilValue<boolean>(darkmodeState);
   const [notiChanged, setNotiChanged] =
     useRecoilState<boolean>(notiChangedState);
-
   const [notifications, setNotifications] = useState([]);
 
   const subscribeUrl = `${process.env.REACT_APP_API_URL}/notification-service/notifications/subscription?sessionToken=`;

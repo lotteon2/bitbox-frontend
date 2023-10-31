@@ -3,7 +3,14 @@ import styled from "styled-components";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faUser, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { darkmodeState, loginState } from "../../recoil/atoms/common";
+import {
+  authorityState,
+  chatState,
+  chatroomState,
+  darkmodeState,
+  loginState,
+  memberState,
+} from "../../recoil/atoms/common";
 import {
   useRecoilValue,
   useSetRecoilState,
@@ -110,6 +117,7 @@ export default function Header() {
   const [isToggled, setIsToggled] = useState<boolean>(false);
   const [userToggled, setUserToggled] = useState<boolean>(false);
 
+  const accessToken = localStorage.getItem("accessToken");
   const isLogin = useRecoilValue(loginState);
   const resetIsLogin = useResetRecoilState(loginState);
   const isDark = useRecoilValue<boolean>(darkmodeState);
@@ -117,6 +125,11 @@ export default function Header() {
   const [notiCount, setNotiCount] = useRecoilState<number>(notiCountState);
   const notiEvent = useRecoilValue(notiEventState);
   const notiChanged = useRecoilValue(notiChangedState);
+  const authority = useRecoilValue<string>(authorityState);
+  const resetAuthority = useResetRecoilState(authorityState);
+  const resetChatState = useResetRecoilState(chatState);
+  const resetChatRoomState = useResetRecoilState(chatroomState);
+  const resetMemberState = useResetRecoilState(memberState);
 
   // const defaultUserMenuList = ["로그인", "회원가입"];  // const authUserMenuList = ["마이페이지", "로그아웃"];
   const navigate = useNavigate();
@@ -152,19 +165,22 @@ export default function Header() {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("sessionToken");
       resetIsLogin();
+      resetAuthority();
+      resetChatState();
+      resetChatRoomState();
+      resetMemberState();
       alert("로그아웃 성공");
       navigate("/");
     },
     onError: (error: any) => {
       alert(error.response.data.message);
-      console.log(error);
     },
   });
 
   useEffect(() => {
-    notiCountMutate.mutate();
+    if (accessToken !== null) notiCountMutate.mutate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLogin, notiEvent, notiChanged]);
+  }, [isLogin, notiEvent, notiChanged, accessToken]);
 
   return (
     <HeaderStyle
@@ -238,7 +254,11 @@ export default function Header() {
           </NavLink>
         </li>
         <li
-          className="font-bold dark:text-grayscale1"
+          className={
+            isLogin && authority !== "GENERAL"
+              ? "font-bold dark:text-grayscale1"
+              : "hidden"
+          }
           onClick={handleCheckLogin}
         >
           <NavLink

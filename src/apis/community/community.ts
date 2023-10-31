@@ -1,4 +1,4 @@
-import { authInstance } from "../utils";
+import { authInstance, defaultInstance } from "../utils";
 
 /**
  * 게시글 리스트 조회
@@ -11,7 +11,7 @@ export const getBoardList = async (
   page: number,
   size: number
 ) => {
-  const { data } = await authInstance.get(
+  const { data } = await defaultInstance.get(
     "/board-service/board/" +
       boardType +
       "?categoryId=" +
@@ -29,7 +29,7 @@ export const getBoardList = async (
  * @param categoryId: 상위 카테고리 아이디
  */
 export const getCategoryList = async (categoryId: number) => {
-  const { data } = await authInstance.get(
+  const { data } = await defaultInstance.get(
     "/board-service/board/category?categoryId=" + categoryId
   );
   return data;
@@ -95,7 +95,7 @@ export const searchBoardList = async (
   page: number,
   size: number
 ) => {
-  const { data } = await authInstance.get(
+  const { data } = await defaultInstance.get(
     "/board-service/board/" +
       boardType +
       "/search?categoryId=" +
@@ -115,7 +115,7 @@ export const searchBoardList = async (
  * @param boardId
  */
 export const getBoardDetail = async (boardType: string, boardId: number) => {
-  const { data } = await authInstance.get(
+  const { data } = await defaultInstance.get(
     "/board-service/board/" + boardType + "/detail?boardId=" + boardId
   );
   return data;
@@ -239,7 +239,7 @@ export const modifyComment = async (
  */
 export const removeComment = async (commentId: number) => {
   const { data } = await authInstance.delete(
-    "/board-service/board/comment/" + commentId
+    "/board-service/board/comment?commentId=" + commentId
   );
   return data;
 };

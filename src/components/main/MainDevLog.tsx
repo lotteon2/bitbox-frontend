@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "react-query";
 import { getBoardList, getCategoryList } from "../../apis/community/community";
 import Loading from "../../pages/Loading";
 import { Empty } from "antd";
+import { useNavigate } from "react-router";
 
 interface categories {
   categoryId: number;
@@ -33,6 +34,8 @@ interface boardListResponse {
 export default function MainDevLog() {
   const [category, setCategory] = useState<number>(0);
   const [boardList, setBoardList] = useState<boardListResponse | null>();
+  const navigate = useNavigate();
+
   const { data, isLoading } = useQuery({
     queryKey: ["getCategoryList"],
     queryFn: () => getCategoryList(1),
@@ -131,7 +134,10 @@ export default function MainDevLog() {
             );
           })
         )}
-        <button className="absolute right-72 mt-[-150px] border-2 border-primary7 px-10 py-3 text-primary7 rounded-full hover:bg-primary7 hover:border-primary7 hover:text-grayscale1 dark:hover:bg-primary4 dark:hover:border-primary4">
+        <button
+          className="absolute right-72 mt-[-150px] border-2 border-primary7 px-10 py-3 text-primary7 rounded-full hover:bg-primary7 hover:border-primary7 hover:text-grayscale1 dark:hover:bg-primary4 dark:hover:border-primary4"
+          onClick={() => navigate("/board/devlog")}
+        >
           더 자세히 보러가기
         </button>
       </div>
