@@ -24,7 +24,6 @@ type Payment = {
 
 export default function PaymentList() {
   const [pageCount, setPageCount] = useState(0); // 페이지 개수
-  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
   const [payments, setPayments] = useState<Payment[]>([]); // 결제 데이터
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [paymentItem, setPaymentItem] = useState<Payment>();
@@ -126,7 +125,7 @@ export default function PaymentList() {
               }}
             >
               <Pagination
-                defaultCurrent={currentPage}
+                defaultCurrent={1}
                 total={pageCount}
                 pageSize={pageSize}
                 onChange={handlerPageChange}
