@@ -31,6 +31,7 @@ interface commentRegisterRequestDto {
 interface chattingDto {
   guestId: string;
   guestName: string;
+  guestProfileImg: string;
 }
 
 export default function AlumniItem() {
@@ -127,10 +128,15 @@ export default function AlumniItem() {
     }
   );
 
-  const handleChattingRoom = (memberId: string, memberName: string) => {
+  const handleChattingRoom = (
+    memberId: string,
+    memberName: string,
+    profile: string
+  ) => {
     const chattingDto: chattingDto = {
       guestId: memberId,
       guestName: memberName,
+      guestProfileImg: profile,
     };
 
     chattingMutation.mutate(chattingDto);
@@ -202,7 +208,8 @@ export default function AlumniItem() {
             onClick={() =>
               handleChattingRoom(
                 data.boardResponse.memberId,
-                data.boardResponse.memberName
+                data.boardResponse.memberName,
+                data.boardResponse.memberProfileImg
               )
             }
           >
