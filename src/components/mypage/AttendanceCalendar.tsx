@@ -15,7 +15,6 @@ import { Button, Modal } from "antd";
 import { darkmodeState } from "../../recoil/atoms/common";
 import { Toast } from "../common/Toast";
 import { imageUpload } from "../../apis/common/common";
-import { AnyAaaaRecord } from "dns";
 
 interface calendarEvents {
   id: number;
