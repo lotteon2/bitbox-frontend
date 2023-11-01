@@ -14,6 +14,8 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { Button, Modal } from "antd";
 import { darkmodeState } from "../../recoil/atoms/common";
 import { Toast } from "../common/Toast";
+import { imageUpload } from "../../apis/common/common";
+import { AnyAaaaRecord } from "dns";
 
 interface calendarEvents {
   id: number;
@@ -129,7 +131,7 @@ export default function AttendanceCalendar() {
         attendanceTmp.push({
           id: item.attendanceId,
           title:
-            item.attendanceState === "ATTENDNACE"
+            item.attendanceState === "ATTENDANACE"
               ? "출석"
               : item.attendanceState === "ABSENT"
               ? "결석"
@@ -144,9 +146,32 @@ export default function AttendanceCalendar() {
     }
   }, [data]);
 
-  const handleAttachedFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // 이미지 등록 API 처리
+  const imageMutation = useMutation(
+    ["imageUpload"],
+    (image: any) => imageUpload(image),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        setAttachedFile(data);
+      },
+      onError: () => {
+        Toast.fire({
+          iconHtml:
+            '<a><img style="width: 80px" src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
+          title: "이미지 업로드 실패",
+          background: isDark ? "#4D4D4D" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#212B36",
+        });
+      },
+    }
+  );
+
+  const handleAttachedFile = (e: any) => {
     // TODO: 나중에 S3서버 올라오면 붙이기
-    setAttachedFile(e.target.value);
+    const formData = new FormData();
+    formData.append("image", e.target.files[0]);
+    imageMutation.mutate(formData);
   };
   const registerMutation = useMutation(
     ["registReasonStatement"],
