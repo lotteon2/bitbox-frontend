@@ -29,13 +29,14 @@ export default function PaymentList() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [paymentItem, setPaymentItem] = useState<Payment>();
   const isDark = useRecoilValue(darkmodeState);
+  const pageSize = 5;
 
   const { mutate } = useMutation(
-    ["getPaymentListCount", currentPage],
+    ["getPaymentListCount"],
     () => getPaymentListCount(),
     {
       onSuccess: (data) => {
-        const pageCount = data.data.pageCount;
+        const pageCount = data.data.totalCount;
         setPageCount(pageCount);
         if (pageCount > 0) {
           getPaymentList(0).then((data) => {
@@ -52,13 +53,10 @@ export default function PaymentList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handlerPageChange = (event: any, newPage: number) => {
-    setCurrentPage(event.selected);
-    if (newPage > 0) {
-      getPaymentList(newPage - 1).then((data) => {
-        setPayments(data.data);
-      });
-    }
+  const handlerPageChange = (page: any) => {
+    getPaymentList(page - 1).then((data) => {
+      setPayments(data.data);
+    });
   };
 
   // Click 확인
@@ -129,7 +127,8 @@ export default function PaymentList() {
             >
               <Pagination
                 defaultCurrent={currentPage}
-                total={pageCount * 10}
+                total={pageCount}
+                pageSize={pageSize}
                 onChange={handlerPageChange}
               />
             </ConfigProvider>
