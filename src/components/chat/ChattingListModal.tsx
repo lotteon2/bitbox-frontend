@@ -29,7 +29,7 @@ export default function ChattingListModal({
   onClickToggleModal,
   children,
 }: PropsWithChildren<ModalDefaultType>) {
-  const [chatList, setChatList] = useState<ChattingListItem[]>([]);
+  const [chattingList, setChattingList] = useState<ChattingListItem[]>([]);
   const setIsChat = useSetRecoilState<boolean>(chatroomState);
   const setChattingUserName = useSetRecoilState<string>(chattingUserName);
   const setChattingRoomGuestId = useSetRecoilState<string>(chattingRoomGuestId);
@@ -43,7 +43,7 @@ export default function ChattingListModal({
 
   useEffect(() => {
     getChattingList().then((data) => {
-      setChatList(data.data.roomList);
+      setChattingList(data.data.roomList);
     });
   }, []);
 
@@ -58,7 +58,7 @@ export default function ChattingListModal({
         </div>
       </header>
       <div className="h-[550px] overflow-scroll">
-        {chatList.map((item) => (
+        {chattingList.map((item) => (
           <div
             key={item.chatRoomId}
             onClick={() =>

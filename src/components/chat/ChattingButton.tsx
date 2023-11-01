@@ -1,20 +1,14 @@
 import ChatIcon from "../../assets/images/chat.png";
 import ChatDarkIcon from "../../assets/images/chat_dark.png";
-import {
-  darkmodeState,
-  chatState,
-  chatroomState,
-} from "../../recoil/atoms/common";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { darkmodeState, chatState } from "../../recoil/atoms/common";
+import { useSetRecoilState, useRecoilValue } from "recoil";
 import ChattingDetailModal from "./ChattingDetailModal";
-import ChattingListModal from "./ChattingListModal";
 import Badge from "@mui/material/Badge";
 import { chattingCountState } from "../../recoil/atoms/chatting";
 
 export default function ChattingButton() {
   const isDark = useRecoilValue(darkmodeState);
-  const isChatRoom = useRecoilValue(chatroomState);
-  const [isChat, setIsChat] = useRecoilState<boolean>(chatState);
+  const setIsChat = useSetRecoilState<boolean>(chatState);
   const chattingCount = useRecoilValue<number>(chattingCountState);
 
   const handleChatModalOpen = () => {
@@ -50,19 +44,9 @@ export default function ChattingButton() {
         </Badge>
       </div>
 
-      {isChat ? (
-        isChatRoom ? (
-          <ChattingListModal
-            onClickToggleModal={() => setIsChat((cur) => !cur)}
-          />
-        ) : (
-          <ChattingDetailModal
-            onClickToggleModal={() => setIsChat((cur) => !cur)}
-          />
-        )
-      ) : (
-        ""
-      )}
+      <ChattingDetailModal
+        onClickToggleModal={() => setIsChat((cur) => !cur)}
+      />
     </div>
   );
 }

@@ -16,7 +16,11 @@ import {
   chattingChangeState,
   chattingRoomGuestId,
 } from "../../recoil/atoms/chatting";
-import { getChatting, payChatting } from "../../apis/chatting/chatting";
+import {
+  getChatting,
+  getChattingList,
+  payChatting,
+} from "../../apis/chatting/chatting";
 import Loading from "../common/Loading";
 import { useMutation, useQuery } from "react-query";
 import SendIcon from "@mui/icons-material/Send";
@@ -37,14 +41,24 @@ interface chatting {
   secret: boolean;
 }
 
+interface ChattingListItem {
+  chatRoomId: number;
+  isSecret: number;
+  latestMessage: string;
+  otherUserId: string;
+  otherUserName: string;
+  otherUserProfileImg: string;
+  guestId: string;
+}
+
 export default function ChattingDetailModal({
   onClickToggleModal,
 }: PropsWithChildren<ModalDefaultType>) {
-  const setIsChat = useSetRecoilState(chatroomState);
+  const [isChatRoom, setIsChatRoom] = useRecoilState(chatroomState);
 
   const handleChatState = () => {
     stompClient?.disconnect(() => {});
-    setIsChat((cur: boolean) => !cur);
+    setIsChatRoom((cur: boolean) => !cur);
   };
   const isDark = useRecoilValue<boolean>(darkmodeState);
   const userProfile = useRecoilValue(chattingUserProfileImg);
@@ -59,6 +73,16 @@ export default function ChattingDetailModal({
   const isChat = useRecoilValue<boolean>(chatState);
   const isLogin = useRecoilValue<boolean>(loginState);
   const messagesEndRef: React.RefObject<HTMLDivElement> = useRef(null);
+  const [chattingList, setChattingList] = useState<ChattingListItem[]>([]);
+  const setChattingUserName = useSetRecoilState<string>(chattingUserName);
+  const setChattingRoomGuestId = useSetRecoilState<string>(chattingRoomGuestId);
+  const setChattingUserId = useSetRecoilState<string>(chattingUserId);
+  const setChattingUserProfileImg = useSetRecoilState<string>(
+    chattingUserProfileImg
+  );
+  const setChattingRoomNumberState = useSetRecoilState<number>(
+    chattingRoomNumberState
+  );
 
   const { data, isLoading } = useQuery({
     queryKey: ["getChatting", chattingRoomNumber, isChange],
@@ -116,33 +140,36 @@ export default function ChattingDetailModal({
         `${process.env.REACT_APP_API_URL}/chatting-service/chattings`
       );
       const stompClient = Stomp.over(socket);
-      stompClient.debug = () => {};
       stompClient.connect({}, (frame: any) => {
-        stompClient.subscribe(
-          "/room/" + chattingRoomNumber,
-          function (chatMessage: any) {
-            const chatData = JSON.parse(chatMessage.body);
+        if (!isChatRoom) {
+          stompClient.subscribe(
+            "/room/" + chattingRoomNumber,
+            function (chatMessage: any) {
+              const chatData = JSON.parse(chatMessage.body);
 
-            let secret =
-              chatData.hasSubscription ||
-              chatData.transmitterId === user.memberId ||
-              user.memberId === guestId
-                ? false
-                : true;
-            let location = chatData.transmitterId === user.memberId ? "R" : "L";
-            let chatId = chatData.chatId;
-            let msg = secret ? "" : chatData.message;
+              let secret =
+                chatData.hasSubscription ||
+                chatData.transmitterId === user.memberId ||
+                user.memberId === guestId
+                  ? false
+                  : true;
+              let location =
+                chatData.transmitterId === user.memberId ? "R" : "L";
+              let chatId = chatData.chatId;
+              let msg = secret ? "" : chatData.message;
 
-            const message = {
-              location: location,
-              message: msg,
-              chatId: chatId,
-              secret: secret,
-            };
+              const message = {
+                location: location,
+                message: msg,
+                chatId: chatId,
+                secret: secret,
+              };
 
-            setChatList((prev) => [...prev, message]);
-          }
-        );
+              setChatList((prev) => [...prev, message]);
+            }
+          );
+        }
+
         setStompClient(stompClient);
       });
     },
@@ -168,9 +195,14 @@ export default function ChattingDetailModal({
   };
 
   useEffect(() => {
-    myInfo.mutate();
+    if (isChat && !isChatRoom) {
+      myInfo.mutate();
+    }
+    getChattingList().then((data) => {
+      setChattingList(data.data.roomList);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isChat, isChatRoom]);
 
   useEffect(() => {
     if (data) {
@@ -187,79 +219,144 @@ export default function ChattingDetailModal({
 
   useEffect(() => {
     if (!isChat || !isLogin) {
-      stompClient?.disconnect(() => {});
+      if (!isChatRoom) stompClient?.disconnect(() => {});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isChat, isLogin]);
+  }, [isChat, isLogin, isChatRoom]);
   if (data === undefined || isLoading) return <Loading />;
 
   return (
-    <div className="fixed w-[400px] h-[600px] bottom-28 right-4 rounded-xl shadow-lg bg-grayscale1 z-20 dark:bg-grayscale6">
-      <header className="w-full h-10 bg-primary7 rounded-xl rounded-b-none p-2 text-grayscale1 dark:bg-primary4">
-        <ChevronLeftIcon
-          sx={{ color: "#FFFFFF", float: "left", zIndex: 10 }}
-          onClick={handleChatState}
-        />
-        <div className="relative w-[350px] h-[25px] ml-8">
-          <ClearIcon
-            sx={{ color: "#FFFFFF", float: "right" }}
-            onClick={onClickToggleModal}
-          />
-        </div>
-      </header>
-      <div
-        className="flex flex-col h-[524px] gap-2 p-2 overflow-scroll dark:text-grayscale1"
-        ref={messagesEndRef}
-      >
-        {chatList.map((item: chatting, index: number) => {
-          return (
-            <div
-              key={index}
-              className={
-                item.location === "L"
-                  ? "flex justify-start"
-                  : "flex justify-end"
-              }
-            >
-              {item.location === "L" ? (
-                <div className="flex flex-row gap-2">
-                  <img
-                    src={userProfile}
-                    alt="프로필 이미지"
-                    className="w-8 h-8 rounded-full"
-                  />
-                  <span className="text-sm">{userName}</span>
-                </div>
-              ) : (
-                ""
-              )}
-              <span
-                className={
-                  item.location === "L"
-                    ? "mt-6 ml-[-45px] max-w-[80%] py-1 px-2 rounded-lg bg-grayscale2 dark:bg-grayscale5"
-                    : "max-w-[80%] py-1 px-2 rounded-lg bg-primary1 dark:bg-primary4"
-                }
-                onClick={() =>
-                  handleSecretMessageClick(item.chatId, item.secret)
-                }
-              >
-                {item.message === "" ? "비공개된 메세지입니다." : item.message}
-              </span>
+    <div className={isChat ? "" : "hidden"}>
+      {isChatRoom ? (
+        <div className="fixed w-[400px] h-[600px] bottom-28 right-4 rounded-xl shadow-lg bg-grayscale1 z-20 dark:bg-grayscale6">
+          <header className="w-full h-10 bg-primary7 rounded-xl rounded-b-none p-2 text-grayscale1 dark:bg-primary4">
+            <div className="relative w-[350px] h-[25px] ml-8 rounded-lg">
+              <ClearIcon
+                sx={{ color: "#FFFFFF", float: "right" }}
+                onClick={onClickToggleModal}
+              />
             </div>
-          );
-        })}
-      </div>
-      <footer className="flex flex-row">
-        <input
-          type="text"
-          className="outline-none w-[90%] py-1 border-2 border-r-0 border-grayscale4 rounded-lg rounded-r-none dark:bg-grayscale6 dark:border-grayscale1"
-          value={inputValue}
-          onChange={handleInputChange}
-        />
-        <button className="w-[10%] py-1 bg-primary7 dark:bg-primary4 rounded-lg rounded-l-none">
-          <SendIcon sx={{ color: "#fff" }} onClick={sendMessage} />
-        </button>
-      </footer>
+          </header>
+          <div className="h-[550px] overflow-scroll">
+            {chattingList.map((item) => (
+              <div
+                key={item.chatRoomId}
+                onClick={() =>
+                  handleChatRoomClick(
+                    item.chatRoomId,
+                    item.otherUserProfileImg,
+                    item.otherUserName,
+                    item.otherUserId,
+                    item.guestId
+                  )
+                }
+                className="p-4 border-b-[1px] dark:text-grayscale1 flex flex-row gap-3"
+              >
+                <img
+                  src={item.otherUserProfileImg}
+                  alt={item.otherUserName}
+                  className="w-14 h-14 rounded-full"
+                />
+                <div>
+                  <div className="font-bold">{item.otherUserName}</div>
+                  {item.isSecret === 0 ? (
+                    <div>{item.latestMessage}</div>
+                  ) : (
+                    <p className="w-[250px] h-[24px] whitespace-nowrap text-ellipsis overflow-hidden ...">
+                      비공개된 메세지입니다.
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="fixed w-[400px] h-[600px] bottom-28 right-4 rounded-xl shadow-lg bg-grayscale1 z-20 dark:bg-grayscale6">
+          <header className="w-full h-10 bg-primary7 rounded-xl rounded-b-none p-2 text-grayscale1 dark:bg-primary4">
+            <ChevronLeftIcon
+              sx={{ color: "#FFFFFF", float: "left", zIndex: 10 }}
+              onClick={handleChatState}
+            />
+            <div className="relative w-[350px] h-[25px] ml-8">
+              <ClearIcon
+                sx={{ color: "#FFFFFF", float: "right" }}
+                onClick={onClickToggleModal}
+              />
+            </div>
+          </header>
+          <div
+            className="flex flex-col h-[524px] gap-2 p-2 overflow-scroll dark:text-grayscale1"
+            ref={messagesEndRef}
+          >
+            {chatList.map((item: chatting, index: number) => {
+              return (
+                <div
+                  key={index}
+                  className={
+                    item.location === "L"
+                      ? "flex justify-start"
+                      : "flex justify-end"
+                  }
+                >
+                  {item.location === "L" ? (
+                    <div className="flex flex-row gap-2">
+                      <img
+                        src={userProfile}
+                        alt="프로필 이미지"
+                        className="w-8 h-8 rounded-full"
+                      />
+                      <span className="text-sm">{userName}</span>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                  <span
+                    className={
+                      item.location === "L"
+                        ? "mt-6 ml-[-45px] max-w-[80%] py-1 px-2 rounded-lg bg-grayscale2 dark:bg-grayscale5"
+                        : "max-w-[80%] py-1 px-2 rounded-lg bg-primary1 dark:bg-primary4"
+                    }
+                    onClick={() =>
+                      handleSecretMessageClick(item.chatId, item.secret)
+                    }
+                  >
+                    {item.message === ""
+                      ? "비공개된 메세지입니다."
+                      : item.message}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+          <footer className="flex flex-row">
+            <input
+              type="text"
+              className="outline-none w-[90%] py-1 border-2 border-r-0 border-grayscale4 rounded-lg rounded-r-none dark:bg-grayscale6 dark:border-grayscale1"
+              value={inputValue}
+              onChange={handleInputChange}
+            />
+            <button className="w-[10%] py-1 bg-primary7 dark:bg-primary4 rounded-lg rounded-l-none">
+              <SendIcon sx={{ color: "#fff" }} onClick={sendMessage} />
+            </button>
+          </footer>
+        </div>
+      )}
     </div>
   );
+
+  function handleChatRoomClick(
+    chatRoomId: number,
+    otherUserProfileImg: string,
+    otherUserName: string,
+    otherUserId: string,
+    guestId: string
+  ) {
+    setIsChatRoom(false);
+    setChattingUserProfileImg(otherUserProfileImg);
+    setChattingRoomNumberState(chatRoomId);
+    setChattingUserName(otherUserName);
+    setChattingRoomGuestId(guestId);
+    setChattingUserId(otherUserId);
+  }
 }
