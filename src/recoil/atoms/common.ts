@@ -55,7 +55,7 @@ export const darkmodeState = atom({
  */
 export const chatState = atom({
   key: "chatState",
-  default: true,
+  default: false,
   effects_UNSTABLE: [persistAtom],
 });
 
