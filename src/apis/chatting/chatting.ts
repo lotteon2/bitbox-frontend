@@ -11,5 +11,6 @@ export const getChatting = async (chatRoomId: number) => {
 };
 
 export const payChatting = async (chatId: number) => {
-  return await authInstance.post(fixUrl + "message/" + chatId);
+  return null;
+  //return await authInstance.post(fixUrl + "message/" + chatId);
 };
