@@ -15,6 +15,7 @@ import { Button, Modal } from "antd";
 import { darkmodeState } from "../../recoil/atoms/common";
 import { Toast } from "../common/Toast";
 import { imageUpload } from "../../apis/common/common";
+import Loading from "../../pages/Loading";
 
 interface calendarEvents {
   id: number;
@@ -200,7 +201,8 @@ export default function AttendanceCalendar() {
       },
     }
   );
-  if (isLoading || data === undefined || events === undefined) return null;
+  if (isLoading || data === undefined || events === undefined)
+    return <Loading />;
 
   return (
     <>
