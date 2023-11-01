@@ -140,6 +140,7 @@ export default function ChattingDetailModal({
         `${process.env.REACT_APP_API_URL}/chatting-service/chattings`
       );
       const stompClient = Stomp.over(socket);
+      stompClient.debug = () => {};
       stompClient.connect({}, (frame: any) => {
         if (!isChatRoom) {
           stompClient.subscribe(
