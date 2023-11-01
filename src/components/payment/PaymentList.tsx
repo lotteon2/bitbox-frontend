@@ -31,7 +31,7 @@ export default function PaymentList() {
   const isDark = useRecoilValue(darkmodeState);
 
   const { mutate } = useMutation(
-    ["getPaymentListCount"],
+    ["getPaymentListCount", currentPage],
     () => getPaymentListCount(),
     {
       onSuccess: (data) => {
@@ -129,7 +129,7 @@ export default function PaymentList() {
             >
               <Pagination
                 defaultCurrent={currentPage}
-                total={pageCount}
+                total={pageCount * 10}
                 onChange={handlerPageChange}
               />
             </ConfigProvider>

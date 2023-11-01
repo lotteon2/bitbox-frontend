@@ -54,7 +54,7 @@ export default function ReviewList(categoryId: any) {
   };
 
   const { data, isLoading } = useQuery({
-    queryKey: ["getReviewBoardList", categoryId.categoryId],
+    queryKey: ["getReviewBoardList", categoryId.categoryId, currentPage],
     queryFn: () =>
       getBoardList("senior", categoryId.categoryId, currentPage - 1, 10),
   });
@@ -103,17 +103,17 @@ export default function ReviewList(categoryId: any) {
             검색
           </button>
         </div>
-        {authority === "GRADUATE" || authority === "TRAINEE" ? (
+        {authority === "GENERAL" ? (
+          <div className="w-28 my-4 py-2 rounded-md text-center text-xl font-normal text-white ml-auto dark:text-black">
+            　
+          </div>
+        ) : (
           <button
             className="bg-primary7 w-28 my-4 py-2 rounded-md text-center text-xl text-white font-normal ml-auto dark:bg-primary4"
             onClick={() => navigate("/board/register/" + 4)}
           >
             글쓰기 🖍
           </button>
-        ) : (
-          <div className="w-28 my-4 py-2 rounded-md text-center text-xl font-normal text-white ml-auto dark:text-black">
-            　
-          </div>
         )}
       </div>
 
@@ -163,7 +163,7 @@ export default function ReviewList(categoryId: any) {
             >
               <Pagination
                 defaultCurrent={currentPage}
-                total={pageCount}
+                total={pageCount * 10}
                 onChange={handlerPageChange}
               />
             </ConfigProvider>

@@ -192,8 +192,10 @@ export const removeBoard = async (boardType: string, boardId: number) => {
  * 내 게시글 조회
  * @param memberId
  */
-export const getMemberBoard = async () => {
-  const { data } = await authInstance.get("/board-service/board/member");
+export const getMemberBoard = async (page: number) => {
+  const { data } = await authInstance.get(
+    "/board-service/board/member?page=" + page + "&size=5"
+  );
   return data;
 };
 
