@@ -148,7 +148,7 @@ export default function AlumniItem() {
     {
       onSuccess: () => {
         setIsChat(true);
-        setIsChatRoom(true);
+        setIsChatRoom(false);
       },
       onError: () => {
         alert("채팅방 생성 오류");
