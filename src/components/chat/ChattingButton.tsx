@@ -50,19 +50,9 @@ export default function ChattingButton() {
         </Badge>
       </div>
 
-      {isChat ? (
-        isChatRoom ? (
-          <ChattingListModal
-            onClickToggleModal={() => setIsChat((cur) => !cur)}
-          />
-        ) : (
-          <ChattingDetailModal
-            onClickToggleModal={() => setIsChat((cur) => !cur)}
-          />
-        )
-      ) : (
-        ""
-      )}
+      <ChattingDetailModal
+        onClickToggleModal={() => setIsChat((cur) => !cur)}
+      />
     </div>
   );
 }
