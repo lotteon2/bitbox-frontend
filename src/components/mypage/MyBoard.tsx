@@ -18,6 +18,7 @@ interface boardResponse {
   boardContents: string;
   boardId: number;
   boardTitle: string;
+  masterCategoryId: number;
   categoryId: number;
   categoryName: string;
   createdAt: string;
@@ -49,8 +50,8 @@ export default function MyBoard() {
   };
 
   const { data, isLoading } = useQuery({
-    queryKey: ["getMemberBoardList"],
-    queryFn: () => getMemberBoard(),
+    queryKey: ["getMemberBoardList", currentPage],
+    queryFn: () => getMemberBoard(currentPage - 1),
   });
 
   useEffect(() => {
@@ -62,7 +63,7 @@ export default function MyBoard() {
 
   if (isLoading || data === undefined || reviewList === undefined)
     return <Loading />;
-
+  console.log(data);
   return (
     <div>
       <p className="text-2xl pb-5">게시글 관리</p>
@@ -81,7 +82,13 @@ export default function MyBoard() {
                 key={item.boardId}
                 className="w-full border-2 border-grayscale3 rounded-xl px-10 py-5 cursor-pointer hover:shadow-lg"
                 onClick={() =>
-                  navigate("/board/community/detail/" + item.boardId)
+                  navigate(
+                    item.masterCategoryId === 2
+                      ? "/board/alumni/detail/"
+                      : item.masterCategoryId === 3
+                      ? "/board/community/detail/"
+                      : "/board/review/detail" + item.boardId
+                  )
                 }
               >
                 <div>
@@ -114,7 +121,7 @@ export default function MyBoard() {
             >
               <Pagination
                 defaultCurrent={currentPage}
-                total={pageCount}
+                total={pageCount * 10}
                 onChange={handlerPageChange}
               />
             </ConfigProvider>

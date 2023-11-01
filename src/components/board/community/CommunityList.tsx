@@ -12,7 +12,7 @@ import {
   PaginationProps,
 } from "antd";
 import { useRecoilValue } from "recoil";
-import { authorityState, darkmodeState } from "../../../recoil/atoms/common";
+import { darkmodeState, loginState } from "../../../recoil/atoms/common";
 import Loading from "../../../pages/Loading";
 import { useNavigate } from "react-router";
 import CategoryBadge from "../CategoryBadge";
@@ -41,7 +41,7 @@ interface boardListResponse {
 }
 
 export default function CommunityList(categoryId: any) {
-  const authority = useRecoilValue(authorityState);
+  const isLogin = useRecoilValue(loginState);
   const isDark = useRecoilValue(darkmodeState);
   const [pageCount, setPageCount] = useState(0); // 페이지 개수
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
@@ -54,7 +54,7 @@ export default function CommunityList(categoryId: any) {
   };
 
   const { data, isLoading } = useQuery({
-    queryKey: ["getCommunityBoardList", categoryId.categoryId],
+    queryKey: ["getCommunityBoardList", categoryId.categoryId, currentPage],
     queryFn: () =>
       getBoardList("community", categoryId.categoryId, currentPage - 1, 10),
   });
@@ -85,7 +85,7 @@ export default function CommunityList(categoryId: any) {
 
   if (isLoading || data === undefined || reviewList === undefined)
     return <Loading />;
-
+  console.log(data);
   return (
     <div className="w-full">
       <div className="flex flex-row gap-5">
@@ -103,12 +103,7 @@ export default function CommunityList(categoryId: any) {
             검색
           </button>
         </div>
-        {authority === "ADMIN" ||
-        authority === "MANAGER" ||
-        authority === "TEACHER" ||
-        authority === "GRADUATE" ||
-        authority === "TRAINEE" ||
-        authority === "GENERAL" ? (
+        {isLogin ? (
           <button
             className="bg-primary7 w-28 my-4 py-2 rounded-md text-center text-xl text-white font-normal ml-auto dark:bg-primary4"
             onClick={() => navigate("/board/register/" + 3)}
@@ -170,7 +165,7 @@ export default function CommunityList(categoryId: any) {
             >
               <Pagination
                 defaultCurrent={currentPage}
-                total={pageCount}
+                total={pageCount * 10}
                 onChange={handlerPageChange}
               />
             </ConfigProvider>
