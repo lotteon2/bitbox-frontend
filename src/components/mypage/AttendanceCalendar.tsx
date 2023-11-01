@@ -185,6 +185,9 @@ export default function AttendanceCalendar() {
           background: isDark ? "#4D4D4D" : "#FFFFFF",
           color: isDark ? "#FFFFFF" : "#212B36",
         });
+        setTitle("");
+        setContent("");
+        setAttachedFile("");
       },
       onError: () => {
         Toast.fire({
