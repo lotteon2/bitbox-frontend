@@ -18,6 +18,7 @@ export const payChatting = async (chatId: number) => {
 interface chattingDto {
   guestId: string;
   guestName: string;
+  guestProfileImg: string;
 }
 export const startChatting = async (chattingDto: chattingDto) => {
   return await authInstance.post(fixUrl + "chatting-room", chattingDto);
