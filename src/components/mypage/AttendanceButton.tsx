@@ -82,11 +82,11 @@ export default function AttendanceButton() {
           color: isDark ? "#FFFFFF" : "#212B36",
         });
       },
-      onError: (error: any) => {
+      onError: () => {
         Toast.fire({
           iconHtml:
             '<a><img style="width: 80px" src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
-          title: error.response.data.message,
+          title: "<p>교육장과 멀리 떨어져 있습니다.</p>",
           background: isDark ? "#4D4D4D" : "#FFFFFF",
           color: isDark ? "#FFFFFF" : "#212B36",
         });
@@ -107,7 +107,15 @@ export default function AttendanceButton() {
           color: isDark ? "#FFFFFF" : "#212B36",
         });
       },
-      onError: () => {},
+      onError: () => {
+        Toast.fire({
+          iconHtml:
+            '<a><img style="width: 80px" src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
+          title: "<p>교육장과 멀리 떨어져 있습니다.</p>",
+          background: isDark ? "#4D4D4D" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#212B36",
+        });
+      },
     }
   );
 

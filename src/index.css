@@ -2,6 +2,27 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+@font-face {
+  font-family: "thin";
+  src: url("/src/assets/fonts/jamsil-thin.ttf");
+}
+@font-face {
+  font-family: "light";
+  src: url("/src/assets/fonts/jamsil-light.ttf");
+}
+@font-face {
+  font-family: "regular";
+  src: url("/src/assets/fonts/jamsil-regular.ttf");
+}
+@font-face {
+  font-family: "bold";
+  src: url("/src/assets/fonts/jamsil-bold.ttf");
+}
+@font-face {
+  font-family: "extrabold";
+  src: url("/src/assets/fonts/jamsil-extrabold.ttf");
+}
+
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
@@ -20,14 +41,20 @@ code {
   border-radius: 30px;
 }
 .swal2-confirm {
+  font-family: "regular";
   width: 150px;
 }
 .swal2-cancel {
+  font-family: "regular";
   width: 150px;
 }
 .swal2-title {
   text-align: left;
   font-size: 25px;
+  font-family: "bold";
+}
+.swal2-html-container {
+  font-family: "regular";
 }
 input[type="file"] {
   border: none;
@@ -56,27 +83,6 @@ input[type="file"]::file-selector-button:hover {
 
 .ant-form-item-label {
   text-align: left !important;
-}
-
-@font-face {
-  font-family: "thin";
-  src: url("/src/assets/fonts/jamsil-thin.ttf");
-}
-@font-face {
-  font-family: "light";
-  src: url("/src/assets/fonts/jamsil-light.ttf");
-}
-@font-face {
-  font-family: "regular";
-  src: url("/src/assets/fonts/jamsil-regular.ttf");
-}
-@font-face {
-  font-family: "bold";
-  src: url("/src/assets/fonts/jamsil-bold.ttf");
-}
-@font-face {
-  font-family: "extrabold";
-  src: url("/src/assets/fonts/jamsil-extrabold.ttf");
 }
 
 ::-webkit-scrollbar {
