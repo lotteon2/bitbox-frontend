@@ -63,6 +63,8 @@ export default function MyBoard() {
 
   if (isLoading || data === undefined || reviewList === undefined)
     return <Loading />;
+
+  console.log(reviewList?.content[0].boardId);
   return (
     <div>
       <p className="text-2xl pb-5">게시글 관리</p>
@@ -75,7 +77,7 @@ export default function MyBoard() {
         </div>
       ) : (
         <div>
-          {reviewList?.content.map((item: boardResponse) => {
+          {data.content.map((item: boardResponse) => {
             return (
               <div
                 key={item.boardId}
@@ -83,10 +85,10 @@ export default function MyBoard() {
                 onClick={() =>
                   navigate(
                     item.masterCategoryId === 2
-                      ? "/board/alumni/detail/"
+                      ? "/board/alumni/detail/" + item.boardId
                       : item.masterCategoryId === 3
-                      ? "/board/community/detail/"
-                      : "/board/review/detail" + item.boardId
+                      ? "/board/community/detail/" + item.boardId
+                      : "/board/review/detail/" + item.boardId
                   )
                 }
               >
