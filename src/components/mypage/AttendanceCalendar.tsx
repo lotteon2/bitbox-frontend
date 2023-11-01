@@ -130,7 +130,7 @@ export default function AttendanceCalendar() {
         attendanceTmp.push({
           id: item.attendanceId,
           title:
-            item.attendanceState === "ATTENDANACE"
+            item.attendanceState === "ATTENDANCE"
               ? "출석"
               : item.attendanceState === "ABSENT"
               ? "결석"
