@@ -1,4 +1,3 @@
-import { async } from "q";
 import { authInstance } from "../utils";
 
 const fixUrl = "/chatting-service/";
