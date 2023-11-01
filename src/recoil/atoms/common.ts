@@ -85,3 +85,9 @@ export const subscriptionState = atom({
   default: -1,
   effects_UNSTABLE: [persistAtom],
 });
+
+export const setNameState = atom({
+  key: "setNameState",
+  default: false,
+  effects_UNSTABLE: [persistAtom],
+});
