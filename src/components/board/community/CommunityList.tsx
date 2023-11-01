@@ -85,7 +85,6 @@ export default function CommunityList(categoryId: any) {
 
   if (isLoading || data === undefined || reviewList === undefined)
     return <Loading />;
-  console.log(data);
   return (
     <div className="w-full">
       <div className="flex flex-row gap-5">

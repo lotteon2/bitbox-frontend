@@ -83,7 +83,6 @@ export default function AttendanceButton() {
         });
       },
       onError: (error: any) => {
-        console.log(error);
         Toast.fire({
           iconHtml:
             '<a><img style="width: 80px" src="https://i.ibb.co/gFW7m2H/danger.png" alt="danger"></a>',
