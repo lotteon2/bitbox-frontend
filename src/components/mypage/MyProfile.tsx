@@ -6,6 +6,7 @@ import {
   accessToken,
   authorityState,
   loginState,
+  setNameState,
 } from "../../recoil/atoms/common";
 import { useRecoilValue, useResetRecoilState, useRecoilState } from "recoil";
 import { Button, Modal } from "antd";
@@ -54,7 +55,7 @@ export default function MyProfile() {
   const [profileImage, setProfileImage] = useState<string>("");
   const [nickName, setNickname] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const [isSetName, setIsSetName] = useState<boolean>(false);
+  const [isSetName, setIsSetName] = useRecoilState<boolean>(setNameState);
   const [memberInfo, setMemberInfo] = useRecoilState<memberInfo>(memberState);
   const isDark = useRecoilValue<boolean>(darkmodeState);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -332,6 +333,7 @@ export default function MyProfile() {
       onError: () => {},
     }
   );
+  console.log(isSetName);
   // 회원 전역 변수 저장
   useEffect(() => {
     if (data) {
@@ -358,11 +360,7 @@ export default function MyProfile() {
 
         setProfileImage(data.memberProfileImg);
 
-        if (
-          data.memberAuthority === "TRAINEE" &&
-          (data.memberName === null || data.memberName === "")
-        ) {
-          setIsSetName(true);
+        if (isSetName) {
           setIsModalOpen(true);
         }
       }
