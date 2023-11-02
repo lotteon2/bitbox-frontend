@@ -264,6 +264,7 @@ export default function MyProfile() {
     (updateInfo: adminInfoUpdateDto) => updateAdminMemberInfo(updateInfo),
     {
       onSuccess: () => {
+        setIsModalOpen(false);
         setChangeToggle((cur) => !cur);
         Toast.fire({
           iconHtml:
@@ -339,7 +340,7 @@ export default function MyProfile() {
       onError: () => {},
     }
   );
-  console.log(isSetName);
+
   // 회원 전역 변수 저장
   useEffect(() => {
     if (data) {
