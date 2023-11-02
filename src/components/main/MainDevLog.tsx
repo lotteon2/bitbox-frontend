@@ -135,7 +135,7 @@ export default function MainDevLog() {
           })
         )}
         <button
-          className="absolute right-72 mt-[-150px] border-2 border-primary7 px-10 py-3 text-primary7 rounded-full hover:bg-primary7 hover:border-primary7 hover:text-grayscale1 dark:hover:bg-primary4 dark:hover:border-primary4"
+          className="absolute right-72 mt-[-150px] border-2 border-primary7 px-10 py-3 text-primary7 rounded-full hover:bg-primary7 hover:border-primary7 hover:text-grayscale1 dark:border-primary4 dark:text-primary4 dark:hover:bg-primary4 dark:hover:border-primary4"
           onClick={() => navigate("/board/devlog")}
         >
           더 자세히 보러가기

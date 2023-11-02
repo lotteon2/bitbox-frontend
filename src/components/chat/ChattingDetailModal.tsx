@@ -259,7 +259,7 @@ export default function ChattingDetailModal({
       <footer className="flex flex-row">
         <input
           type="text"
-          className="outline-none w-[90%] py-1 border-2 border-r-0 border-grayscale4 rounded-lg rounded-r-none dark:bg-grayscale6 dark:border-grayscale1"
+          className="outline-none w-[90%] py-1 border-2 border-r-0 border-grayscale4 rounded-lg rounded-r-none dark:bg-grayscale6 dark:border-grayscale1 dark:text-grayscale1"
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleSendMessage}
