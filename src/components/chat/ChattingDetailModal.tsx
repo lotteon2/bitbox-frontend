@@ -212,9 +212,9 @@ export default function ChattingDetailModal({
           }}
           onClick={handleChatState}
         />
-        <div className="relative w-[350px] h-[25px] ml-8 cursor-pointer">
+        <div className="relative w-[350px] h-[25px] ml-8">
           <ClearIcon
-            sx={{ color: "#FFFFFF", float: "right" }}
+            sx={{ color: "#FFFFFF", float: "right", cursor: "pointer" }}
             onClick={onClickToggleModal}
           />
         </div>
