@@ -52,7 +52,7 @@ export default function ChattingListModal({
       <header className="w-full h-10 bg-primary7 rounded-xl rounded-b-none p-2 text-grayscale1 dark:bg-primary4">
         <div className="relative w-[350px] h-[25px] ml-8 rounded-lg">
           <ClearIcon
-            sx={{ color: "#FFFFFF", float: "right" }}
+            sx={{ color: "#FFFFFF", float: "right", cursor: "pointer" }}
             onClick={onClickToggleModal}
           />
         </div>
@@ -70,7 +70,7 @@ export default function ChattingListModal({
                 item.guestId
               )
             }
-            className="p-4 border-b-[1px] dark:text-grayscale1 flex flex-row gap-3"
+            className="p-4 border-b-[1px] dark:text-grayscale1 flex flex-row gap-3 cursor-pointer"
           >
             <img
               src={item.otherUserProfileImg}
