@@ -212,7 +212,7 @@ export default function DevLogList() {
             alt=""
           />
           <div
-            className="mt-5 text-lg dark:text-grayscale1"
+            className="font-regular mt-5 text-lg dark:text-grayscale1"
             dangerouslySetInnerHTML={{
               __html:
                 boardDetail === undefined

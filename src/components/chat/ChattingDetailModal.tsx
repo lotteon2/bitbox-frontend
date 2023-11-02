@@ -197,7 +197,7 @@ export default function ChattingDetailModal({
   if (data === undefined || isLoading) return <Loading />;
 
   return (
-    <div className="fixed w-[400px] h-[600px] bottom-28 right-4 rounded-xl shadow-lg bg-grayscale1 z-20 dark:bg-grayscale6">
+    <div className="font-regular fixed w-[400px] h-[600px] bottom-28 right-4 rounded-xl shadow-lg bg-grayscale1 z-20 dark:bg-grayscale6">
       <header className="w-full h-10 bg-primary7 rounded-xl rounded-b-none p-2 text-grayscale1 dark:bg-primary4">
         <ChevronLeftIcon
           sx={{ color: "#FFFFFF", float: "left", zIndex: 10 }}

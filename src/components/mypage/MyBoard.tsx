@@ -87,7 +87,7 @@ export default function MyBoard() {
                       ? "/board/alumni/detail/" + item.boardId
                       : item.masterCategoryId === 3
                       ? "/board/community/detail/" + item.boardId
-                      : "/board/review/detail/" + item.boardId
+                      : "/board/senior/detail/" + item.boardId
                   )
                 }
               >
