@@ -64,7 +64,6 @@ export default function MyBoard() {
   if (isLoading || data === undefined || reviewList === undefined)
     return <Loading />;
 
-  console.log(reviewList?.content[0].boardId);
   return (
     <div>
       <p className="text-2xl pb-5">게시글 관리</p>
