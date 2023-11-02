@@ -294,7 +294,12 @@ export default function MyProfile() {
         axios
           .delete(
             `${process.env.REACT_APP_API_URL}/authentication-service/auth/invitation`,
-            { headers: { email: data.memberEmail } }
+            {
+              headers: {
+                email: data.memberEmail,
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+              },
+            }
           )
           .then((res) => {})
           .catch((err) => {});
