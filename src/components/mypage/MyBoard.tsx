@@ -80,7 +80,11 @@ export default function MyBoard() {
             return (
               <div
                 key={item.boardId}
-                className="w-full border-2 border-grayscale3 rounded-xl px-10 py-5 cursor-pointer hover:shadow-lg"
+                className={
+                  item.deleted
+                    ? "hidden"
+                    : "w-full border-2 border-grayscale3 rounded-xl px-10 py-5 cursor-pointer hover:shadow-lg"
+                }
                 onClick={() =>
                   navigate(
                     item.masterCategoryId === 1
