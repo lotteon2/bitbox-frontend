@@ -244,6 +244,7 @@ export default function MyProfile() {
     (updateInfo: memberInfoUpdateDto) => updateMemberInfo(updateInfo),
     {
       onSuccess: () => {
+        setIsModalOpen(false);
         setChangeToggle((cur) => !cur);
         Toast.fire({
           iconHtml:

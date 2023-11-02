@@ -83,7 +83,9 @@ export default function MyBoard() {
                 className="w-full border-2 border-grayscale3 rounded-xl px-10 py-5 cursor-pointer hover:shadow-lg"
                 onClick={() =>
                   navigate(
-                    item.masterCategoryId === 2
+                    item.masterCategoryId === 1
+                      ? "/board/devlog"
+                      : item.masterCategoryId === 2
                       ? "/board/alumni/detail/" + item.boardId
                       : item.masterCategoryId === 3
                       ? "/board/community/detail/" + item.boardId
