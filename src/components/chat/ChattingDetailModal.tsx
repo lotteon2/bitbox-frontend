@@ -203,12 +203,15 @@ export default function ChattingDetailModal({
   return (
     <div className="font-regular fixed w-[400px] h-[600px] bottom-28 right-4 rounded-xl shadow-lg bg-grayscale1 z-20 dark:bg-grayscale6">
       <header className="w-full h-10 bg-primary7 rounded-xl rounded-b-none p-2 text-grayscale1 dark:bg-primary4">
-        <span className="cursor-pointer">
-          <ChevronLeftIcon
-            sx={{ color: "#FFFFFF", float: "left", zIndex: 10 }}
-            onClick={handleChatState}
-          />
-        </span>
+        <ChevronLeftIcon
+          sx={{
+            color: "#FFFFFF",
+            float: "left",
+            zIndex: 10,
+            cursor: "pointer",
+          }}
+          onClick={handleChatState}
+        />
         <div className="relative w-[350px] h-[25px] ml-8 cursor-pointer">
           <ClearIcon
             sx={{ color: "#FFFFFF", float: "right" }}
@@ -245,8 +248,10 @@ export default function ChattingDetailModal({
               <span
                 className={
                   item.location === "L"
-                    ? "mt-6 ml-[-45px] max-w-[80%] py-1 px-2 rounded-lg bg-grayscale2 cursor-pointer dark:bg-grayscale5"
-                    : "max-w-[80%] py-1 px-2 rounded-lg bg-primary1 cursor-pointer dark:bg-primary4"
+                    ? item.message === ""
+                      ? "mt-6 ml-[-45px] max-w-[80%] py-1 px-2 rounded-lg bg-grayscale2 dark:bg-grayscale5 cursor-pointer"
+                      : "mt-6 ml-[-45px] max-w-[80%] py-1 px-2 rounded-lg bg-grayscale2 dark:bg-grayscale5"
+                    : "max-w-[80%] py-1 px-2 rounded-lg bg-primary1 dark:bg-primary4"
                 }
                 onClick={() =>
                   handleSecretMessageClick(item.chatId, item.secret)
