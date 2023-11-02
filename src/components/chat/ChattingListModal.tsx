@@ -77,7 +77,7 @@ export default function ChattingListModal({
               alt={item.otherUserName}
               className="w-14 h-14 rounded-full"
             />
-            <div>
+            <div className="font-regular">
               <div className="font-bold">{item.otherUserName}</div>
               {item.isSecret === 0 ? (
                 <div>{item.latestMessage}</div>
