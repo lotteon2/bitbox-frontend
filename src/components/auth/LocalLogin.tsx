@@ -68,13 +68,14 @@ export default function LocalLogin() {
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           style={{ maxWidth: 600, width: "100%" }}
+          onFinish={tryLogin}
           className={isDark ? "dark" : "light"}
           initialValues={{ remember: true }}
           autoComplete="off"
         >
           <Form.Item
             label="이메일"
-            name="username"
+            name="email"
             rules={[{ required: true, message: "이메일을 입력해주세요" }]}
           >
             <Input
@@ -94,17 +95,17 @@ export default function LocalLogin() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </Form.Item>
+          <div className="py-2">
+          <button
+            className="w-full px-2 my-1 py-2 rounded text-grayscale1 bg-secondary1 dark:bg-secondary2"
+            onClick={tryLogin}
+            type="submit"
+          >
+            로그인
+          </button>
+        </div>
         </Form>
       </ConfigProvider>
-
-      <div className="py-2">
-        <button
-          className="w-full px-2 my-1 py-2 rounded text-grayscale1 bg-secondary1 dark:bg-secondary2"
-          onClick={tryLogin}
-        >
-          로그인
-        </button>
-      </div>
     </>
   );
 }

@@ -248,7 +248,7 @@ export default function Header() {
         >
           <NavLink
             style={({ isActive }) => (isActive ? activeStyle : {})}
-            to="/board/review"
+            to="/board/senior"
           >
             선배들의 이야기
           </NavLink>

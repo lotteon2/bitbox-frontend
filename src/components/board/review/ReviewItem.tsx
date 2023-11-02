@@ -9,16 +9,29 @@ import {
 import Loading from "../../../pages/Loading";
 import Badge from "../../common/Badge";
 import SmsIcon from "@mui/icons-material/Sms";
-import { useRecoilValue } from "recoil";
-import { darkmodeState, loginState } from "../../../recoil/atoms/common";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  authorityState,
+  chatState,
+  chatroomState,
+  darkmodeState,
+  loginState,
+} from "../../../recoil/atoms/common";
 import { Empty } from "antd";
 import { Toast } from "../../common/Toast";
 import { useNavigate } from "react-router-dom";
+import { startChatting } from "../../../apis/chatting/chatting";
 
 interface commentRegisterRequestDto {
   boardId: number;
   commentContents: string;
   masterCommentId: number | null;
+}
+
+interface chattingDto {
+  guestId: string;
+  guestName: string;
+  guestProfileImg: string;
 }
 
 export default function AlumniItem() {
@@ -28,6 +41,9 @@ export default function AlumniItem() {
   const reInputRef = useRef<any>([]);
   const [isChange, setIsChange] = useState<boolean>(false);
   const isLogin = useRecoilValue<boolean>(loginState);
+  const authority = useRecoilValue<string>(authorityState);
+  const setIsChat = useSetRecoilState<boolean>(chatState);
+  const setIsChatRoom = useSetRecoilState<boolean>(chatroomState);
 
   const navigate = useNavigate();
 
@@ -111,6 +127,51 @@ export default function AlumniItem() {
         }),
     }
   );
+
+  const handleChattingRoom = (
+    memberId: string,
+    memberName: string,
+    profile: string
+  ) => {
+    const chattingDto: chattingDto = {
+      guestId: memberId,
+      guestName: memberName,
+      guestProfileImg: profile,
+    };
+
+    chattingMutation.mutate(chattingDto);
+  };
+
+  const chattingMutation = useMutation(
+    ["startChatting"],
+    (chattingDto: chattingDto) => startChatting(chattingDto),
+    {
+      onSuccess: () => {
+        setIsChat(true);
+        setIsChatRoom(true);
+      },
+      onError: () => {
+        alert("채팅방 생성 오류");
+      },
+    }
+  );
+
+  const handleRegistComment = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleCommentRegist();
+    }
+  };
+
+  const handleRegistReComment = (
+    e: React.KeyboardEvent,
+    commentId: number,
+    index: number
+  ) => {
+    if (e.key === "Enter") {
+      handleReCommentRegist(commentId, index);
+    }
+  };
+
   const { data, isLoading } = useQuery({
     queryKey: ["getBoardDetail", isChange],
     queryFn: () => getBoardDetail("senior", Number(boardId.boardId), isLogin),
@@ -121,7 +182,7 @@ export default function AlumniItem() {
   return (
     <div className="w-full h-full">
       <p className="text-grayscale4">
-        알럼나이 {" > " + data.boardResponse.categoryName}
+        선배들의 이야기 {" > " + data.boardResponse.categoryName}
       </p>
       <br />
       <br />
@@ -130,7 +191,7 @@ export default function AlumniItem() {
           <button
             className="bg-grayscale5 text-grayscale1 py-2 px-4 rounded-lg dark:bg-grayscale4"
             onClick={() =>
-              navigate("/board/modify/2/detail/" + boardId.boardId)
+              navigate("/board/modify/4/detail/" + boardId.boardId)
             }
           >
             수정
@@ -154,6 +215,25 @@ export default function AlumniItem() {
           <Badge authority={data.boardResponse.memberAuthority} />
         </span>
         <span className="mt-5">{data.boardResponse.memberName}</span>
+        {(data.boardResponse.memberAuthority === "TRAINEE" ||
+          data.boardResponse.memberAuthority === "GRADUATE") &&
+        authority === "GENERAL" &&
+        !data.management ? (
+          <button
+            className="text-secondary1 dark:teext-secondary2"
+            onClick={() =>
+              handleChattingRoom(
+                data.boardResponse.memberId,
+                data.boardResponse.memberName,
+                data.boardResponse.memberProfileImg
+              )
+            }
+          >
+            채팅 보내기
+          </button>
+        ) : (
+          ""
+        )}
       </div>
       <br />
       <p className="border-[1px] border-grayscale4"></p>
@@ -175,6 +255,7 @@ export default function AlumniItem() {
             type="text"
             placeholder="댓글을 남겨보세요"
             ref={inputRef}
+            onKeyDown={handleRegistComment}
           />
           <button
             className="w-1/12 bg-secondary1 text-white  rounded-lg dark:bg-secondary2"
@@ -282,6 +363,9 @@ export default function AlumniItem() {
                       type="text"
                       placeholder="답댓글을 남겨보세요"
                       ref={(element) => (reInputRef.current[index] = element)}
+                      onKeyDown={(e) =>
+                        handleRegistReComment(e, item.commentId, index)
+                      }
                     />
                     <button
                       className="w-1/12 bg-secondary1 text-white  rounded-lg dark:bg-secondary2"
