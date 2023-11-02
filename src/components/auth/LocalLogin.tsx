@@ -94,17 +94,16 @@ export default function LocalLogin() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </Form.Item>
+          <div className="py-2">
+          <button
+            className="w-full px-2 my-1 py-2 rounded text-grayscale1 bg-secondary1 dark:bg-secondary2"
+            onClick={tryLogin}
+          >
+            로그인
+          </button>
+        </div>
         </Form>
       </ConfigProvider>
-
-      <div className="py-2">
-        <button
-          className="w-full px-2 my-1 py-2 rounded text-grayscale1 bg-secondary1 dark:bg-secondary2"
-          onClick={tryLogin}
-        >
-          로그인
-        </button>
-      </div>
     </>
   );
 }
