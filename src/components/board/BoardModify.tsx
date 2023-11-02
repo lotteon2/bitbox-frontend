@@ -123,7 +123,7 @@ export default function BoardModify() {
               ? "/board/alumni"
               : masterBoardId === "3"
               ? "/board/community"
-              : "/board/review"
+              : "/board/senior"
           );
         }, Math.floor(2000));
       },
@@ -251,7 +251,7 @@ export default function BoardModify() {
               ? "/board/alumni"
               : masterBoardId === "3"
               ? "/board/community"
-              : "/board/review"
+              : "/board/senior"
           );
         }, Math.floor(2000));
       },
@@ -338,7 +338,7 @@ export default function BoardModify() {
                   ? "/board/alumni"
                   : masterBoardId === "3"
                   ? "/board/community"
-                  : "/board/review"
+                  : "/board/senior"
               )
             }
           >

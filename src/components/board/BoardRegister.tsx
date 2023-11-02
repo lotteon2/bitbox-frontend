@@ -124,7 +124,7 @@ export default function BoardRegister() {
               ? "/board/alumni"
               : masterBoardId === "3"
               ? "/board/community"
-              : "/board/review"
+              : "/board/senior"
           );
         }, Math.floor(2000));
       },
@@ -242,7 +242,15 @@ export default function BoardRegister() {
         <span className="absolute right-0">
           <button
             className="mx-3 bg-grayscale5 px-5 py-2 rounded-lg text-grayscale1 dark:bg-grayscale4"
-            onClick={() => navigate("/board/review")}
+            onClick={() =>
+              navigate(
+                masterBoardId === "2"
+                  ? "/board/alumni"
+                  : masterBoardId === "3"
+                  ? "/board/community"
+                  : "/board/senior"
+              )
+            }
           >
             취소
           </button>
