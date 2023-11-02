@@ -154,6 +154,21 @@ export default function AlumniItem() {
       },
     }
   );
+  const handleRegistComment = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleCommentRegist();
+    }
+  };
+
+  const handleRegistReComment = (
+    e: React.KeyboardEvent,
+    commentId: number,
+    index: number
+  ) => {
+    if (e.key === "Enter") {
+      handleReCommentRegist(commentId, index);
+    }
+  };
 
   const { data, isLoading } = useQuery({
     queryKey: ["getBoardDetail", isChange],
@@ -239,6 +254,7 @@ export default function AlumniItem() {
             type="text"
             placeholder="댓글을 남겨보세요"
             ref={inputRef}
+            onKeyDown={handleRegistComment}
           />
           <button
             className="w-1/12 bg-secondary1 text-white  rounded-lg dark:bg-secondary2"
@@ -352,6 +368,9 @@ export default function AlumniItem() {
                       type="text"
                       placeholder="답댓글을 남겨보세요"
                       ref={(element) => (reInputRef.current[index] = element)}
+                      onKeyDown={(e) =>
+                        handleRegistReComment(e, item.commentId, index)
+                      }
                     />
                     <button
                       className="w-1/12 bg-secondary1 text-white  rounded-lg dark:bg-secondary2"

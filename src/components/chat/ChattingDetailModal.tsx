@@ -167,7 +167,11 @@ export default function ChattingDetailModal({
       })
     );
   };
-
+  const handleSendMessage = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      sendMessage();
+    }
+  };
   useEffect(() => {
     if (isChat) {
       myInfo.mutate();
@@ -258,6 +262,7 @@ export default function ChattingDetailModal({
           className="outline-none w-[90%] py-1 border-2 border-r-0 border-grayscale4 rounded-lg rounded-r-none dark:bg-grayscale6 dark:border-grayscale1"
           value={inputValue}
           onChange={handleInputChange}
+          onKeyDown={handleSendMessage}
         />
         <button className="w-[10%] py-1 bg-primary7 dark:bg-primary4 rounded-lg rounded-l-none">
           <SendIcon sx={{ color: "#fff" }} onClick={sendMessage} />
