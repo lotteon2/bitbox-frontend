@@ -32,7 +32,7 @@ export default function NotificationDropDown() {
     useRecoilState<boolean>(notiChangedState);
   const [notifications, setNotifications] = useState([]);
 
-  const subscribeUrl = `${process.env.REACT_APP_API_URL}/notification-service/notifications/subscription?sessionToken=`;
+  const subscribeUrl = `${process.env.REACT_APP_API_URL}/notification-service/notifications/subscription`;
 
   useEffect(() => {
     getAllNoti();
@@ -42,19 +42,16 @@ export default function NotificationDropDown() {
 
   useEffect(() => {
     if (isLogin) {
-      let eventSource = new EventSourcePolyfill(
-        subscribeUrl + localStorage.getItem("accessToken"),
-        {
-          headers: {
-            "Content-Type": "text/event-stream",
-            "Access-Control-Allow-Origin": "",
-            AccessToken: `Bearer ${localStorage.getItem("accessToken")}`,
-            "Cache-Control": "no-cache",
-          },
-          heartbeatTimeout: 86400000,
-          withCredentials: true,
-        }
-      );
+      let eventSource = new EventSourcePolyfill(subscribeUrl, {
+        headers: {
+          "Content-Type": "text/event-stream",
+          "Access-Control-Allow-Origin": "",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          "Cache-Control": "no-cache",
+        },
+        heartbeatTimeout: 86400000,
+        withCredentials: true,
+      });
 
       eventSource.onopen = () => {
         eventSource.addEventListener("ATTENDANCE", (event: any) => {
@@ -72,19 +69,16 @@ export default function NotificationDropDown() {
 
       eventSource.onerror = () => {
         eventSource.close();
-        eventSource = new EventSourcePolyfill(
-          subscribeUrl + localStorage.getItem("accessToken"),
-          {
-            headers: {
-              "Content-Type": "text/event-stream",
-              "Access-Control-Allow-Origin": "",
-              AccessToken: `Bearer ${localStorage.getItem("accessToken")}`,
-              "Cache-Control": "no-cache",
-            },
-            heartbeatTimeout: 86400000,
-            withCredentials: true,
-          }
-        );
+        eventSource = new EventSourcePolyfill(subscribeUrl, {
+          headers: {
+            "Content-Type": "text/event-stream",
+            "Access-Control-Allow-Origin": "",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            "Cache-Control": "no-cache",
+          },
+          heartbeatTimeout: 86400000,
+          withCredentials: true,
+        });
         eventSource.addEventListener("ATTENDANCE", (event: any) => {
           setNotiEvent((cur) => !cur);
         });
