@@ -152,7 +152,6 @@ export default function AttendanceCalendar() {
     (image: any) => imageUpload(image),
     {
       onSuccess: (data) => {
-        console.log(data);
         setAttachedFile(data);
       },
       onError: () => {
